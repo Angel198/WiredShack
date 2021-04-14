@@ -364,4 +364,7 @@
         <item type="color">#607d8b</item>
         <item type="color">#ff9800</item>
     </array>
+
+    <color name="colorBackTab">#202330</color>
+    <color name="colorBackHome">#191A1F</color>
 </resources>
