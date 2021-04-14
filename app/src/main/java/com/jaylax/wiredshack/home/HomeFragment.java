@@ -4,6 +4,8 @@ import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,11 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
+        mBinding.recyclerHomeTopStory.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        mBinding.recyclerHomeTopStory.setAdapter(new HomeTopStoryAdapter());
+
+        mBinding.recyclerHomeRecentEvent.setLayoutManager(new GridLayoutManager(getActivity(),3));
+        mBinding.recyclerHomeRecentEvent.setAdapter(new HomeRecentEventAdapter());
         return mBinding.getRoot();
     }
 }

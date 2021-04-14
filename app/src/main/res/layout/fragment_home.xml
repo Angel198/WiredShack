@@ -39,29 +39,84 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeTopStory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    android:padding="@dimen/_5sdp" />
+                    android:padding="@dimen/_5sdp"
+                    tools:itemCount="5"
+                    tools:listitem="@layout/item_home_top_story"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/_200sdp"
                     android:layout_marginStart="@dimen/_10sdp"
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginBottom="@dimen/_10sdp">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/white37"
+                        />
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
-                        android:text="@string/upcoming_live_stream"/>
+                        android:includeFontPadding="false"
+                        android:text="@string/upcoming_live_stream"
+                        android:textColor="@color/white37"
+                        app:fontFamily="@font/poppins_medium"
+                        android:textSize="@dimen/_22ssp"
+                        android:gravity="center_horizontal" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginRight="@dimen/_7sdp"
+                        android:layout_marginBottom="@dimen/_7sdp"
+                        android:src="@drawable/video_camera_green"
+                        android:layout_marginEnd="@dimen/_7sdp"
+                        android:layout_alignParentEnd="true" />
                 </RelativeLayout>
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/recent_event"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_10ssp"
+                    app:fontFamily="@font/poppins_medium"
+                    android:includeFontPadding="false"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginStart="@dimen/_10sdp" />
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/white"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    />
 
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeRecentEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/_10sdp"
+                    android:paddingEnd="@dimen/_3sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingRight="@dimen/_3sdp"
+                    android:paddingLeft="@dimen/_10sdp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
