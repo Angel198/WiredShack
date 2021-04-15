@@ -1,7 +1,6 @@
 package com.jaylax.wiredshack;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -40,7 +39,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 _password = password.getText().toString();
                 confirm_password = confirm_pass.getText().toString();
 
+
             }
+
         });
 
     }
