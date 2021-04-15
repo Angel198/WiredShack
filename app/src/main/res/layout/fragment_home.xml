@@ -7,7 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackHome"
-        tools:context=".home.HomeFragment">
+        tools:context=".user.home.HomeFragment">
 
         <RelativeLayout
             android:id="@+id/rlTop"
@@ -47,9 +47,7 @@
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
-                    android:padding="@dimen/_5sdp"
-                    tools:itemCount="5"
-                    tools:listitem="@layout/item_home_top_story"/>
+                    android:padding="@dimen/_5sdp"/>
 
                 <RelativeLayout
                     android:layout_width="match_parent"

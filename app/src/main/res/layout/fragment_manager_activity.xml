@@ -7,8 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBackHome"
-        android:orientation="vertical"
-        tools:context=".user.notification.NotificationFragment">
+        android:orientation="vertical">
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvNotificationHeader"
             android:layout_width="match_parent"
@@ -31,13 +30,13 @@
             android:orientation="horizontal"
             android:padding="@dimen/_12sdp">
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvAcceptedRequest"
+                android:id="@+id/tvIncomingRequest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="@dimen/_2sdp"
                 tools:ignore="RtlCompat"
-                android:text="@string/accepted_request"
+                android:text="@string/incoming_request"
                 android:textSize="@dimen/_10ssp"
                 app:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
@@ -46,13 +45,13 @@
                 android:padding="@dimen/_3sdp"
                 android:background="@drawable/back_round_white"/>
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvViewSentRequest"
+                android:id="@+id/tvEventActivities"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="@dimen/_2sdp"
                 tools:ignore="RtlCompat"
-                android:text="@string/view_sent_request"
+                android:text="@string/event_activities"
                 android:textSize="@dimen/_10ssp"
                 app:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
@@ -65,10 +64,10 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerActivity"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:overScrollMode="never"
             android:clipToPadding="false"
-            />
+            android:padding="@dimen/_12sdp"/>
     </LinearLayout>
 </layout>

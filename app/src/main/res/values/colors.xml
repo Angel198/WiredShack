@@ -370,4 +370,5 @@
     <color name="colorBackTab">#202330</color>
     <color name="colorBackHome">#191A1F</color>
     <color name="colorHintTex">#4E586E</color>
+    <color name="colorBlackText">#242A37</color>
 </resources>

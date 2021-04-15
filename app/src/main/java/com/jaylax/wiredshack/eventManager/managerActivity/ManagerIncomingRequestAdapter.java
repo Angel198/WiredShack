@@ -1,7 +1,6 @@
-package com.jaylax.wiredshack.home;
+package com.jaylax.wiredshack.eventManager.managerActivity;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -9,16 +8,18 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jaylax.wiredshack.R;
-import com.jaylax.wiredshack.databinding.ItemHomeTopStoryBinding;
+import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
+import com.jaylax.wiredshack.databinding.ItemIncomingRequestBinding;
+import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
 
-public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapter.MyViewHolder> {
-    public HomeTopStoryAdapter() {
+public class ManagerIncomingRequestAdapter extends RecyclerView.Adapter<ManagerIncomingRequestAdapter.MyViewHolder> {
+    public ManagerIncomingRequestAdapter() {
     }
 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_home_top_story, parent, false));
+        return new MyViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_incoming_request, parent, false));
     }
 
     @Override
@@ -28,13 +29,13 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 10;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ItemHomeTopStoryBinding mBinding;
+        ItemIncomingRequestBinding mBinding;
 
-        public MyViewHolder(ItemHomeTopStoryBinding itemView) {
+        public MyViewHolder(ItemIncomingRequestBinding itemView) {
             super(itemView.getRoot());
             this.mBinding = itemView;
         }
@@ -44,3 +45,5 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
         }
     }
 }
+
+

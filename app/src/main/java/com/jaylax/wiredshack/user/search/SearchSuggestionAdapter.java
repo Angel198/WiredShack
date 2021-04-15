@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.search;
+package com.jaylax.wiredshack.user.search;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -8,9 +8,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.jaylax.wiredshack.R;
-import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
 import com.jaylax.wiredshack.databinding.ItemSearchSuggestionBinding;
-import com.jaylax.wiredshack.home.HomeRecentEventAdapter;
 
 public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggestionAdapter.MyViewHolder> {
     public SearchSuggestionAdapter() {

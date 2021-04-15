@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.home;
+package com.jaylax.wiredshack.eventManager.home;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -9,10 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
-import com.jaylax.wiredshack.databinding.ItemHomeTopStoryBinding;
+import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 
-public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEventAdapter.MyViewHolder> {
-    public HomeRecentEventAdapter() {
+public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRecentEventsAdapter.MyViewHolder> {
+    public ManagerRecentEventsAdapter() {
     }
 
     @NonNull
@@ -44,3 +44,4 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
         }
     }
 }
+

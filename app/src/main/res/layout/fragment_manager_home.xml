@@ -6,8 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackHome"
-        tools:context=".user.account.AccountFragment">
+        android:background="@color/colorBackHome">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -18,16 +17,16 @@
             app:layout_constraintBottom_toBottomOf="parent"
             android:fillViewport="true"
             android:overScrollMode="never">
-            
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
-                
+
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                    
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
@@ -132,28 +131,6 @@
                     android:layout_height="1dp"
                     android:background="@color/black"/>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/_12sdp"
-                    android:text="@string/about_me"
-                    app:fontFamily="@font/poppins_medium"
-                    android:textSize="@dimen/_15ssp"
-                    android:textColor="@color/white"
-                    android:includeFontPadding="false" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="@dimen/_12sdp"
-                    android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_about_me"
-                    app:fontFamily="@font/poppins_light"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_13ssp"/>
-
-
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -162,18 +139,45 @@
                     android:paddingStart="@dimen/_12sdp"
                     tools:ignore="RtlCompat">
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/following_events"
-                        app:fontFamily="@font/poppins_light"
-                        android:includeFontPadding="false"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:textColor="@color/white"
-                        />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingEnd="@dimen/_12sdp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/recent_event"
+                            app:fontFamily="@font/poppins_light"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/white"
+                            />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            tools:ignore="RtlCompat"
+                            android:text="@string/view_all_events"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/white"
+                            android:textAlignment="center"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:background="@drawable/back_border_white"/>
+                    </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerAccountFollowingEvents"
+                        android:id="@+id/recyclerHomeRecentEventEvents"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"

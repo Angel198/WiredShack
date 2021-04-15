@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.search;
+package com.jaylax.wiredshack.user.search;
 
 import android.os.Bundle;
 
@@ -12,7 +12,6 @@ import android.view.ViewGroup;
 
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentSearchBinding;
-import com.jaylax.wiredshack.home.HomeRecentEventAdapter;
 
 public class SearchFragment extends Fragment {
     FragmentSearchBinding mBinding;

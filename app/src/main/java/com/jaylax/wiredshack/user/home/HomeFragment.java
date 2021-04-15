@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.home;
+package com.jaylax.wiredshack.user.home;
 
 import android.os.Bundle;
 
