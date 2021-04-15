@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#01999a</color>
-    <color name="purple_500">#009b9d</color>
-    <color name="purple_700">#059ea3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
+    <color name="purple_200">#000000</color>
+    <color name="purple_500">#000000</color>
+    <color name="purple_700">#000000</color>
+    <color name="teal_200">#000000</color>
+    <color name="teal_700">#000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="white37">#5EFFFFFF</color>
 
-    <color name="sky_blue">#01999a</color>
-    <color name="sky_blue_one">#009b9d</color>
-    <color name="sky_blue_two">#059ea3</color>
+    <color name="sky_blue">#000000</color>
+    <color name="sky_blue_one">#000000</color>
+    <color name="sky_blue_two">#000000</color>
 
     <color name="overlay_dark_10">#1A000000</color>
     <color name="overlay_dark_20">#33000000</color>
