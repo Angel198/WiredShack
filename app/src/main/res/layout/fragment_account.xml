@@ -111,6 +111,7 @@
                         android:layout_weight="1"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvAccountEditProfile"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:ignore="RtlCompat"

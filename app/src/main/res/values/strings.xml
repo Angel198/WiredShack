@@ -22,4 +22,18 @@
     <string name="incoming_request">Incoming Request</string>
     <string name="event_activities">Event Activities</string>
     <string name="txt_cancel">Cancel</string>
+    <string name="request_for_live_streaming">Request for\nLive Streaming</string>
+    <string name="dummy_event_description">As conscious traveling Paupers we must always be concerned about our dear Mother Earth.</string>
+    <string name="dummy_event_time">Event Time : 10:00 PM to 12:00 AM</string>
+    <string name="dummy_event_location">Event Location : Karnavati Club</string>
+    <string name="write_comment">Write Comment ...</string>
+    <string name="dummy_event_comment">Since the introduction of Virtual Game, it has been achieving great ... Read more</string>
+    <string name="done">Done</string>
+    <string name="change_profile_photo">Change profile photo</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="phone">Phone</string>
+    <string name="gender">Gender</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="edit_event">Edit Event</string>
 </resources>

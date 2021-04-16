@@ -9,7 +9,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.WiredShack">
-        <activity android:name=".eventManager.dashboard.DashboardEventManagerActivity"
+        <activity android:name=".eventManager.editEvent.ManagerEditEventActivity"></activity>
+        <activity
+            android:name=".EditProfileActivity"
+            android:theme="@style/BaseTheme.one" />
+        <activity
+            android:name=".user.eventDetails.EventDetailsActivity"
+            android:theme="@style/BaseTheme.one" />
+        <activity
+            android:name=".eventManager.dashboard.DashboardEventManagerActivity"
             android:theme="@style/BaseTheme.one">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,7 +27,7 @@
         </activity>
         <activity
             android:name=".user.dashboard.DashboardActivity"
-            android:theme="@style/BaseTheme.one"/>
+            android:theme="@style/BaseTheme.one"></activity>
         <activity android:name=".ForgetPasswordActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegistrationActivity" />

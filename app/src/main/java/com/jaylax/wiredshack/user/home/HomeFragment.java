@@ -29,7 +29,7 @@ public class HomeFragment extends Fragment {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
         mBinding.recyclerHomeTopStory.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        mBinding.recyclerHomeTopStory.setAdapter(new HomeTopStoryAdapter());
+        mBinding.recyclerHomeTopStory.setAdapter(new HomeTopStoryAdapter(getActivity()));
 
         mBinding.recyclerHomeRecentEvent.setLayoutManager(new GridLayoutManager(getActivity(),3));
         mBinding.recyclerHomeRecentEvent.setAdapter(new HomeRecentEventAdapter());
