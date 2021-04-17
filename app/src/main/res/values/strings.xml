@@ -36,4 +36,15 @@
     <string name="gender">Gender</string>
     <string name="date_of_birth">Date of birth</string>
     <string name="edit_event">Edit Event</string>
+    <string name="txt_save">Save</string>
+    <string name="event_name">Event Name :</string>
+    <string name="description">Description :</string>
+    <string name="location">Location :</string>
+    <string name="txt_to">to</string>
+    <string name="add_event">Add Event</string>
+    <string name="sort_by">Sort by</string>
+    <string name="followed">Followed</string>
+    <string name="followed_by">Followed By</string>
+    <string name="time">Time :</string>
+    <string name="date">Date :</string>
 </resources>

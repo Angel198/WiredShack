@@ -12,6 +12,7 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
 import com.jaylax.wiredshack.eventManager.eventdetails.ManagerEventDetailsFragment;
 import com.jaylax.wiredshack.eventManager.home.ManagerHomeFragment;
+import com.jaylax.wiredshack.eventManager.managerAccount.ManagerAccountFragment;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityFragment;
 
 import java.util.ArrayList;
@@ -30,17 +31,17 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
         arySelect.add(R.drawable.home_white);
         arySelect.add(R.drawable.event_white);
         arySelect.add(R.drawable.notification_white);
-//        arySelect.add(R.drawable.account_white);
+        arySelect.add(R.drawable.account_white);
 
         aryUnSelect.add(R.drawable.home);
         aryUnSelect.add(R.drawable.event);
         aryUnSelect.add(R.drawable.notification);
-//        aryUnSelect.add(R.drawable.account);
+        aryUnSelect.add(R.drawable.account);
 
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(0).setIcon(R.drawable.home_white));
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(1).setIcon(R.drawable.event));
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(2).setIcon(R.drawable.notification));
-//        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account));
 
         replaceFragment(new ManagerHomeFragment(), "Home");
         initListener();
@@ -62,11 +63,10 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
                 } else if (tab.getPosition() == 1) {
                     replaceFragment(new ManagerEventDetailsFragment(), "EventDetails");
                 } else if (tab.getPosition() == 2) {
-                    replaceFragment(new ManagerActivityFragment(), "Notification");
+                    replaceFragment(new ManagerActivityFragment(), "Activity");
+                } else if (tab.getPosition() == 3) {
+                    replaceFragment(new ManagerAccountFragment(), "Account");
                 }
-                /*else if (tab.getPosition() == 3) {
-//                    replaceFragment(new AccountFragment(), "Account");
-                }*/
             }
 
             @Override

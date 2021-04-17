@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack.eventManager.eventdetails;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.databinding.DataBindingUtil;
@@ -13,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerEventDetailsBinding;
+import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentAdapter;
 
 public class ManagerEventDetailsFragment extends Fragment {
@@ -29,6 +31,11 @@ public class ManagerEventDetailsFragment extends Fragment {
         mBinding.recyclerEventUser.setAdapter(new EventParticipateUserAdapter(false));
         mBinding.recyclerEventComment.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter());
+
+        mBinding.tvEventEdit.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ManagerEditEventActivity.class);
+            getActivity().startActivity(intent);
+        });
         return mBinding.getRoot();
     }
 }

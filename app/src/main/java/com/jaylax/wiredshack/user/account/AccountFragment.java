@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import com.jaylax.wiredshack.EditProfileActivity;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentAccountBinding;
+import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 
 public class AccountFragment extends Fragment {
@@ -36,6 +37,11 @@ public class AccountFragment extends Fragment {
 
         mBinding.tvAccountEditProfile.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            getActivity().startActivity(intent);
+        });
+
+        mBinding.linearAccountFollowing.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), UserFollowingActivity.class);
             getActivity().startActivity(intent);
         });
         return mBinding.getRoot();

@@ -96,7 +96,7 @@
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/following"
+                            android:text="@string/followed_by"
                             app:fontFamily="@font/poppins_light"
                             android:includeFontPadding="false"
                             android:layout_marginTop="@dimen/_5sdp"
@@ -110,11 +110,11 @@
                         android:layout_weight="1"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvAccountEditProfile"
+                        android:id="@+id/tvAccountAddEvent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         tools:ignore="RtlCompat"
-                        android:text="@string/edit_profile"
+                        android:text="@string/add_event"
                         android:textSize="@dimen/_10ssp"
                         app:fontFamily="@font/poppins_medium"
                         android:includeFontPadding="false"
