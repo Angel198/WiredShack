@@ -1,6 +1,9 @@
 package com.jaylax.wiredshack;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,56 +13,138 @@ import android.widget.RadioGroup;
 import android.widget.TextClock;
 import android.widget.TextView;
 
+import com.jaylax.wiredshack.databinding.ActivityLoginBinding;
+import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
+import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.LoginResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
+import com.jaylax.wiredshack.utils.Commons;
+import com.jaylax.wiredshack.utils.SharedPref;
+
+import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
 
-    RadioGroup radioGroup;
-    RadioButton radioButton;
-    EditText username, password;
-    TextView login;
-    String _email,_password;
-    TextView forget_pass, register;
+    ActivityLoginBinding mBinding;
+    Context mContext;
+    ProgressDialog progressDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_login);
+        mContext = this;
 
-        radioGroup = (RadioGroup) findViewById(R.id.radioGroup);
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        login = (TextView) findViewById(R.id.text_login);
-        forget_pass = (TextView) findViewById(R.id.forget_pass);
-        register = (TextView) findViewById(R.id.text_register);
+        progressDialog = new ProgressDialog(mContext);
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-                int selectedId = radioGroup.getCheckedRadioButtonId();
-                radioButton = (RadioButton)findViewById(selectedId);
+        mBinding.textLogin.setOnClickListener(view -> {
+            String email = mBinding.username.getText().toString().trim();
+            String password = mBinding.password.getText().toString().trim();
 
-                _email = username.getText().toString();
-                _password = password.getText().toString();
+            RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
+            Commons.showToast(this, radioButton.getText().toString());
 
+            String userType = "0";
+            if (radioButton.getText().toString().equals("User")) {
+                userType = "1";
+            } else {
+                userType = "2";
             }
 
-        });
+             if (email.isEmpty()) {
+                Commons.showToast(mContext, getResources().getString(R.string.enter_email));
+            } else if (!Commons.isValidEmail(email)) {
+                Commons.showToast(mContext, getResources().getString(R.string.enter_valid_email));
+            } else if (password.isEmpty()) {
+                Commons.showToast(mContext, getResources().getString(R.string.enter_password));
+            } else {
+                if (Commons.isOnline(mContext)) {
+                    progressDialog.show();
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+                    params.put("password", password);
+                    params.put("user_type", userType);
 
-        forget_pass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,ForgetPasswordActivity.class);
-                startActivity(intent);
+                    ApiClient.create().login(params).enqueue(new Callback<LoginResponseModel>() {
+                        @Override
+                        public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200 && response.isSuccessful()) {
+                                if (response.body() != null){
+//                                    SharedPref.save(SharedPref.PREF_TOKEN,response.body().getAccessToken());
+//                                    getUserDetails();
+                                }else {
+                                    Commons.showToast(mContext,getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            } else {
+                                Commons.showToast(mContext,getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        }
+                    });
+                } else {
+                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                }
             }
         });
 
-        register.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this,RegistrationActivity.class);
-                startActivity(intent);
-            }
+        mBinding.forgetPass.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this,ForgetPasswordActivity.class);
+            startActivity(intent);
         });
 
+        mBinding.textRegister.setOnClickListener(v -> {
+            Intent intent = new Intent(LoginActivity.this,RegistrationActivity.class);
+            startActivity(intent);
+        });
+
+    }
+
+    private void getUserDetails() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            String header = "Bearer "+ SharedPref.get(SharedPref.PREF_TOKEN,"");
+            ApiClient.create().userDetails(header).enqueue(new Callback<UserDetailsModel>() {
+                @Override
+                public void onResponse(Call<UserDetailsModel> call, Response<UserDetailsModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null){
+                            Intent intent;
+                            /*if (finalUserType.equals("1")){
+                                intent = new Intent(mContext, DashboardActivity.class);
+                            }else {
+                                intent = new Intent(mContext, DashboardEventManagerActivity.class);
+                            }*/
+                            intent = new Intent(mContext, DashboardActivity.class);
+                            mContext.startActivity(intent);
+                            finishAffinity();
+                        }
+                    } else {
+                        Commons.showToast(mContext,getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<UserDetailsModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
     }
 }
