@@ -9,6 +9,7 @@ import java.util.HashMap;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 
@@ -20,6 +21,6 @@ public interface Api {
     @POST("api/auth/login")
     Call<LoginResponseModel> login(@Body HashMap<String,String> params);
 
-    @POST("api/auth/user")
+    @GET("api/auth/user")
     Call<UserDetailsModel> userDetails(@Header("Authorization") String authHeader);
 }

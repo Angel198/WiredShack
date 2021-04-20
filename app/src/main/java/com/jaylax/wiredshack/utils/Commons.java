@@ -3,9 +3,10 @@ package com.jaylax.wiredshack.utils;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.text.TextUtils;
 import android.util.Patterns;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class Commons {
     public static boolean isValidEmail(CharSequence target) {
@@ -26,5 +27,14 @@ public class Commons {
         else {
             return false;
         }
+    }
+
+    public static String convertObjectToString (Object obj){
+        return new Gson().toJson(obj);
+    }
+
+    public static <T> T convertStringToObject (Context context, String key , Class<T> className){
+        String sharePreValue = SharePref.getInstance(context).get(key,"").toString();
+        return new Gson().fromJson(sharePreValue,className);
     }
 }

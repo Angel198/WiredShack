@@ -34,6 +34,9 @@ public class UserDetailsModel {
     @SerializedName("updated_at")
     @Expose
     private String updatedAt;
+    @SerializedName("user_type")
+    @Expose
+    private String userType;
 
     public Integer getId() {
         return id;
@@ -113,6 +116,14 @@ public class UserDetailsModel {
 
     public void setUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
     }
 
 }

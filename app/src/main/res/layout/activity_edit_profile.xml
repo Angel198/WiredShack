@@ -59,12 +59,14 @@
             android:padding="@dimen/_12sdp">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgUserProfile"
                 android:layout_width="@dimen/_160sdp"
                 android:layout_height="@dimen/_160sdp"
-                android:src="@drawable/dummy"
+                android:src="@drawable/place_holder"
                 android:layout_gravity="center_horizontal"/>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvUserProfile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/change_profile_photo"
@@ -92,6 +94,7 @@
                     android:textSize="@dimen/_15ssp" />
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editUserName"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -125,6 +128,7 @@
                     android:textSize="@dimen/_15ssp" />
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editUserEmail"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -139,7 +143,8 @@
                     android:imeOptions="actionNext"
                     android:singleLine="true"
                     android:lines="1"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:editable="false"/>
             </LinearLayout>
 
             <LinearLayout
@@ -158,6 +163,7 @@
                     android:textSize="@dimen/_15ssp" />
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editUserPhone"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -172,7 +178,10 @@
                     android:imeOptions="actionNext"
                     android:singleLine="true"
                     android:lines="1"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:inputType="number"
+                    android:maxEms="10"
+                    android:maxLength="10"/>
             </LinearLayout>
 
             <LinearLayout
@@ -190,22 +199,44 @@
                     android:textColor="@color/colorHintTex"
                     android:textSize="@dimen/_15ssp" />
 
-                <androidx.appcompat.widget.AppCompatEditText
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:orientation="horizontal"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:textSize="@dimen/_15ssp"
-                    android:fontFamily="@font/poppins_medium"
-                    android:includeFontPadding="false"
-                    android:textColor="@color/white"
-                    android:textAlignment="viewEnd"
-                    android:text="Gender"
-                    android:gravity="end"
-                    android:imeOptions="actionNext"
-                    android:singleLine="true"
-                    android:lines="1"
-                    android:maxLines="1"/>
+                    android:gravity="end">
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioButtonMale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/white"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/male"
+                            android:textColor="@color/white"
+                            android:textSize="17sp" />
+
+                        <RadioButton
+                            android:id="@+id/radioButtonFemale"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="10dp"
+                            android:buttonTint="@color/white"
+                            android:checked="false"
+                            android:fontFamily="@font/poppins_medium"
+                            android:text="@string/female"
+                            android:textColor="@color/white"
+                            android:textSize="17sp" />
+
+                    </RadioGroup>
+
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -224,6 +255,7 @@
                     android:textSize="@dimen/_15ssp" />
 
                 <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/editUserBirthDate"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
@@ -233,12 +265,12 @@
                     android:includeFontPadding="false"
                     android:textColor="@color/white"
                     android:textAlignment="viewEnd"
-                    android:text="11/01/1111"
                     android:gravity="end"
                     android:imeOptions="actionNext"
                     android:singleLine="true"
                     android:lines="1"
-                    android:maxLines="1"/>
+                    android:maxLines="1"
+                    android:editable="false"/>
             </LinearLayout>
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

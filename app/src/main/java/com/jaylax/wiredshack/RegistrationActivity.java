@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
@@ -14,12 +15,14 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
 import com.jaylax.wiredshack.databinding.ActivityRegistrationBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.utils.Commons;
+import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.HashMap;
 
@@ -82,19 +85,21 @@ public class RegistrationActivity extends AppCompatActivity {
                         public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                             progressDialog.dismiss();
                             if (response.code() == 200 && response.isSuccessful()) {
-                                finish();
-                            } else {
-                                String msg = "";
-                                if (response.body() == null) {
-                                    getResources().getString(R.string.please_try_after_some_time);
-                                } else {
-                                    if (response.body().getMessage().isEmpty()) {
-                                        getResources().getString(R.string.please_try_after_some_time);
+                                if (response.body() != null) {
+                                    if (response.body().getStatus().equals("200")) {
+                                        finish();
                                     } else {
-                                        response.body().getMessage();
+                                        String msg = "";
+                                        if (response.body().getMessage().isEmpty()) {
+                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                                        } else {
+                                            msg = response.body().getMessage();
+                                        }
+                                        Commons.showToast(mContext, msg);
                                     }
                                 }
-                                Commons.showToast(mContext,msg);
+                            } else {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
                         }
 

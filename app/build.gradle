@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.jaylax.wiredshack"
-        minSdkVersion 16
+        minSdkVersion 19
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -56,5 +56,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.9.0'
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
+    /* glide */
+    implementation 'com.github.bumptech.glide:glide:4.12.0'
+
+    //ImagePicker
+    implementation 'com.github.dhaval2404:imagepicker:1.7.1'
 
 }
