@@ -5,21 +5,27 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
+import com.jaylax.wiredshack.LoginActivity;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.user.account.AccountFragment;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
 import com.jaylax.wiredshack.user.home.HomeFragment;
 import com.jaylax.wiredshack.user.notification.NotificationFragment;
 import com.jaylax.wiredshack.user.search.SearchFragment;
+import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
 
     ActivityDashboardBinding mBinding;
+    Context context;
 
     ArrayList<Integer> arySelect = new ArrayList<>();
     ArrayList<Integer> aryUnSelect = new ArrayList<>();
@@ -29,6 +35,8 @@ public class DashboardActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
+
+        context = this;
 
         arySelect.add(R.drawable.home_white);
         arySelect.add(R.drawable.search_white);
@@ -67,7 +75,12 @@ public class DashboardActivity extends AppCompatActivity {
                 } else if (tab.getPosition() == 2) {
                     replaceFragment(new NotificationFragment(), "Notification");
                 } else if (tab.getPosition() == 3) {
-                    replaceFragment(new AccountFragment(), "Account");
+                    if (SharePref.getInstance(context).get(SharePref.PREF_USER,"").toString().isEmpty()){
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        startActivity(intent);
+                    }else {
+                        replaceFragment(new AccountFragment(), "Account");
+                    }
                 }
             }
 

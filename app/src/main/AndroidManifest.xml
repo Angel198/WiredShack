@@ -27,7 +27,8 @@
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".EditProfileActivity"
-            android:theme="@style/BaseTheme.one" />
+            android:theme="@style/BaseTheme.one"
+            android:windowSoftInputMode="stateVisible|adjustResize"/>
         <activity
             android:name=".user.eventDetails.EventDetailsActivity"
             android:theme="@style/BaseTheme.one" />

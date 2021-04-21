@@ -9,6 +9,9 @@ import android.widget.RadioButton;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 import com.jaylax.wiredshack.databinding.ActivityLoginBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.model.LoginResponseModel;
@@ -39,68 +42,73 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(mContext);
 
         mBinding.textLogin.setOnClickListener(view -> {
-            String email = mBinding.username.getText().toString().trim();
-            String password = mBinding.password.getText().toString().trim();
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+                String token = instanceIdResult.getToken();
 
-            RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
+                String email = mBinding.username.getText().toString().trim();
+                String password = mBinding.password.getText().toString().trim();
 
-            String userType = "0";
-            if (radioButton.getText().toString().equals("User")) {
-                userType = "1";
-            } else {
-                userType = "2";
-            }
+                RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
 
-            if (email.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_email));
-            } else if (!Commons.isValidEmail(email)) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_valid_email));
-            } else if (password.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_password));
-            } else {
-                if (Commons.isOnline(mContext)) {
-                    progressDialog.show();
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("email", email);
-                    params.put("password", password);
-                    params.put("user_type", userType);
+                String userType = "0";
+                if (radioButton.getText().toString().equals("User")) {
+                    userType = "1";
+                } else {
+                    userType = "2";
+                }
 
-                    ApiClient.create().login(params).enqueue(new Callback<LoginResponseModel>() {
-                        @Override
-                        public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == 200 && response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    if (response.body().getStatus().equals("200")) {
-                                        SharePref.getInstance(mContext).save(SharePref.PREF_TOKEN, response.body().getAccessToken());
-                                        getUserDetails();
-                                    }else {
-                                        String msg = "";
-                                        if (response.body().getMessage().isEmpty()) {
-                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                if (email.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_email));
+                } else if (!Commons.isValidEmail(email)) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_valid_email));
+                } else if (password.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_password));
+                } else {
+                    if (Commons.isOnline(mContext)) {
+                        progressDialog.show();
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put("email", email);
+                        params.put("password", password);
+                        params.put("user_type", userType);
+                        params.put("device_token", token);
+
+                        ApiClient.create().login(params).enqueue(new Callback<LoginResponseModel>() {
+                            @Override
+                            public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+                                progressDialog.dismiss();
+                                if (response.code() == 200 && response.isSuccessful()) {
+                                    if (response.body() != null) {
+                                        if (response.body().getStatus().equals("200")) {
+                                            SharePref.getInstance(mContext).save(SharePref.PREF_TOKEN, response.body().getAccessToken());
+                                            getUserDetails();
                                         } else {
-                                            msg = response.body().getMessage();
+                                            String msg = "";
+                                            if (response.body().getMessage().isEmpty()) {
+                                                msg = getResources().getString(R.string.please_try_after_some_time);
+                                            } else {
+                                                msg = response.body().getMessage();
+                                            }
+                                            Commons.showToast(mContext, msg);
                                         }
-                                        Commons.showToast(mContext, msg);
+                                    } else {
+                                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                                     }
                                 } else {
                                     Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                                 }
-                            } else {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<LoginResponseModel> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                        }
-                    });
-                } else {
-                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                            @Override
+                            public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                            }
+                        });
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                    }
                 }
-            }
+            });
         });
 
         mBinding.forgetPass.setOnClickListener(v -> {

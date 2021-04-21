@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "744332136057",
+    "project_id": "wiredshack-772a0",
+    "storage_bucket": "wiredshack-772a0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:744332136057:android:8e87b68dac51a578aecea8",
+        "android_client_info": {
+          "package_name": "com.jaylax.wiredshack"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "744332136057-8iprfo1k4km4uj6gqcke45h4e8mle8bu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jaylax.wiredshack",
+            "certificate_hash": "817bc11ff61c271f341cb26d93c7cbb5693bfb0e"
+          }
+        },
+        {
+          "client_id": "744332136057-j1go9nmf5u1mqernbr1kch7l8cd1hqth.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCq7s5NllaaB_hdY1FOZ7DTMby_J-OZbEw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "744332136057-j1go9nmf5u1mqernbr1kch7l8cd1hqth.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

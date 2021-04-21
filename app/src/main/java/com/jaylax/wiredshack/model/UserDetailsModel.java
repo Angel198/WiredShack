@@ -28,6 +28,9 @@ public class UserDetailsModel {
     @SerializedName("image")
     @Expose
     private String image;
+    @SerializedName("cover_image")
+    @Expose
+    private String coverImage;
     @SerializedName("created_at")
     @Expose
     private String createdAt;
@@ -126,4 +129,11 @@ public class UserDetailsModel {
         this.userType = userType;
     }
 
+    public String getCoverImage() {
+        return coverImage;
+    }
+
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
+    }
 }

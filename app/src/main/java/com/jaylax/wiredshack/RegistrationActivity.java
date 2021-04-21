@@ -15,6 +15,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.gson.Gson;
 import com.jaylax.wiredshack.databinding.ActivityRegistrationBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
@@ -46,73 +47,80 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
         mBinding.textSignup.setOnClickListener(view -> {
-            String email = mBinding.userEmail.getText().toString().trim();
-            String name = mBinding.username.getText().toString().trim();
-            String password = mBinding.password.getText().toString().trim();
-            String confirmPass = mBinding.confirmPassword.getText().toString().trim();
+            FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this,instanceIdResult ->{
 
-            RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
-            String userType = "0";
-            if (radioButton.getText().toString().equals("User")) {
-                userType = "1";
-            } else {
-                userType = "2";
-            }
+                String token  = instanceIdResult.getToken();
+                Log.e("DeviceToken",token);
 
-            if (name.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_name));
-            } else if (email.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_email));
-            } else if (!Commons.isValidEmail(email)) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_valid_email));
-            } else if (password.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_password));
-            } else if (confirmPass.isEmpty()) {
-                Commons.showToast(mContext, getResources().getString(R.string.enter_confirm_password));
-            } else if (!password.equals(confirmPass)) {
-                Commons.showToast(mContext, getResources().getString(R.string.password_must_be_same));
-            } else {
-                if (Commons.isOnline(mContext)) {
-                    progressDialog.show();
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("email", mBinding.userEmail.getText().toString().trim());
-                    params.put("password", mBinding.confirmPassword.getText().toString().trim());
-                    params.put("name", mBinding.username.getText().toString().trim());
-                    params.put("user_type", userType);
+                String email = mBinding.userEmail.getText().toString().trim();
+                String name = mBinding.username.getText().toString().trim();
+                String password = mBinding.password.getText().toString().trim();
+                String confirmPass = mBinding.confirmPassword.getText().toString().trim();
 
-                    ApiClient.create().register(params).enqueue(new Callback<CommonResponseModel>() {
-                        @Override
-                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == 200 && response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    if (response.body().getStatus().equals("200")) {
-                                        finish();
-                                    } else {
-                                        String msg = "";
-                                        if (response.body().getMessage().isEmpty()) {
-                                            msg = getResources().getString(R.string.please_try_after_some_time);
-                                        } else {
-                                            msg = response.body().getMessage();
-                                        }
-                                        Commons.showToast(mContext, msg);
-                                    }
-                                }
-                            } else {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                        }
-                    });
+                RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
+                String userType = "0";
+                if (radioButton.getText().toString().equals("User")) {
+                    userType = "1";
                 } else {
-                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                    userType = "2";
                 }
-            }
+
+                if (name.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_name));
+                } else if (email.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_email));
+                } else if (!Commons.isValidEmail(email)) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_valid_email));
+                } else if (password.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_password));
+                } else if (confirmPass.isEmpty()) {
+                    Commons.showToast(mContext, getResources().getString(R.string.enter_confirm_password));
+                } else if (!password.equals(confirmPass)) {
+                    Commons.showToast(mContext, getResources().getString(R.string.password_must_be_same));
+                } else {
+                    if (Commons.isOnline(mContext)) {
+                        progressDialog.show();
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put("email", mBinding.userEmail.getText().toString().trim());
+                        params.put("password", mBinding.confirmPassword.getText().toString().trim());
+                        params.put("name", mBinding.username.getText().toString().trim());
+                        params.put("user_type", userType);
+                        params.put("device_token", token);
+
+                        ApiClient.create().register(params).enqueue(new Callback<CommonResponseModel>() {
+                            @Override
+                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                                progressDialog.dismiss();
+                                if (response.code() == 200 && response.isSuccessful()) {
+                                    if (response.body() != null) {
+                                        if (response.body().getStatus().equals("200")) {
+                                            finish();
+                                        } else {
+                                            String msg = "";
+                                            if (response.body().getMessage().isEmpty()) {
+                                                msg = getResources().getString(R.string.please_try_after_some_time);
+                                            } else {
+                                                msg = response.body().getMessage();
+                                            }
+                                            Commons.showToast(mContext, msg);
+                                        }
+                                    }
+                                } else {
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                            }
+                        });
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                    }
+                }
+            });
         });
     }
 

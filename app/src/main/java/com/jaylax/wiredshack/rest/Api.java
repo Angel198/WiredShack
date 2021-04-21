@@ -6,12 +6,17 @@ import com.jaylax.wiredshack.model.UserDetailsModel;
 
 import java.util.HashMap;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
 
 public interface Api {
 
@@ -23,4 +28,20 @@ public interface Api {
 
     @GET("api/auth/user")
     Call<UserDetailsModel> userDetails(@Header("Authorization") String authHeader);
+
+    @Multipart
+    @POST("api/auth/userprofile")
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params);
+
+    @Multipart
+    @POST("api/auth/userprofile")
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params, @Part MultipartBody.Part profile);
+
+    @Multipart
+    @POST("api/auth/userprofile")
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@Part MultipartBody.Part coverPhoto,@PartMap HashMap<String, RequestBody> params);
+
+    @Multipart
+    @POST("api/auth/userprofile")
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params,@Part MultipartBody.Part profile,@Part MultipartBody.Part coverPhoto);
 }

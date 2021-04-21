@@ -29,7 +29,7 @@
     <string name="write_comment">Write Comment ...</string>
     <string name="dummy_event_comment">Since the introduction of Virtual Game, it has been achieving great ... Read more</string>
     <string name="done">Done</string>
-    <string name="change_profile_photo">Change profile photo</string>
+    <string name="change_profile_photo">Change Profile\nPhoto</string>
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="phone">Phone</string>
@@ -61,4 +61,11 @@
     <string name="choose_image_from">Choose imge from</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="upload_cover_photo">Upload/Change Cover Photo</string>
+    <string name="enter_phone_number">Enter Phone Number</string>
+    <string name="enter_valid_phone_number">Enter valid phone number</string>
+    <string name="enter_dob">enter Date of Birth</string>
+    <string name="txt_no">No</string>
+    <string name="logout">Log Out</string>
+    <string name="logout_msg">Are you sure want to Logout?</string>
 </resources>

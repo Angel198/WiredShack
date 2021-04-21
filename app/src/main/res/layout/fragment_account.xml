@@ -29,9 +29,10 @@
                     android:layout_height="wrap_content">
                     
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgAccountCover"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         android:scaleType="centerCrop"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -39,7 +40,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgAccountLogin"
+                        android:id="@+id/imgAccountLogout"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:src="@drawable/logoutbutton"
@@ -57,11 +58,13 @@
                         android:padding="@dimen/_12sdp">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgAccountProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/dummy"/>
+                            android:src="@drawable/place_holder"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvAccountProfileName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="User Name"
@@ -135,7 +138,7 @@
                     android:layout_height="1dp"
                     android:background="@color/black"/>
 
-                <androidx.appcompat.widget.AppCompatTextView
+               <!-- <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/_12sdp"
@@ -154,7 +157,7 @@
                     app:fontFamily="@font/poppins_light"
                     android:includeFontPadding="false"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/_13ssp"/>
+                    android:textSize="@dimen/_13ssp"/>-->
 
 
                 <LinearLayout
