@@ -17,6 +17,8 @@ import com.jaylax.wiredshack.databinding.FragmentManagerEventDetailsBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentAdapter;
 
+import java.util.ArrayList;
+
 public class ManagerEventDetailsFragment extends Fragment {
 
     FragmentManagerEventDetailsBinding mBinding;
@@ -28,7 +30,7 @@ public class ManagerEventDetailsFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()),R.layout.fragment_manager_event_details,container,false);
 
         mBinding.recyclerEventUser.setLayoutManager(new GridLayoutManager(getActivity(),4));
-        mBinding.recyclerEventUser.setAdapter(new EventParticipateUserAdapter(false));
+        mBinding.recyclerEventUser.setAdapter(new EventImagesAdapter(getActivity(),false,new ArrayList<>()));
         mBinding.recyclerEventComment.setLayoutManager(new LinearLayoutManager(getActivity()));
         mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter());
 

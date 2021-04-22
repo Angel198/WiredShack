@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBlackText">
+        android:background="@color/colorBackHome">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
@@ -29,15 +29,24 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgCoverPhoto"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/back_gradient"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgBack"
@@ -59,18 +68,20 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgProfilePhoto"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/dummy" />
+                            android:src="@drawable/place_holder" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvManagerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:includeFontPadding="false"
                             android:text="User Name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_16ssp"
+                            android:textSize="@dimen/_14ssp"
                             app:fontFamily="@font/poppins_bold"
                             tools:ignore="RtlCompat" />
                     </LinearLayout>
@@ -91,6 +102,7 @@
                         android:layout_weight="1" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEventSave"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/back_border_white"
@@ -113,7 +125,7 @@
                     android:background="@color/black" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerEventUserEdit"
+                    android:id="@+id/recyclerEventImages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -139,6 +151,7 @@
                             app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editEventName"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
@@ -156,56 +169,57 @@
 
                     </TableRow>
 
-                    <TableRow
-                        android:layout_marginTop="@dimen/_10sdp">
+                    <TableRow android:layout_marginTop="@dimen/_10sdp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="start"
                             android:includeFontPadding="false"
                             android:text="@string/description"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            app:fontFamily="@font/poppins_light"
-                            android:layout_gravity="start"/>
+                            app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editEventDescription"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:background="@drawable/back_border_black"
                             android:fontFamily="@font/poppins_light"
+                            android:gravity="start"
                             android:includeFontPadding="false"
                             android:lines="4"
                             android:maxLines="4"
                             android:padding="@dimen/_5sdp"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            tools:ignore="RtlCompat"
-                            android:gravity="start"/>
+                            tools:ignore="RtlCompat" />
                     </TableRow>
 
-                    <TableRow
-                        android:layout_marginTop="@dimen/_10sdp">
+                    <TableRow android:layout_marginTop="@dimen/_10sdp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="start"
                             android:includeFontPadding="false"
                             android:text="@string/location"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            app:fontFamily="@font/poppins_light"
-                            android:layout_gravity="start"/>
+                            app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editEventLocation"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:background="@drawable/back_border_black"
                             android:fontFamily="@font/poppins_light"
+                            android:gravity="start"
                             android:imeOptions="actionNext"
                             android:includeFontPadding="false"
                             android:lines="3"
@@ -213,44 +227,43 @@
                             android:padding="@dimen/_5sdp"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            tools:ignore="RtlCompat"
-                            android:gravity="start"/>
+                            tools:ignore="RtlCompat" />
                     </TableRow>
 
-                    <TableRow
-                        android:layout_marginTop="@dimen/_10sdp">
+                    <TableRow android:layout_marginTop="@dimen/_10sdp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="start"
                             android:includeFontPadding="false"
                             android:text="@string/date"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            app:fontFamily="@font/poppins_light"
-                            android:layout_gravity="start"/>
+                            app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editEventDate"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:layout_weight="1"
                             android:background="@drawable/back_border_black"
+                            android:editable="false"
                             android:fontFamily="@font/poppins_light"
+                            android:gravity="start"
                             android:imeOptions="actionNext"
                             android:includeFontPadding="false"
                             android:lines="1"
                             android:maxLines="1"
-                            android:singleLine="true"
                             android:padding="@dimen/_5sdp"
+                            android:singleLine="true"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            tools:ignore="RtlCompat"
-                            android:gravity="start"/>
+                            tools:ignore="RtlCompat" />
                     </TableRow>
 
-                    <TableRow
-                        android:layout_marginTop="@dimen/_10sdp">
+                    <TableRow android:layout_marginTop="@dimen/_10sdp">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
@@ -271,10 +284,12 @@
                             tools:ignore="RtlCompat">
 
                             <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/editEventStartTime"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@drawable/back_border_black"
+                                android:editable="false"
                                 android:fontFamily="@font/poppins_light"
                                 android:imeOptions="actionNext"
                                 android:includeFontPadding="false"
@@ -288,19 +303,21 @@
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="@string/txt_to"
-                                app:fontFamily="@font/poppins_light"
-                                android:includeFontPadding="false"
-                                android:textSize="@dimen/_13ssp"
-                                android:textColor="@color/white"
                                 android:layout_marginStart="@dimen/_12sdp"
-                                android:layout_marginEnd="@dimen/_12sdp"/>
+                                android:layout_marginEnd="@dimen/_12sdp"
+                                android:includeFontPadding="false"
+                                android:text="@string/txt_to"
+                                android:textColor="@color/white"
+                                android:textSize="@dimen/_13ssp"
+                                app:fontFamily="@font/poppins_light" />
 
                             <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/editEventEndTime"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:background="@drawable/back_border_black"
+                                android:editable="false"
                                 android:fontFamily="@font/poppins_light"
                                 android:imeOptions="actionNext"
                                 android:includeFontPadding="false"

@@ -240,7 +240,6 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101) {
             if (resultCode == Activity.RESULT_OK) {
-//                mBinding.imgUserProfile.setImageURI(data.getData());
                 Glide.with(this).load(Uri.parse(data.getData().toString())).apply(options).into(mBinding.imgUserProfile);
                 profileImagePath = ImagePicker.Companion.getFilePath(data);
             }

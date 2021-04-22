@@ -6,7 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBlackText"
+        android:background="@color/colorBackHome"
         tools:context=".user.eventDetails.EventDetailsActivity">
 
         <androidx.core.widget.NestedScrollView
@@ -39,6 +39,15 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:background="@drawable/back_gradient"/>
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgBack"
                         android:layout_width="wrap_content"
@@ -70,7 +79,7 @@
                             android:includeFontPadding="false"
                             android:text="User Name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_16ssp"
+                            android:textSize="@dimen/_14ssp"
                             app:fontFamily="@font/poppins_bold"
                             tools:ignore="RtlCompat" />
                     </LinearLayout>

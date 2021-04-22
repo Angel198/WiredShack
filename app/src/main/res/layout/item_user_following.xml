@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingBottom="@dimen/_10sdp"
-        android:background="@color/colorBlackText">
+        android:background="@color/colorBackHome">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:layout_width="@dimen/_40sdp"

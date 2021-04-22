@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_3sdp">
 
         <View
-            android:id="@+id/imageAddEventUser"
+            android:id="@+id/imageAddEventImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_centerInParent="true"
@@ -20,13 +21,12 @@
             android:background="@drawable/back_round_black"/>
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageEventUserTrash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/imageAddEventUser"
-            app:layout_constraintEnd_toEndOf="@id/imageAddEventUser"
-            app:layout_constraintTop_toTopOf="@id/imageAddEventUser"
-            app:layout_constraintBottom_toBottomOf="@id/imageAddEventUser"
+            app:layout_constraintStart_toStartOf="@id/imageAddEventImage"
+            app:layout_constraintEnd_toEndOf="@id/imageAddEventImage"
+            app:layout_constraintTop_toTopOf="@id/imageAddEventImage"
+            app:layout_constraintBottom_toBottomOf="@id/imageAddEventImage"
             android:src="@drawable/plus"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

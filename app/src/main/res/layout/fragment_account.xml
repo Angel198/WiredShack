@@ -39,6 +39,15 @@
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:background="@drawable/back_gradient"/>
+
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgAccountLogout"
                         android:layout_width="wrap_content"
@@ -71,7 +80,7 @@
                             android:textColor="@color/white"
                             app:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
-                            android:textSize="@dimen/_16ssp"
+                            android:textSize="@dimen/_14ssp"
                             android:layout_marginStart="@dimen/_10sdp"
                             tools:ignore="RtlCompat" />
                     </LinearLayout>

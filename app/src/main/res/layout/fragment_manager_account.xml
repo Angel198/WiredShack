@@ -31,13 +31,21 @@
                         android:id="@+id/imgAccountCover"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         android:scaleType="centerCrop"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintBottom_toBottomOf="parent"/>
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintStart_toStartOf="@id/imgAccountCover"
+                        app:layout_constraintEnd_toEndOf="@id/imgAccountCover"
+                        app:layout_constraintTop_toTopOf="@id/imgAccountCover"
+                        app:layout_constraintBottom_toBottomOf="@id/imgAccountCover"
+                        android:background="@drawable/back_gradient"/>
                     <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/imgAccountLogout"
                         android:layout_width="wrap_content"
@@ -60,7 +68,7 @@
                             android:id="@+id/imgAccountProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/dummy"/>
+                            android:src="@drawable/place_holder"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvAccountProfileName"
@@ -70,7 +78,7 @@
                             android:textColor="@color/white"
                             app:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
-                            android:textSize="@dimen/_16ssp"
+                            android:textSize="@dimen/_14ssp"
                             android:layout_marginStart="@dimen/_10sdp"
                             tools:ignore="RtlCompat" />
                     </LinearLayout>

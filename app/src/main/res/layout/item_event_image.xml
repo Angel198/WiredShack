@@ -3,12 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintMain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/_3sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageEventUser"
+            android:id="@+id/imageEventImage"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_centerInParent="true"
@@ -25,19 +26,19 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="@drawable/back_black_tarns"
-            app:layout_constraintBottom_toBottomOf="@id/imageEventUser"
-            app:layout_constraintEnd_toEndOf="@id/imageEventUser"
-            app:layout_constraintStart_toStartOf="@id/imageEventUser"
-            app:layout_constraintTop_toTopOf="@id/imageEventUser" />
+            app:layout_constraintBottom_toBottomOf="@id/imageEventImage"
+            app:layout_constraintEnd_toEndOf="@id/imageEventImage"
+            app:layout_constraintStart_toStartOf="@id/imageEventImage"
+            app:layout_constraintTop_toTopOf="@id/imageEventImage" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageEventUserTrash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="@id/imageEventUser"
-            app:layout_constraintEnd_toEndOf="@id/imageEventUser"
-            app:layout_constraintTop_toTopOf="@id/imageEventUser"
-            app:layout_constraintBottom_toBottomOf="@id/imageEventUser"
+            app:layout_constraintStart_toStartOf="@id/imageEventImage"
+            app:layout_constraintEnd_toEndOf="@id/imageEventImage"
+            app:layout_constraintTop_toTopOf="@id/imageEventImage"
+            app:layout_constraintBottom_toBottomOf="@id/imageEventImage"
             android:src="@drawable/trash"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
