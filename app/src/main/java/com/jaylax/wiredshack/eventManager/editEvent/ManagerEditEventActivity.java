@@ -9,9 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.DatePicker;
-import android.widget.TimePicker;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -28,15 +26,26 @@ import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerEditEventBinding;
 import com.jaylax.wiredshack.eventManager.eventdetails.EventImagesAdapter;
+import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ManagerEditEventActivity extends AppCompatActivity {
 
@@ -145,11 +154,43 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         });
 
         mBinding.tvEventSave.setOnClickListener(view -> {
-            Date sDate = selectedStartTimeCal.getTime();
-            Date eDate = selectedEndTimeCal.getTime();
+            String eventName = mBinding.editEventName.getText().toString().trim();
+            String eventDescription = mBinding.editEventDescription.getText().toString().trim();
+            String eventLocation = mBinding.editEventLocation.getText().toString().trim();
+            String eventDate = mBinding.editEventDate.getText().toString().trim();
 
-            if (sDate.after(eDate)) {
-                Commons.showToast(context, "Start date must be before end date.");
+            boolean isValid = false;
+
+            if (eventName.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_name));
+            } else if (eventDescription.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_description));
+            } else if (eventLocation.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_location));
+            } else if (eventDate.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_date));
+            } else if (selectedStartTimeCal == null) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_start_time));
+            } else if (selectedEndTimeCal == null) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_end_time));
+            } else {
+                Date sDate = selectedStartTimeCal.getTime();
+                Date eDate = selectedEndTimeCal.getTime();
+
+                if (sDate.after(eDate)) {
+                    Commons.showToast(context, getResources().getString(R.string.start_end_time_not_valid_msg));
+                } else {
+                    isValid = true;
+                }
+            }
+
+            if (isValid) {
+                String myFormat = "HH:mm"; //In which you need put here
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                String startTime = sdf.format(selectedStartTimeCal.getTime());
+                String endTime = sdf.format(selectedEndTimeCal.getTime());
+
+                addEditEvent(eventName, eventDescription, eventLocation, eventDate, startTime, endTime);
             }
         });
     }
@@ -177,10 +218,68 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101) {
             if (resultCode == Activity.RESULT_OK) {
-                imageList.add(new EventImageModel("", "", Uri.parse(data.getData().toString())));
+                imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
                 imagesAdapter.notifyDataSetChanged();
             }
         }
     }
 
+    private void addEditEvent(String eventName, String eventDescription, String eventLocation, String eventDate, String startTime, String endTime) {
+        if (Commons.isOnline(context)) {
+            ArrayList<MultipartBody.Part> imagesMultiPart = new ArrayList<>();
+            for (EventImageModel data : imageList) {
+                if (data.getImageURL().isEmpty() && !data.getImagePath().isEmpty()) {
+                    File imageFile = new File(data.getImagePath());
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                    imagesMultiPart.add(MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody));
+                }
+            }
+
+            HashMap<String, RequestBody> params = new HashMap<>();
+            params.put("name", RequestBody.create(MultipartBody.FORM, userDetailsModel.getName()));
+            params.put("event_name", RequestBody.create(MultipartBody.FORM, eventName));
+            params.put("description", RequestBody.create(MultipartBody.FORM, eventDescription));
+            params.put("edate", RequestBody.create(MultipartBody.FORM, eventDate));
+            params.put("location", RequestBody.create(MultipartBody.FORM, eventLocation));
+            params.put("stime", RequestBody.create(MultipartBody.FORM, startTime));
+            params.put("etime", RequestBody.create(MultipartBody.FORM, endTime));
+            params.put("event_id", RequestBody.create(MultipartBody.FORM, ""));
+
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+
+            progressDialog.show();
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                finish();
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(context, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+
+        } else {
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+        }
+    }
 }

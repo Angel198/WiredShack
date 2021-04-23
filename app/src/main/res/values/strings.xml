@@ -68,4 +68,12 @@
     <string name="txt_no">No</string>
     <string name="logout">Log Out</string>
     <string name="logout_msg">Are you sure want to Logout?</string>
+    <string name="enter_event_name">Enter Event Name</string>
+    <string name="enter_event_description">Enter Event Descriptions</string>
+    <string name="enter_event_location">Enter Event Location</string>
+    <string name="enter_event_date">Enter Event Date</string>
+    <string name="enter_event_start_time">Enter Event Start Time</string>
+    <string name="enter_event_end_time">Enter Event End Date</string>
+    <string name="start_end_time_not_valid_msg">Event Start Time must be before Event End Time</string>
+    <string name="enter_comment">Enter Comment</string>
 </resources>

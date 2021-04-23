@@ -4,6 +4,7 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import okhttp3.MultipartBody;
@@ -21,27 +22,40 @@ import retrofit2.http.PartMap;
 public interface Api {
 
     @POST("api/auth/register")
-    Call<CommonResponseModel> register(@Body HashMap<String,String> params);
+    Call<CommonResponseModel> register(@Body HashMap<String, String> params);
 
     @POST("api/auth/login")
-    Call<LoginResponseModel> login(@Body HashMap<String,String> params);
+    Call<LoginResponseModel> login(@Body HashMap<String, String> params);
 
     @GET("api/auth/user")
     Call<UserDetailsModel> userDetails(@Header("Authorization") String authHeader);
 
     @Multipart
     @POST("api/auth/userprofile")
-    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params);
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params);
 
     @Multipart
     @POST("api/auth/userprofile")
-    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params, @Part MultipartBody.Part profile);
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part MultipartBody.Part profile);
 
     @Multipart
     @POST("api/auth/userprofile")
-    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@Part MultipartBody.Part coverPhoto,@PartMap HashMap<String, RequestBody> params);
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader, @Part MultipartBody.Part coverPhoto, @PartMap HashMap<String, RequestBody> params);
 
     @Multipart
     @POST("api/auth/userprofile")
-    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader,@PartMap HashMap<String, RequestBody> params,@Part MultipartBody.Part profile,@Part MultipartBody.Part coverPhoto);
+    Call<CommonResponseModel> updateProfile(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part MultipartBody.Part profile, @Part MultipartBody.Part coverPhoto);
+
+    @Multipart
+    @POST("api/auth/addUpdateEvent")
+    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images);
+
+    @POST("api/auth/comment")
+    Call<CommonResponseModel> sendComment(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/like")
+    Call<CommonResponseModel> likeEvent(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/follow")
+    Call<CommonResponseModel> followEventManager(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 }

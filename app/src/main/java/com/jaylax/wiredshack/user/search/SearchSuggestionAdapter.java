@@ -1,6 +1,7 @@
 package com.jaylax.wiredshack.user.search;
 
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,11 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemSearchSuggestionBinding;
 
 public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggestionAdapter.MyViewHolder> {
-    public SearchSuggestionAdapter() {
+
+    EventMangerClick listener;
+
+    public SearchSuggestionAdapter(EventMangerClick listener) {
+        this.listener = listener;
     }
 
     @NonNull
@@ -39,7 +44,13 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
         }
 
         public void bind() {
-
+            mBinding.tvFollow.setOnClickListener(view -> {
+                listener.onFollow();
+            });
         }
+    }
+
+    public interface EventMangerClick{
+        void onFollow();
     }
 }

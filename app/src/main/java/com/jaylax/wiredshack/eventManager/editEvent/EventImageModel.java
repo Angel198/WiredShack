@@ -3,13 +3,22 @@ package com.jaylax.wiredshack.eventManager.editEvent;
 import android.net.Uri;
 
 public class EventImageModel {
-    String imageURL, imageId ;
+    String imageURL, imageId , imagePath;
     Uri uri;
 
-    public EventImageModel(String imageURL, String imageId, Uri uri) {
+    public EventImageModel(String imageURL, String imageId, String imagePath, Uri uri) {
         this.imageURL = imageURL;
         this.imageId = imageId;
+        this.imagePath = imagePath;
         this.uri = uri;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
     public String getImageURL() {
