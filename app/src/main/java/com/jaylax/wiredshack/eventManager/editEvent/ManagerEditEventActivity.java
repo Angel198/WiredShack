@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.DatePicker;
 
 import androidx.annotation.Nullable;
@@ -22,6 +23,10 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerEditEventBinding;
@@ -35,9 +40,11 @@ import com.jaylax.wiredshack.utils.SharePref;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 
 import okhttp3.MediaType;
@@ -60,12 +67,16 @@ public class ManagerEditEventActivity extends AppCompatActivity {
     Calendar selectedStartTimeCal = null;
     Calendar selectedEndTimeCal = null;
 
+    Place place = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_manager_edit_event);
         context = this;
         progressDialog = new ProgressDialog(context);
+
+        Places.initialize(getApplicationContext(), getResources().getString(R.string.google_place_key));
 
         setClickListener();
 
@@ -193,6 +204,11 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 addEditEvent(eventName, eventDescription, eventLocation, eventDate, startTime, endTime);
             }
         });
+
+        /*mBinding.editEventLocation.setOnClickListener(view -> {
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)).build(context);
+            startActivityForResult(intent, 102);
+        });*/
     }
 
     private void showImagePickerAlert() {
@@ -220,6 +236,11 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             if (resultCode == Activity.RESULT_OK) {
                 imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
                 imagesAdapter.notifyDataSetChanged();
+            }
+        } else if (requestCode == 102) {
+            if (resultCode == Activity.RESULT_OK && data != null){
+                place = Autocomplete.getPlaceFromIntent(data);
+                mBinding.editEventLocation.setText(place.getAddress() == null? "": place.getAddress());
             }
         }
     }

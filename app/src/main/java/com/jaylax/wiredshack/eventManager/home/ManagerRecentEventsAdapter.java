@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
-import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 
 public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRecentEventsAdapter.MyViewHolder> {
     public ManagerRecentEventsAdapter() {

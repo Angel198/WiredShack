@@ -3,6 +3,8 @@ package com.jaylax.wiredshack.rest;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
+import com.jaylax.wiredshack.user.home.RecentEventMainModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -58,4 +60,11 @@ public interface Api {
 
     @POST("api/auth/follow")
     Call<CommonResponseModel> followEventManager(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @GET("api/auth/recentevent")
+    Call<RecentEventMainModel> getRecentEventsUser(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/geteventdetails")
+    Call<EventDetailsMainModel> getEventDetails(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
 }

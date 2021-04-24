@@ -84,6 +84,12 @@
                         android:layout_marginEnd="@dimen/_7sdp"
                         android:layout_alignParentEnd="true" />
                 </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/linearHomeRecentEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -114,7 +120,9 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_10sdp"
                     android:paddingRight="@dimen/_3sdp"
-                    android:paddingLeft="@dimen/_10sdp" />
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:visibility="gone"/>
+                </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

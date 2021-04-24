@@ -30,9 +30,11 @@ import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
+import com.jaylax.wiredshack.user.home.RecentEventMainModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -60,7 +62,9 @@ public class AccountFragment extends Fragment {
         progressDialog = new ProgressDialog(mContext);
 
         mBinding.recyclerAccountFollowingEvents.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        mBinding.recyclerAccountFollowingEvents.setAdapter(new HomeRecentEventAdapter());
+        mBinding.recyclerAccountFollowingEvents.setAdapter(new HomeRecentEventAdapter(mContext, new ArrayList<>(), data -> {
+
+        }));
 
         mBinding.tvAccountEditProfile.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);

@@ -30,10 +30,11 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgEventCover"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -68,16 +69,18 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgEventProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/dummy" />
+                            android:src="@drawable/place_holder" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventManagerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:includeFontPadding="false"
-                            android:text="User Name"
+                            tools:text="User Name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_14ssp"
                             app:fontFamily="@font/poppins_bold"
@@ -99,19 +102,20 @@
                             android:drawableLeft="@drawable/heart"
                             android:drawablePadding="@dimen/_5sdp"
                             android:includeFontPadding="false"
-                            android:text="1122"
+                            tools:text="1122"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
                             app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventComment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:drawableLeft="@drawable/comment"
                             android:drawablePadding="@dimen/_5sdp"
                             android:includeFontPadding="false"
-                            android:text="348"
+                            tools:text="348"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
                             app:fontFamily="@font/poppins_light"
@@ -127,10 +131,11 @@
                     android:padding="@dimen/_12sdp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEventDateName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
-                        android:text="31st December DJ Party"
+                        tools:text="31st December DJ Party"
                         android:textColor="@color/white"
                         app:fontFamily="@font/poppins_light" />
 
@@ -162,37 +167,40 @@
                     android:background="@color/black" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_description"
+                    tools:text="@string/dummy_event_description"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light" />
 
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_time"
+                    tools:text="@string/dummy_event_time"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_location"
+                    tools:text="@string/dummy_event_location"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light" />

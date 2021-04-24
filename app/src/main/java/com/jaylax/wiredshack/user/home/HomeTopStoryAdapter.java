@@ -49,6 +49,7 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra("eventId","9");
                     context.startActivity(intent);
                 }
             });

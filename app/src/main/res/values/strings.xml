@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">WiredShack</string>
     <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="google_place_key" translatable="false">AIzaSyBEB2zJn18Cv4Djrmn8sEgbGgLa_2EKKdE</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="upcoming_live_stream">Upcoming\nLive Stream</string>
     <string name="recent_event">Recent Event</string>
@@ -25,7 +27,9 @@
     <string name="request_for_live_streaming">Request for\nLive Streaming</string>
     <string name="dummy_event_description">As conscious traveling Paupers we must always be concerned about our dear Mother Earth.</string>
     <string name="dummy_event_time">Event Time : 10:00 PM to 12:00 AM</string>
+    <string name="event_time">Event Time : %1s to %2s</string>
     <string name="dummy_event_location">Event Location : Karnavati Club</string>
+    <string name="event_location">Event Location : %1s</string>
     <string name="write_comment">Write Comment ...</string>
     <string name="dummy_event_comment">Since the introduction of Virtual Game, it has been achieving great ... Read more</string>
     <string name="done">Done</string>
