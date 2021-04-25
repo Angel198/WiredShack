@@ -14,7 +14,7 @@
             android:layout_height="0dp"
             android:fillViewport="true"
             android:overScrollMode="never"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/linearEventComment"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:paddingBottom="@dimen/_25sdp">
+                android:paddingBottom="@dimen/_10sdp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
@@ -74,17 +74,38 @@
                             android:layout_height="@dimen/_80sdp"
                             android:src="@drawable/place_holder" />
 
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            >
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvEventManagerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_10sdp"
                             android:includeFontPadding="false"
                             tools:text="User Name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_14ssp"
                             app:fontFamily="@font/poppins_bold"
                             tools:ignore="RtlCompat" />
+
+                            <androidx.appcompat.widget.AppCompatTextView
+                                android:id="@+id/tvFollow"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/back_follow"
+                                android:text="@string/follow"
+                                android:paddingStart="@dimen/_8sdp"
+                                android:paddingEnd="@dimen/_8sdp"
+                                android:paddingTop="@dimen/_2sdp"
+                                android:paddingBottom="@dimen/_2sdp"
+                                app:fontFamily="@font/poppins_medium"
+                                android:textColor="@color/white"
+                                android:includeFontPadding="false"
+                                android:layout_marginTop="@dimen/_5sdp"/>
+                        </LinearLayout>
                     </LinearLayout>
 
                     <LinearLayout
@@ -220,6 +241,7 @@
         </androidx.core.widget.NestedScrollView>
 
         <LinearLayout
+            android:id="@+id/linearEventComment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"

@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.user.home;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,6 +67,17 @@ public class RecentEventMainModel {
         @SerializedName("created_at")
         @Expose
         private String createdAt;
+        @SerializedName("images")
+        @Expose
+        private ArrayList<EventImage> images = new ArrayList<>();
+
+        public ArrayList<EventImage> getImages() {
+            return images;
+        }
+
+        public void setImages(ArrayList<EventImage> images) {
+            this.images = images;
+        }
 
         public String getId() {
             return id;
@@ -153,6 +165,31 @@ public class RecentEventMainModel {
 
         public void setCreatedAt(String createdAt) {
             this.createdAt = createdAt;
+        }
+
+        class EventImage {
+            @SerializedName("images")
+            @Expose
+            private String images;
+            @SerializedName("id")
+            @Expose
+            private String id;
+
+            public String getImages() {
+                return images;
+            }
+
+            public void setImages(String images) {
+                this.images = images;
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
         }
     }
 }

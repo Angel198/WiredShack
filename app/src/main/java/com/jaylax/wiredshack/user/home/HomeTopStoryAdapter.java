@@ -10,14 +10,26 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemHomeTopStoryBinding;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 
+import java.util.ArrayList;
+
 public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapter.MyViewHolder> {
     Context context;
-    public HomeTopStoryAdapter(Context context) {
+    ArrayList<ManagerListMainModel.ManagerListData> list;
+    ManagerClick listener;
+
+    public HomeTopStoryAdapter(Context context, ArrayList<ManagerListMainModel.ManagerListData> list, ManagerClick listener) {
         this.context = context;
+        this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -28,12 +40,12 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind();
+        holder.bind(position,list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return list.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -44,15 +56,20 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
             this.mBinding = itemView;
         }
 
-        public void bind() {
-            mBinding.constraintMain.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(context, EventDetailsActivity.class);
-                    intent.putExtra("eventId","9");
-                    context.startActivity(intent);
-                }
+        public void bind(int position, ManagerListMainModel.ManagerListData data) {
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(),new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
+            Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgHomeManagerProfile);
+            Glide.with(context).load(data.getManagerCoverImage() == null ? "" : data.getManagerCoverImage()).apply(options).into(mBinding.imgItemHomeManagerCover);
+
+            mBinding.tvHomeManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
+
+            mBinding.constraintMain.setOnClickListener(view -> {
+                listener.onManagerClick(data);
             });
         }
+    }
+
+    interface ManagerClick{
+        void onManagerClick(ManagerListMainModel.ManagerListData data);
     }
 }

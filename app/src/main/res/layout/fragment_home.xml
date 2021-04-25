@@ -41,7 +41,7 @@
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerHomeTopStory"
+                    android:id="@+id/recyclerHomeManager"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
@@ -120,8 +120,7 @@
                     android:paddingTop="@dimen/_10sdp"
                     android:paddingBottom="@dimen/_10sdp"
                     android:paddingRight="@dimen/_3sdp"
-                    android:paddingLeft="@dimen/_10sdp"
-                    android:visibility="gone"/>
+                    android:paddingLeft="@dimen/_10sdp" />
                 </LinearLayout>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>

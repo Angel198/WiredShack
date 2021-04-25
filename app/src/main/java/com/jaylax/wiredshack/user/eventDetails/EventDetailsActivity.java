@@ -120,41 +120,43 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Commons.showToast(mContext, getResources().getString(R.string.enter_comment));
             } else {
                 if (Commons.isOnline(mContext)) {
-                    progressDialog.show();
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("event_id", eventId);
-                    params.put("comment", mBinding.editEventComment.getText().toString().trim());
+                    if (!SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                        progressDialog.show();
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put("event_id", eventId);
+                        params.put("comment", mBinding.editEventComment.getText().toString().trim());
 
-                    String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-                    ApiClient.create().sendComment(header, params).enqueue(new Callback<CommonResponseModel>() {
-                        @Override
-                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                            progressDialog.dismiss();
-                            if (response.code() == 200 && response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    if (response.body().getStatus().equals("200")) {
-                                        mBinding.editEventComment.setText("");
-                                    } else {
-                                        String msg = "";
-                                        if (response.body().getMessage().isEmpty()) {
-                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                        String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                        ApiClient.create().sendComment(header, params).enqueue(new Callback<CommonResponseModel>() {
+                            @Override
+                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                                progressDialog.dismiss();
+                                if (response.code() == 200 && response.isSuccessful()) {
+                                    if (response.body() != null) {
+                                        if (response.body().getStatus().equals("200")) {
+                                            mBinding.editEventComment.setText("");
                                         } else {
-                                            msg = response.body().getMessage();
+                                            String msg = "";
+                                            if (response.body().getMessage().isEmpty()) {
+                                                msg = getResources().getString(R.string.please_try_after_some_time);
+                                            } else {
+                                                msg = response.body().getMessage();
+                                            }
+                                            Commons.showToast(mContext, msg);
                                         }
-                                        Commons.showToast(mContext, msg);
                                     }
+                                } else {
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                                 }
-                            } else {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
-                        }
 
-                        @Override
-                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                            progressDialog.dismiss();
-                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                        }
-                    });
+                            @Override
+                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                            }
+                        });
+                    }
                 } else {
                     Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
                 }
@@ -199,6 +201,50 @@ public class EventDetailsActivity extends AppCompatActivity {
                 }
             } else {
                 Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+            }
+        });
+
+        mBinding.tvFollow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (Commons.isOnline(mContext)) {
+                    if (!SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                        progressDialog.show();
+                        HashMap<String, String> params = new HashMap<>();
+                        params.put("event_id", eventId);
+
+                        String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                        ApiClient.create().followEventManager(header, params).enqueue(new Callback<CommonResponseModel>() {
+                            @Override
+                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                                progressDialog.dismiss();
+                                if (response.code() == 200 && response.isSuccessful()) {
+                                    if (response.body() != null) {
+                                        if (!response.body().getStatus().equals("200")) {
+                                            String msg = "";
+                                            if (response.body().getMessage().isEmpty()) {
+                                                msg = getResources().getString(R.string.please_try_after_some_time);
+                                            } else {
+                                                msg = response.body().getMessage();
+                                            }
+                                            Commons.showToast(mContext, msg);
+                                        }
+                                    }
+                                } else {
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                                progressDialog.dismiss();
+                                Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                            }
+                        });
+                    }
+                } else {
+                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                }
             }
         });
     }

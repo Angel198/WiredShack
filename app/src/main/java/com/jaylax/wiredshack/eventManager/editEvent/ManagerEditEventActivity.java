@@ -172,11 +172,13 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
             boolean isValid = false;
 
-            if (eventName.isEmpty()) {
+            if (imageList.isEmpty()){
+                Commons.showToast(context, getResources().getString(R.string.add_atleast_one_image));
+            }else if (eventName.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_name));
             } else if (eventDescription.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_description));
-            } else if (eventLocation.isEmpty()) {
+            } else if (eventLocation.isEmpty() || place == null) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_location));
             } else if (eventDate.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_date));
@@ -205,10 +207,10 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             }
         });
 
-        /*mBinding.editEventLocation.setOnClickListener(view -> {
+        mBinding.editEventLocation.setOnClickListener(view -> {
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)).build(context);
             startActivityForResult(intent, 102);
-        });*/
+        });
     }
 
     private void showImagePickerAlert() {
@@ -240,7 +242,11 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         } else if (requestCode == 102) {
             if (resultCode == Activity.RESULT_OK && data != null){
                 place = Autocomplete.getPlaceFromIntent(data);
-                mBinding.editEventLocation.setText(place.getAddress() == null? "": place.getAddress());
+
+                String placeName = place.getName() == null ? "N/A" : place.getName();
+                String placeAddress = place.getAddress() == null ? "N/A" : place.getAddress();
+                String address = placeName + ", "+ placeAddress;
+                mBinding.editEventLocation.setText(address);
             }
         }
     }
@@ -265,6 +271,8 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             params.put("stime", RequestBody.create(MultipartBody.FORM, startTime));
             params.put("etime", RequestBody.create(MultipartBody.FORM, endTime));
             params.put("event_id", RequestBody.create(MultipartBody.FORM, ""));
+            params.put("latitude", RequestBody.create(MultipartBody.FORM, String.valueOf(place.getLatLng().latitude)));
+            params.put("longitude", RequestBody.create(MultipartBody.FORM, String.valueOf(place.getLatLng().longitude)));
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 

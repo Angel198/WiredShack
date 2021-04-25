@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentHomeBinding;
+import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
@@ -51,17 +52,59 @@ public class HomeFragment extends Fragment {
 
 //        getEventList();
 
-        mBinding.recyclerHomeTopStory.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        mBinding.recyclerHomeTopStory.setAdapter(new HomeTopStoryAdapter(getActivity()));
-
-        mBinding.recyclerHomeRecentEvent.setLayoutManager(new GridLayoutManager(getActivity(),3));
         return mBinding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        getEventList();
+        getEventManagerList();
+    }
+    private void getEventManagerList(){
+        if (Commons.isOnline(context)){
+            progressDialog.show();
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().getEventsManager(header).enqueue(new Callback<ManagerListMainModel>() {
+                @Override
+                public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
+                    progressDialog.dismiss();
+                    getEventList();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            setEventManagerData(response.body().getData());
+                            if (!response.body().getStatus().equals("200")){
+                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }else {
+                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ManagerListMainModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    getEventList();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        }else {
+            Commons.showToast(context, context.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
+        if (list.isEmpty()){
+            mBinding.recyclerHomeManager.setVisibility(View.GONE);
+        }else {
+            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
+            mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            mBinding.recyclerHomeManager.setAdapter(new HomeTopStoryAdapter(context, list, data -> {
+
+            }));
+        }
     }
 
     private void getEventList() {
@@ -102,6 +145,7 @@ public class HomeFragment extends Fragment {
             mBinding.linearHomeRecentEvent.setVisibility(View.GONE);
         }else {
             mBinding.linearHomeRecentEvent.setVisibility(View.VISIBLE);
+            mBinding.recyclerHomeRecentEvent.setLayoutManager(new GridLayoutManager(getActivity(),3));
             mBinding.recyclerHomeRecentEvent.setAdapter(new HomeRecentEventAdapter(context, list, data -> {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("eventId",data.getId());

@@ -227,7 +227,8 @@
                             android:padding="@dimen/_5sdp"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
-                            tools:ignore="RtlCompat"/>
+                            tools:ignore="RtlCompat"
+                            android:editable="false"/>
                     </TableRow>
 
                     <TableRow android:layout_marginTop="@dimen/_10sdp">

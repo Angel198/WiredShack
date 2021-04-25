@@ -56,9 +56,16 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
 
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
-            Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgEventProfile);
+            String imageUrl = "";
+            if (data.getImages().isEmpty()){
+                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
+            }else {
+                imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
+            }
 
-            mBinding.tvEventManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
+            Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);
+
+            mBinding.tvEventManagerName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
             mBinding.constraintEvent.setOnClickListener(view -> {
                 listener.onEventClick(data);
             });
