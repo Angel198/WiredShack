@@ -258,7 +258,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 if (data.getImageURL().isEmpty() && !data.getImagePath().isEmpty()) {
                     File imageFile = new File(data.getImagePath());
                     RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
-                    imagesMultiPart.add(MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody));
+                    imagesMultiPart.add(MultipartBody.Part.createFormData("image[]", imageFile.getName(), requestBody));
                 }
             }
 

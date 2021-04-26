@@ -3,6 +3,7 @@ package com.jaylax.wiredshack.rest;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.user.eventDetails.EventCommentMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.user.home.RecentEventMainModel;
@@ -71,5 +72,11 @@ public interface Api {
 
     @POST("api/auth/geteventdetails")
     Call<EventDetailsMainModel> getEventDetails(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/geteventdetailslist")
+    Call<EventDetailsMainModel> getEventDetailsGuest(@Body HashMap<String, String> params);
+
+    @POST("api/auth/getcomment")
+    Call<EventCommentMainModel> getEventComments(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
 }

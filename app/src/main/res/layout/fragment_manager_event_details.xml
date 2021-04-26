@@ -41,11 +41,12 @@
                     <View
                         android:layout_width="0dp"
                         android:layout_height="0dp"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="@drawable/back_gradient"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        android:background="@drawable/back_gradient"/>
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -115,12 +116,16 @@
                     android:padding="@dimen/_12sdp">
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEventDateName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:drawableStart="@drawable/ic_date"
+                        android:drawablePadding="@dimen/_3sdp"
                         android:includeFontPadding="false"
                         android:text="31st December DJ Party"
                         android:textColor="@color/white"
-                        app:fontFamily="@font/poppins_light" />
+                        android:textSize="@dimen/_13ssp"
+                        app:fontFamily="@font/poppins_medium" />
 
                     <View
                         android:layout_width="0dp"
@@ -154,8 +159,8 @@
                     android:id="@+id/recyclerEventUser"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/_8sdp"
-                    android:clipToPadding="false"/>
+                    android:clipToPadding="false"
+                    android:padding="@dimen/_8sdp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:layout_width="match_parent"
@@ -171,27 +176,34 @@
 
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventTime"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_time"
+                    android:drawablePadding="@dimen/_5sdp"
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_time"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
-                    app:fontFamily="@font/poppins_light" />
+                    app:fontFamily="@font/poppins_light"
+                    android:text="@string/dummy_event_time" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventLocation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:drawableStart="@drawable/ic_location"
+                    android:drawablePadding="@dimen/_5sdp"
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_location"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
-                    app:fontFamily="@font/poppins_light" />
+                    app:fontFamily="@font/poppins_light"
+                    android:text="@string/dummy_event_location" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerEventComment"
@@ -203,7 +215,7 @@
                     android:overScrollMode="never"
                     android:padding="@dimen/_12sdp"
                     tools:itemCount="5"
-                    tools:listitem="@layout/item_event_comment"/>
+                    tools:listitem="@layout/item_event_comment" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

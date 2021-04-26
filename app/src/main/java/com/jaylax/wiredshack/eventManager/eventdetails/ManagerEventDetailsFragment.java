@@ -52,7 +52,7 @@ public class ManagerEventDetailsFragment extends Fragment {
         mBinding.recyclerEventUser.setLayoutManager(new GridLayoutManager(getActivity(),4));
         mBinding.recyclerEventUser.setAdapter(new EventImagesAdapter(getActivity(),false,new ArrayList<>()));
         mBinding.recyclerEventComment.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter());
+        mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter(context,new ArrayList<>()));
 
         return mBinding.getRoot();
     }

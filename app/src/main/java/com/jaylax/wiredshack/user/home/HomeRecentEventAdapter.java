@@ -58,9 +58,9 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
             String imageUrl = "";
             if (data.getImages().isEmpty()){
-                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
-            }else {
                 imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
+            }else {
+                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
             }
 
             Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);

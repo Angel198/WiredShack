@@ -81,6 +81,9 @@ public class EventDetailsMainModel {
         @SerializedName("likes")
         @Expose
         private String likes;
+        @SerializedName("likes_count")
+        @Expose
+        private String likesCount;
         @SerializedName("follows")
         @Expose
         private String follows;
@@ -222,6 +225,14 @@ public class EventDetailsMainModel {
 
         public void setLikes(String likes) {
             this.likes = likes;
+        }
+
+        public String getLikesCount() {
+            return likesCount;
+        }
+
+        public void setLikesCount(String likesCount) {
+            this.likesCount = likesCount;
         }
 
         public String getFollows() {
