@@ -81,4 +81,5 @@
     <string name="start_end_time_not_valid_msg">Event Start Time must be before Event End Time</string>
     <string name="enter_comment">Enter Comment</string>
     <string name="add_atleast_one_image">Add atleast one image</string>
+    <string name="unfollow">Unfollow</string>
 </resources>

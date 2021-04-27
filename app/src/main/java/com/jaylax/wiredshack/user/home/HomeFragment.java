@@ -19,6 +19,7 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
+import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -102,7 +103,9 @@ public class HomeFragment extends Fragment {
             mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             mBinding.recyclerHomeManager.setAdapter(new HomeTopStoryAdapter(context, list, data -> {
-
+                /*Intent intent = new Intent(context, ManagerDetailsActivity.class);
+                intent.putExtra("managerId",data.getId());
+                context.startActivity(intent);*/
             }));
         }
     }

@@ -67,7 +67,7 @@ public interface Api {
     Call<RecentEventMainModel> getRecentEventsUser(@Header("Authorization") String authHeader);
 
 
-    @GET("api/auth/managerlist")
+    @POST("api/auth/managerlist")
     Call<ManagerListMainModel> getEventsManager(@Header("Authorization") String authHeader);
 
     @POST("api/auth/geteventdetails")
@@ -78,5 +78,8 @@ public interface Api {
 
     @POST("api/auth/getcomment")
     Call<EventCommentMainModel> getEventComments(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/managerdetails")
+    Call<CommonResponseModel> getEventMangerDetails(@Body HashMap<String, String> params);
 
 }

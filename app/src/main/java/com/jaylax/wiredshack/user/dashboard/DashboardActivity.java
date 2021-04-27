@@ -73,12 +73,17 @@ public class DashboardActivity extends AppCompatActivity {
                 } else if (tab.getPosition() == 1) {
                     replaceFragment(new SearchFragment(), "Search");
                 } else if (tab.getPosition() == 2) {
-                    replaceFragment(new NotificationFragment(), "Notification");
-                } else if (tab.getPosition() == 3) {
-                    if (SharePref.getInstance(context).get(SharePref.PREF_USER,"").toString().isEmpty()){
+                    if (SharePref.getInstance(context).get(SharePref.PREF_USER, "").toString().isEmpty()) {
                         Intent intent = new Intent(context, LoginActivity.class);
                         startActivity(intent);
-                    }else {
+                    } else {
+                        replaceFragment(new NotificationFragment(), "Notification");
+                    }
+                } else if (tab.getPosition() == 3) {
+                    if (SharePref.getInstance(context).get(SharePref.PREF_USER, "").toString().isEmpty()) {
+                        Intent intent = new Intent(context, LoginActivity.class);
+                        startActivity(intent);
+                    } else {
                         replaceFragment(new AccountFragment(), "Account");
                     }
                 }

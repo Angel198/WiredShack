@@ -153,7 +153,7 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvEventDateName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:drawableStart="@drawable/ic_date"
                         android:drawablePadding="@dimen/_3sdp"
@@ -161,13 +161,9 @@
                         android:textColor="@color/white"
                         android:textSize="@dimen/_13ssp"
                         app:fontFamily="@font/poppins_medium"
-                        tools:text="31st December DJ Party"
-                        android:layout_marginEnd="@dimen/_10sdp"/>
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
+                        tools:text="31st December DJ Party skadhjh asdjhkhajs"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        android:layout_weight="1"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:layout_width="wrap_content"
@@ -190,6 +186,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:background="@color/black" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerEventImages"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:padding="@dimen/_8sdp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvEventDescription"
