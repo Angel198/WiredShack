@@ -98,9 +98,9 @@ public class HomeFragment extends Fragment {
 
     private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
         if (list.isEmpty()){
-            mBinding.recyclerHomeManager.setVisibility(View.GONE);
+            mBinding.linearHomeManager.setVisibility(View.GONE);
         }else {
-            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
+            mBinding.linearHomeManager.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             mBinding.recyclerHomeManager.setAdapter(new HomeTopStoryAdapter(context, list, data -> {
                 Intent intent = new Intent(context, ManagerDetailsActivity.class);
@@ -153,7 +153,7 @@ public class HomeFragment extends Fragment {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("eventId",data.getId());
                 context.startActivity(intent);
-            }));
+            },true));
         }
     }
 }

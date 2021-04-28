@@ -31,7 +31,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/dummy"/>
 
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@drawable/back_black_tarns"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
         <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgEventVideo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_7sdp"

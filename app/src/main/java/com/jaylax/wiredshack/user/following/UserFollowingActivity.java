@@ -18,6 +18,9 @@ public class UserFollowingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this,R.layout.activity_user_following);
 
+        mBinding.imgBack.setOnClickListener(view -> {
+            onBackPressed();
+        });
         mBinding.recyclerUserFollowing.setLayoutManager(new LinearLayoutManager(this));
         mBinding.recyclerUserFollowing.setAdapter(new UserFollowingAdapter());
     }

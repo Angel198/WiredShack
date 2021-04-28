@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -23,6 +24,8 @@ import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerAccountBinding;
 import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
+import com.jaylax.wiredshack.eventManager.managerActivity.ManagerEventActivitiesAdapter;
+import com.jaylax.wiredshack.eventManager.managerActivity.ManagerIncomingRequestAdapter;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
@@ -42,6 +45,9 @@ public class ManagerAccountFragment extends Fragment {
     FragmentManagerAccountBinding mBinding;
     Context mContext;
     ProgressDialog progressDialog;
+
+    Boolean isRecent = true;
+    Boolean isPast = false;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +65,47 @@ public class ManagerAccountFragment extends Fragment {
             getActivity().startActivity(intent);
         });
 
-        mBinding.imgAccountLogout.setOnClickListener(view -> showLogoutDialog());
+
+        setClickListener();
         return mBinding.getRoot();
+    }
+
+    private void setClickListener() {
+        mBinding.imgAccountLogout.setOnClickListener(view -> showLogoutDialog());
+
+        mBinding.tvRecentEvent.setOnClickListener(view -> {
+            if (!isRecent){
+                getRecentEvents();
+            }
+            isRecent = true;
+            isPast = false;
+            setTabLayout();
+
+        });
+
+        mBinding.tvPastEvent.setOnClickListener(view -> {
+            isRecent = false;
+            isPast = true;
+            setTabLayout();
+        });
+    }
+
+    private void setTabLayout() {
+        if (isRecent){
+            mBinding.tvRecentEvent.setBackgroundResource(R.drawable.back_round_white);
+            mBinding.tvRecentEvent.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlackText));
+        }else {
+            mBinding.tvRecentEvent.setBackgroundResource(R.drawable.back_border_white);
+            mBinding.tvRecentEvent.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+        }
+
+        if (isPast){
+            mBinding.tvPastEvent.setBackgroundResource(R.drawable.back_round_white);
+            mBinding.tvPastEvent.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlackText));
+        }else {
+            mBinding.tvPastEvent.setBackgroundResource(R.drawable.back_border_white);
+            mBinding.tvPastEvent.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+        }
     }
 
     @Override

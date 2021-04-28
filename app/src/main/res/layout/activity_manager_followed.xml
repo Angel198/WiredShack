@@ -6,8 +6,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackHome"
-        tools:context=".user.following.UserFollowingActivity">
+        android:background="@color/colorBackHome">
 
         <RelativeLayout
             android:id="@+id/rlHeader"
@@ -34,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_12sdp"
             android:includeFontPadding="false"
-            android:text="600 Following"
+            android:text="600 Followed"
             android:textColor="@color/white"
             android:textSize="@dimen/_12ssp"
             app:fontFamily="@font/poppins_light"
@@ -61,7 +60,7 @@
             tools:ignore="RtlCompat" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerUserFollowing"
+            android:id="@+id/recyclerManagerFollowed"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:layout_constraintStart_toStartOf="parent"

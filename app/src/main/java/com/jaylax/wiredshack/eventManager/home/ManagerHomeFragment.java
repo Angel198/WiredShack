@@ -19,9 +19,11 @@ import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerHomeBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
+import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedActivity;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -74,6 +76,11 @@ public class ManagerHomeFragment extends Fragment {
     private void setClickListener() {
         mBinding.tvAccountAddEvent.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ManagerEditEventActivity.class);
+            mContext.startActivity(intent);
+        });
+
+        mBinding.linearFollowedCount.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), ManagerFollowedActivity.class);
             mContext.startActivity(intent);
         });
     }

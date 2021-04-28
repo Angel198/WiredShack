@@ -51,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
                 RadioButton radioButton = (RadioButton) findViewById(mBinding.radioGroup.getCheckedRadioButtonId());
 
                 String userType = "0";
-                if (radioButton.getText().toString().equals("User")) {
+                if (radioButton.getText().toString().equals(getResources().getString(R.string.user))) {
                     userType = "1";
                 } else {
                     userType = "2";

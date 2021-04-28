@@ -58,7 +58,7 @@
             android:imeOptions="actionSearch"
             android:layout_weight="1"
             android:layout_marginStart="@dimen/_5sdp"
-            android:hint="@string/search"
+            android:hint="@string/search_by_event_organiser"
             android:layout_marginLeft="@dimen/_5sdp"
             android:textColorHint="@color/colorHintTex"
             android:maxLines="1"
@@ -107,8 +107,8 @@
                 android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@drawable/back_search_round"
-                android:paddingTop="@dimen/_5sdp"
-                android:paddingBottom="@dimen/_5sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_8sdp"
                 android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/_10sdp">
 

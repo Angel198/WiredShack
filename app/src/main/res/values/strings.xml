@@ -26,6 +26,8 @@
     <string name="txt_cancel">Cancel</string>
     <string name="request_for_live_streaming">Request for\nLive Streaming</string>
     <string name="dummy_event_description">As conscious traveling Paupers we must always be concerned about our dear Mother Earth.</string>
+    <string name="dummy_event_date">Event Date : 31 Jan 2021</string>
+    <string name="event_date">Event Date : %1s</string>
     <string name="dummy_event_time">Event Time : 10:00 PM to 12:00 AM</string>
     <string name="event_time">Event Time : %1s to %2s</string>
     <string name="dummy_event_location">Event Location : Karnavati Club</string>
@@ -82,4 +84,9 @@
     <string name="enter_comment">Enter Comment</string>
     <string name="add_atleast_one_image">Add atleast one image</string>
     <string name="unfollow">Unfollow</string>
+    <string name="event_organiser">Event Organiser</string>
+    <string name="user">User</string>
+    <string name="search_by_event_organiser">Search by Event Organiser</string>
+    <string name="wish_list">Wish List</string>
+    <string name="past_event">Past Event</string>
 </resources>

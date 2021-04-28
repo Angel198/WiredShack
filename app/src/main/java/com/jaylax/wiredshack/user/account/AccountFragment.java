@@ -27,6 +27,7 @@ import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
+import com.jaylax.wiredshack.user.wishlist.UserWishListActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -64,6 +65,11 @@ public class AccountFragment extends Fragment {
 
         mBinding.tvAccountEditProfile.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
+            Objects.requireNonNull(getActivity()).startActivity(intent);
+        });
+
+        mBinding.tvAccountWishList.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), UserWishListActivity.class);
             Objects.requireNonNull(getActivity()).startActivity(intent);
         });
 

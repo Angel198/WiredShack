@@ -1,20 +1,20 @@
 package com.jaylax.wiredshack.user.eventDetails;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -27,9 +27,7 @@ import com.jaylax.wiredshack.databinding.ActivityEventDetailsBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.eventManager.eventdetails.EventImagesAdapter;
 import com.jaylax.wiredshack.model.CommonResponseModel;
-import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -125,7 +123,15 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (eventDetailsData != null) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(this).load(eventDetailsData.getImage() == null ? "" : eventDetailsData.getImage()).apply(options).into(mBinding.imgEventProfile);
-            Glide.with(this).load(eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage()).apply(options).into(mBinding.imgEventCover);
+
+            String coverImage = "";
+            if (eventDetailsData.getImages().isEmpty()){
+                coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
+            }else {
+                coverImage = eventDetailsData.getImages().get(0).getImages() == null? "": eventDetailsData.getImages().get(0).getImages();
+            }
+
+            Glide.with(this).load(coverImage).apply(options).into(mBinding.imgEventCover);
 
             mBinding.tvEventManagerName.setText(eventDetailsData.getName());
 
@@ -153,8 +159,8 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
             setLikeCommentCount();
 
-            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
-            mBinding.tvEventDateName.setText(eventName);
+//            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
+            mBinding.tvEventName.setText(eventDetailsData.getEventName());
             if (eventDetailsData.getImages().isEmpty()) {
                 mBinding.recyclerEventImages.setVisibility(View.GONE);
             } else {
@@ -165,9 +171,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                 }
                 mBinding.recyclerEventImages.setVisibility(View.VISIBLE);
                 mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(this, 4));
-                mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext,false,imageList));
+                mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext, false, imageList));
             }
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
+            mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
 
@@ -192,7 +199,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                     }
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
-                            setEventComment(response.body().getData());
+                            setEventComment(response.body().getData(), isRefresh);
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
@@ -217,14 +224,23 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setEventComment(ArrayList<EventCommentMainModel.EventCommentData> list) {
+    private void setEventComment(ArrayList<EventCommentMainModel.EventCommentData> list, boolean isRefresh) {
         if (list.isEmpty()) {
             mBinding.recyclerEventComment.setVisibility(View.GONE);
         } else {
             mBinding.recyclerEventComment.setVisibility(View.VISIBLE);
-
             mBinding.recyclerEventComment.setLayoutManager(new LinearLayoutManager(this));
             mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter(mContext, list));
+
+            if (isRefresh) {
+//                mBinding.nestedScrollEvent.scrollTo(0, mBinding.nestedScrollEvent.getBottom());
+                mBinding.nestedScrollEvent.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        mBinding.nestedScrollEvent.fullScroll(mBinding.nestedScrollEvent.FOCUS_DOWN);
+                    }
+                });
+            }
         }
 
     }
@@ -253,6 +269,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                                         if (response.body().getStatus().equals("200")) {
                                             mBinding.editEventComment.setText("");
                                             commentCount = commentCount + 1;
+                                            hideSoftKeyboard();
                                             setLikeCommentCount();
                                             getCommentList(true);
                                         } else {
@@ -451,5 +468,15 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void openLogin() {
         Intent intent = new Intent(mContext, LoginActivity.class);
         startActivity(intent);
+    }
+
+    public void hideSoftKeyboard() {
+        InputMethodManager inputMethodManager =
+                (InputMethodManager) this.getSystemService(
+                        Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(
+                this.getCurrentFocus().getWindowToken(),
+                0
+        );
     }
 }

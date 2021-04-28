@@ -85,6 +85,7 @@
                     android:padding="@dimen/_12sdp">
 
                     <LinearLayout
+                        android:id="@+id/linearFollowedCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
@@ -93,7 +94,7 @@
                             android:id="@+id/tvFollowedCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            tools:text="600"
+                            tools:text="1"
                             app:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
                             android:textSize="@dimen/_14ssp"

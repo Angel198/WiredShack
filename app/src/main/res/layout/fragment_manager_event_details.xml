@@ -119,10 +119,8 @@
                         android:id="@+id/tvEventDateName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:drawableStart="@drawable/ic_date"
-                        android:drawablePadding="@dimen/_3sdp"
                         android:includeFontPadding="false"
-                        android:text="31st December DJ Party"
+                        android:text="DJ Party"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_13ssp"
                         app:fontFamily="@font/poppins_medium" />
@@ -176,10 +174,25 @@
 
 
                 <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvEventTime"
+                    android:id="@+id/tvEventDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
+                    android:drawableStart="@drawable/ic_date"
+                    android:drawablePadding="@dimen/_5sdp"
+                    android:includeFontPadding="false"
+                    android:paddingStart="@dimen/_12sdp"
+                    android:paddingEnd="@dimen/_12sdp"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_13ssp"
+                    app:fontFamily="@font/poppins_light"
+                    android:text="@string/dummy_event_date" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
                     android:drawableStart="@drawable/ic_time"
                     android:drawablePadding="@dimen/_5sdp"
                     android:includeFontPadding="false"

@@ -18,6 +18,11 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme.one"
         android:usesCleartextTraffic="true">
+        <activity android:name=".eventManager.followed.ManagerFollowedActivity"
+            android:theme="@style/BaseTheme.one" />
+        <activity
+            android:name=".user.wishlist.UserWishListActivity"
+            android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.managerDetails.ManagerDetailsActivity"
             android:theme="@style/BaseTheme.one" />

@@ -47,25 +47,25 @@
                         android:padding="5dp">
 
                         <RadioButton
-                            android:id="@+id/radioButton"
+                            android:id="@+id/radioButton2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:buttonTint="@color/white"
                             android:checked="true"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="Event Manager"
+                            android:text="@string/user"
                             android:textColor="@color/white"
                             android:textSize="17sp" />
 
                         <RadioButton
-                            android:id="@+id/radioButton2"
+                            android:id="@+id/radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="10dp"
                             android:buttonTint="@color/white"
                             android:checked="false"
                             android:fontFamily="@font/poppins_medium"
-                            android:text="User"
+                            android:text="@string/event_organiser"
                             android:textColor="@color/white"
                             android:textSize="17sp" />
 

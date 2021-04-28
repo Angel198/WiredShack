@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.user.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -23,11 +24,19 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
     Context context;
     ArrayList<RecentEventMainModel.RecentEventData> list;
     RecentEventClick listener;
+    boolean isUserHome = false;
 
     public HomeRecentEventAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, RecentEventClick listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
+    }
+
+    public HomeRecentEventAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, RecentEventClick listener, boolean isUserHome) {
+        this.context = context;
+        this.list = list;
+        this.listener = listener;
+        this.isUserHome = isUserHome;
     }
 
     @NonNull
@@ -69,6 +78,10 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
             mBinding.constraintEvent.setOnClickListener(view -> {
                 listener.onEventClick(data);
             });
+
+            if (isUserHome){
+                mBinding.imgEventVideo.setVisibility(View.GONE);
+            }
         }
     }
 
