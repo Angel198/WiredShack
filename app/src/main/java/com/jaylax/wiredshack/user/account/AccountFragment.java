@@ -18,19 +18,15 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.github.dhaval2404.imagepicker.ImagePicker;
 import com.jaylax.wiredshack.EditProfileActivity;
-import com.jaylax.wiredshack.LoginActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentAccountBinding;
-import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
-import com.jaylax.wiredshack.user.home.RecentEventMainModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -124,6 +120,15 @@ public class AccountFragment extends Fragment {
         Glide.with(this).load(userDetailsModel.getCoverImage() == null ? "" : userDetailsModel.getCoverImage()).apply(options).into(mBinding.imgAccountCover);
 
         mBinding.tvAccountProfileName.setText(userDetailsModel.getName());
+
+        String followingCount = "0";
+        if (userDetailsModel.getFollowing() != null){
+            if (!userDetailsModel.getFollowing().isEmpty()) {
+                followingCount = userDetailsModel.getFollowing();
+            }
+        }
+        mBinding.tvFollowCount.setText(followingCount);
+
     }
 
     private void showLogoutDialog() {

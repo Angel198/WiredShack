@@ -40,6 +40,12 @@ public class UserDetailsModel {
     @SerializedName("user_type")
     @Expose
     private String userType;
+    @SerializedName("following")
+    @Expose
+    private String following;
+    @SerializedName("followed")
+    @Expose
+    private String followed;
 
     public Integer getId() {
         return id;
@@ -135,5 +141,21 @@ public class UserDetailsModel {
 
     public void setCoverImage(String coverImage) {
         this.coverImage = coverImage;
+    }
+
+    public String getFollowing() {
+        return following;
+    }
+
+    public void setFollowing(String following) {
+        this.following = following;
+    }
+
+    public String getFollowed() {
+        return followed;
+    }
+
+    public void setFollowed(String followed) {
+        this.followed = followed;
     }
 }

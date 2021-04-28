@@ -6,7 +6,8 @@ import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
-import com.jaylax.wiredshack.user.home.RecentEventMainModel;
+import com.jaylax.wiredshack.model.RecentEventMainModel;
+import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,7 +16,6 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -63,9 +63,14 @@ public interface Api {
     @POST("api/auth/follow")
     Call<CommonResponseModel> followEventManager(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
+    @POST("api/auth/managerfollow")
+    Call<CommonResponseModel> followManager(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
     @GET("api/auth/recenteventlist")
     Call<RecentEventMainModel> getRecentEventsUser(@Header("Authorization") String authHeader);
 
+    @POST("api/auth/recentevent")
+    Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
 
     @POST("api/auth/managerlist")
     Call<ManagerListMainModel> getEventsManager(@Header("Authorization") String authHeader);
@@ -80,6 +85,6 @@ public interface Api {
     Call<EventCommentMainModel> getEventComments(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/auth/managerdetails")
-    Call<CommonResponseModel> getEventMangerDetails(@Body HashMap<String, String> params);
+    Call<ManagerDetailsMainModel> getEventMangerDetails(@Body HashMap<String, String> params);
 
 }

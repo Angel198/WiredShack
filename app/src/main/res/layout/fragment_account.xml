@@ -100,9 +100,10 @@
                         android:orientation="vertical"
                         android:gravity="center_horizontal">
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvFollowCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="600"
+                            tools:text="600"
                             app:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
                             android:textSize="@dimen/_14ssp"

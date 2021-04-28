@@ -17,19 +17,12 @@ import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerEventDetailsBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
-import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
-import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentAdapter;
-import com.jaylax.wiredshack.user.home.RecentEventMainModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ManagerEventDetailsFragment extends Fragment {
 

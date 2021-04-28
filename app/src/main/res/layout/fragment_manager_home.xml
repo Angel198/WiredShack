@@ -28,6 +28,7 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgAccountCover"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
                         android:src="@drawable/dummy"
@@ -46,13 +47,6 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         android:background="@drawable/back_gradient"/>
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/logoutbutton"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        android:layout_margin="@dimen/_12sdp"/>
                     <LinearLayout
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -64,11 +58,13 @@
                         android:padding="@dimen/_12sdp">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgAccountProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
                             android:src="@drawable/dummy"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvAccountProfileName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="User Name"
@@ -94,9 +90,10 @@
                         android:orientation="vertical"
                         android:gravity="center_horizontal">
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvFollowedCount"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="600"
+                            tools:text="600"
                             app:fontFamily="@font/poppins_bold"
                             android:includeFontPadding="false"
                             android:textSize="@dimen/_14ssp"
@@ -142,6 +139,7 @@
                     android:background="@color/black"/>
 
                 <LinearLayout
+                    android:id="@+id/linearHomeRecentEvent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_12sdp"
@@ -170,6 +168,7 @@
                             android:layout_weight="1"/>
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvViewAllRecentEvents"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             tools:ignore="RtlCompat"

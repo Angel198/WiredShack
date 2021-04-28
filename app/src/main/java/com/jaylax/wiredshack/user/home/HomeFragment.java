@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentHomeBinding;
-import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
@@ -103,9 +103,9 @@ public class HomeFragment extends Fragment {
             mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             mBinding.recyclerHomeManager.setAdapter(new HomeTopStoryAdapter(context, list, data -> {
-                /*Intent intent = new Intent(context, ManagerDetailsActivity.class);
+                Intent intent = new Intent(context, ManagerDetailsActivity.class);
                 intent.putExtra("managerId",data.getId());
-                context.startActivity(intent);*/
+                context.startActivity(intent);
             }));
         }
     }

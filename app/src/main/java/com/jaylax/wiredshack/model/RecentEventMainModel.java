@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.user.home;
+package com.jaylax.wiredshack.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -167,7 +167,7 @@ public class RecentEventMainModel {
             this.createdAt = createdAt;
         }
 
-        class EventImage {
+        public static class EventImage {
             @SerializedName("images")
             @Expose
             private String images;
