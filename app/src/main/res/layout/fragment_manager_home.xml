@@ -183,7 +183,8 @@
                             android:paddingBottom="@dimen/_3sdp"
                             android:paddingStart="@dimen/_10sdp"
                             android:paddingEnd="@dimen/_10sdp"
-                            android:background="@drawable/back_border_white"/>
+                            android:background="@drawable/back_border_white"
+                            android:visibility="gone"/>
                     </LinearLayout>
 
                     <androidx.recyclerview.widget.RecyclerView

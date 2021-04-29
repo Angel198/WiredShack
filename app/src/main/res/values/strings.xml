@@ -89,4 +89,8 @@
     <string name="search_by_event_organiser">Search by Event Organiser</string>
     <string name="wish_list">Wish List</string>
     <string name="past_event">Past Event</string>
+    <string name="no_event_found">No Event Found</string>
+    <string name="txt_ok">Ok</string>
+    <string name="title_location_permission">Location Permission</string>
+    <string name="text_location_permission">This app access your Location.</string>
 </resources>

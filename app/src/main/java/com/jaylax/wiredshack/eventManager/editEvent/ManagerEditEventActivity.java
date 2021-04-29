@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.DatePicker;
 
@@ -34,10 +35,12 @@ import com.jaylax.wiredshack.eventManager.eventdetails.EventImagesAdapter;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,14 +63,18 @@ public class ManagerEditEventActivity extends AppCompatActivity {
     Context context;
     UserDetailsModel userDetailsModel;
     ProgressDialog progressDialog;
-    ArrayList<EventImageModel> imageList;
+    ArrayList<EventImageModel> imageList = new ArrayList<>();
     RequestOptions options;
     EventImagesAdapter imagesAdapter;
     final Calendar selectedCalendar = Calendar.getInstance();
     Calendar selectedStartTimeCal = null;
     Calendar selectedEndTimeCal = null;
-
     Place place = null;
+
+    String editEventID = "";
+    EventDetailsMainModel.EventDetailsData eventDetailsData = null;
+    ArrayList<Integer> deleteImages = new ArrayList<>();
+    String latitude = "", longitude = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +83,16 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         context = this;
         progressDialog = new ProgressDialog(context);
 
+        if (getIntent().hasExtra("eventId")){
+            editEventID = getIntent().getStringExtra("eventId");
+        }
+
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_place_key));
+
+        setEditEventUI();
 
         setClickListener();
 
-        imageList = new ArrayList<>();
         options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
 
         userDetailsModel = Commons.convertStringToObject(this, SharePref.PREF_USER, UserDetailsModel.class);
@@ -89,9 +101,123 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         mBinding.tvManagerName.setText(userDetailsModel.getName());
 
         mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(this, 4));
+
+    }
+
+    private void setEditEventUI() {
+        if (editEventID.isEmpty()){
+            setEventImagesAdapter();
+        }else {
+            getEventDetails();
+        }
+    }
+
+    private void getEventDetails() {
+        if (Commons.isOnline(context)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", editEventID);
+
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+            progressDialog.show();
+            ApiClient.create().getEventDetails(header, params).enqueue(new Callback<EventDetailsMainModel>() {
+                @Override
+                public void onResponse(Call<EventDetailsMainModel> call, Response<EventDetailsMainModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                eventDetailsData = response.body().getData();
+                                setEventDataForEdit();
+                            } else {
+                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventDetailsMainModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setEventDataForEdit() {
+        if (eventDetailsData != null){
+            mBinding.editEventName.setText(eventDetailsData.getEventName());
+            mBinding.editEventDescription.setText(eventDetailsData.getDescription());
+            mBinding.editEventLocation.setText(eventDetailsData.getLocation());
+            String eventDate = "";
+            if (!eventDetailsData.getDate().isEmpty()) {
+                SimpleDateFormat parseDateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+                SimpleDateFormat showDateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
+                try {
+                    Date date = parseDateFormat.parse(eventDetailsData.getDate());
+                    selectedCalendar.setTime(date);
+                    eventDate = showDateFormat.format(selectedCalendar.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            mBinding.editEventDate.setText(eventDate);
+
+            SimpleDateFormat parseTimeFormat = new SimpleDateFormat("hh:mm:ss", Locale.US);
+            SimpleDateFormat showTimeFormat = new SimpleDateFormat("hh:mm a", Locale.US);
+
+            String eventStartTime = "";
+            if (!eventDetailsData.getStime().isEmpty()) {
+                try {
+                    Date date = parseTimeFormat.parse(eventDetailsData.getStime());
+                    selectedStartTimeCal = Calendar.getInstance();
+                    selectedStartTimeCal.setTime(date);
+                    eventStartTime = showTimeFormat.format(selectedStartTimeCal.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            mBinding.editEventStartTime.setText(eventStartTime);
+
+            String eventEndTime = "";
+            if (!eventDetailsData.getEtime().isEmpty()) {
+                try {
+                    Date date = parseTimeFormat.parse(eventDetailsData.getEtime());
+                    selectedEndTimeCal = Calendar.getInstance();
+                    selectedEndTimeCal.setTime(date);
+                    eventEndTime = showTimeFormat.format(selectedEndTimeCal.getTime());
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }
+            mBinding.editEventEndTime.setText(eventEndTime);
+
+            deleteImages = new ArrayList<>();
+            imageList = new ArrayList<>();
+            for (EventDetailsMainModel.EventDetailsData.EventImage data : eventDetailsData.getImages()){
+                imageList.add(new EventImageModel(data.getImages(),data.getId(),"",null));
+            }
+            setEventImagesAdapter();
+
+            latitude = eventDetailsData.getLatitude();
+            longitude = eventDetailsData.getLongitude();
+
+            Log.e("BeforeEditLatLng : ", latitude +", "+longitude);
+        }
+    }
+
+
+    private void setEventImagesAdapter(){
         imagesAdapter = new EventImagesAdapter(context, true, imageList, new EventImagesAdapter.EventImageClick() {
             @Override
             public void onImageRemove(int position) {
+                if (!imageList.get(position).getImageId().isEmpty()){
+                    deleteImages.add(Integer.parseInt(imageList.get(position).getImageId()));
+                }
                 imageList.remove(position);
                 imagesAdapter.notifyItemRemoved(position);
                 imagesAdapter.notifyDataSetChanged();
@@ -103,24 +229,22 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             }
         });
         mBinding.recyclerEventImages.setAdapter(imagesAdapter);
+
     }
 
     private void setClickListener() {
         mBinding.imgBack.setOnClickListener(view -> onBackPressed());
 
         mBinding.editEventDate.setOnClickListener(view -> {
-            DatePickerDialog dialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
-                @Override
-                public void onDateSet(DatePicker datePicker, int year, int monthOfYear, int dayOfMonth) {
-                    selectedCalendar.set(Calendar.YEAR, year);
-                    selectedCalendar.set(Calendar.MONTH, monthOfYear);
-                    selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            DatePickerDialog dialog = new DatePickerDialog(this, (datePicker, year, monthOfYear, dayOfMonth) -> {
+                selectedCalendar.set(Calendar.YEAR, year);
+                selectedCalendar.set(Calendar.MONTH, monthOfYear);
+                selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
-                    String myFormat = "dd-MM-yyyy"; //In which you need put here
-                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                String myFormat = "dd-MM-yyyy"; //In which you need put here
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
 
-                    mBinding.editEventDate.setText(sdf.format(selectedCalendar.getTime()));
-                }
+                mBinding.editEventDate.setText(sdf.format(selectedCalendar.getTime()));
             }, selectedCalendar.get(Calendar.YEAR), selectedCalendar.get(Calendar.MONTH),
                     selectedCalendar.get(Calendar.DAY_OF_MONTH));
 
@@ -171,6 +295,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             String eventDate = mBinding.editEventDate.getText().toString().trim();
 
             boolean isValid = false;
+            Log.e("OnEditLatLng : ", latitude +", "+longitude);
 
             if (imageList.isEmpty()){
                 Commons.showToast(context, getResources().getString(R.string.add_atleast_one_image));
@@ -178,7 +303,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_name));
             } else if (eventDescription.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_description));
-            } else if (eventLocation.isEmpty() || place == null) {
+            } else if (eventLocation.isEmpty() || latitude.isEmpty() || longitude.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_location));
             } else if (eventDate.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_date));
@@ -246,6 +371,8 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 String placeName = place.getName() == null ? "N/A" : place.getName();
                 String placeAddress = place.getAddress() == null ? "N/A" : place.getAddress();
                 String address = placeName + ", "+ placeAddress;
+                latitude = String.valueOf(place.getLatLng().latitude);
+                longitude = String.valueOf(place.getLatLng().longitude);
                 mBinding.editEventLocation.setText(address);
             }
         }
@@ -270,14 +397,14 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             params.put("location", RequestBody.create(MultipartBody.FORM, eventLocation));
             params.put("stime", RequestBody.create(MultipartBody.FORM, startTime));
             params.put("etime", RequestBody.create(MultipartBody.FORM, endTime));
-            params.put("event_id", RequestBody.create(MultipartBody.FORM, ""));
-            params.put("latitude", RequestBody.create(MultipartBody.FORM, String.valueOf(place.getLatLng().latitude)));
-            params.put("longitude", RequestBody.create(MultipartBody.FORM, String.valueOf(place.getLatLng().longitude)));
+            params.put("event_id", RequestBody.create(MultipartBody.FORM, editEventID));
+            params.put("latitude", RequestBody.create(MultipartBody.FORM, latitude));
+            params.put("longitude", RequestBody.create(MultipartBody.FORM, longitude));
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
             progressDialog.show();
-            ApiClient.create().addEditEvent(header, params, imagesMultiPart).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart,deleteImages).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();

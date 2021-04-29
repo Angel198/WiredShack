@@ -52,6 +52,7 @@ public class HomeFragment extends Fragment {
         userDetailsModel = Commons.convertStringToObject(context, SharePref.PREF_USER, UserDetailsModel.class);
 
 //        getEventList();
+        getEventManagerList();
 
         return mBinding.getRoot();
     }
@@ -59,7 +60,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getEventManagerList();
+//        getEventManagerList();
     }
     private void getEventManagerList(){
         if (Commons.isOnline(context)){

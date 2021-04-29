@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.google.android.material.tabs.TabLayout;
@@ -18,10 +19,12 @@ import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityFragmen
 import java.util.ArrayList;
 
 public class DashboardEventManagerActivity extends AppCompatActivity {
-    ActivityDashboardBinding mBinding;
+    static ActivityDashboardBinding mBinding;
 
     ArrayList<Integer> arySelect = new ArrayList<>();
     ArrayList<Integer> aryUnSelect = new ArrayList<>();
+
+    static String eventId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +51,18 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
     }
 
     private void replaceFragment(Fragment fragment, String tagFragment) {
+        if (!eventId.isEmpty()) {
+            Bundle args = new Bundle();
+            args.putString("eventId", eventId);
+            fragment.setArguments(args);
+        }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.viewDashboard, fragment, tagFragment);
         fragmentTransaction.commit();
+
+        if (!eventId.isEmpty()) {
+            eventId = "";
+        }
     }
 
     private void initListener() {
@@ -79,5 +91,17 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    public static void redirectToEditEvent(String eventId, FragmentActivity activity) {
+        DashboardEventManagerActivity.eventId = eventId;
+        DashboardEventManagerActivity.mBinding.tabDashboard.getTabAt(1).select();
+        /*Fragment fragment = new ManagerEventDetailsFragment();
+        Bundle args = new Bundle();
+        args.putString("eventId", eventId);
+        fragment.setArguments(args);
+        FragmentTransaction fragmentTransaction = activity.getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.viewDashboard, fragment, "EventDetails");
+        fragmentTransaction.commit();*/
     }
 }

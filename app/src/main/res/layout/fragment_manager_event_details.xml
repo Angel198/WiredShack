@@ -19,9 +19,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
+                android:id="@+id/linearEventMain"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:visibility="gone"
                 android:paddingBottom="@dimen/_12sdp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -29,6 +31,7 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgEventCover"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
                         android:scaleType="centerCrop"
@@ -58,11 +61,13 @@
                         app:layout_constraintStart_toStartOf="parent">
 
                         <de.hdodenhof.circleimageview.CircleImageView
+                            android:id="@+id/imgEventProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
                             android:src="@drawable/dummy" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventManagerName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
@@ -83,6 +88,7 @@
                         app:layout_constraintEnd_toEndOf="parent">
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventLike"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/heart"
@@ -94,6 +100,7 @@
                             app:fontFamily="@font/poppins_light" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventComment"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
@@ -116,7 +123,7 @@
                     android:padding="@dimen/_12sdp">
 
                     <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvEventDateName"
+                        android:id="@+id/tvEventName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
@@ -154,13 +161,14 @@
                     android:background="@color/black" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerEventUser"
+                    android:id="@+id/recyclerEventImages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
                     android:padding="@dimen/_8sdp" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventDescription"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_10sdp"
@@ -231,5 +239,20 @@
                     tools:listitem="@layout/item_event_comment" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvNoEventFound"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:text="@string/no_event_found"
+            app:fontFamily="@font/poppins_bold"
+            android:includeFontPadding="false"
+            android:textSize="@dimen/_15sdp"
+            android:textColor="@color/white"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

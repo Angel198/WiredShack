@@ -23,6 +23,7 @@ import com.jaylax.wiredshack.EditProfileActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerAccountBinding;
+import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerEventActivitiesAdapter;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerIncomingRequestAdapter;
@@ -194,7 +195,7 @@ public class ManagerAccountFragment extends Fragment {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
             mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, data -> {
-
+                DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
             },true));
         }
     }

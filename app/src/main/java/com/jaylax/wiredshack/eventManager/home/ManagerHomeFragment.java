@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerHomeBinding;
+import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedActivity;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
@@ -137,7 +138,7 @@ public class ManagerHomeFragment extends Fragment {
             }
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
             mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, data -> {
-
+                DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
             },false));
         }
     }

@@ -52,7 +52,7 @@ public interface Api {
 
     @Multipart
     @POST("api/auth/addUpdateEvent")
-    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images);
+    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images,@Part("delete_images[]") ArrayList<Integer> deleteImage);
 
     @POST("api/auth/comment")
     Call<CommonResponseModel> sendComment(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);

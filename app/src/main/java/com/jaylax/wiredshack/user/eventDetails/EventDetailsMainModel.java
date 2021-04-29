@@ -3,6 +3,7 @@ package com.jaylax.wiredshack.user.eventDetails;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class EventDetailsMainModel {
@@ -29,7 +30,7 @@ public class EventDetailsMainModel {
         this.data = data;
     }
 
-    class EventDetailsData {
+    public class EventDetailsData {
         @SerializedName("id")
         @Expose
         private String id;
@@ -90,6 +91,12 @@ public class EventDetailsMainModel {
         @SerializedName("commnets")
         @Expose
         private String commnets;
+        @SerializedName("latitude")
+        @Expose
+        private String latitude;
+        @SerializedName("longitude")
+        @Expose
+        private String longitude;
 
         public String getId() {
             return id;
@@ -251,7 +258,24 @@ public class EventDetailsMainModel {
             this.commnets = commnets;
         }
 
-        class EventImage {
+        public String getLatitude() {
+            return latitude;
+        }
+
+        public void setLatitude(String latitude) {
+            this.latitude = latitude;
+        }
+
+        public String getLongitude() {
+            return longitude;
+        }
+
+        public void setLongitude(String longitude) {
+            this.longitude = longitude;
+        }
+
+
+        public class EventImage implements Serializable {
             @SerializedName("images")
             @Expose
             private String images;

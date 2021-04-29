@@ -242,7 +242,6 @@ public class EventDetailsActivity extends AppCompatActivity {
                 });
             }
         }
-
     }
 
     private void setClickListener() {
