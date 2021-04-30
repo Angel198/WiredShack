@@ -34,6 +34,7 @@ import com.jaylax.wiredshack.utils.SharePref;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -48,7 +49,7 @@ public class ManagerEventDetailsFragment extends Fragment {
     Context mContext;
     UserDetailsModel userDetailsModel;
     ProgressDialog progressDialog;
-    String editEventID ="";
+    String editEventID = "";
     EventDetailsMainModel.EventDetailsData eventDetailsData = null;
 
     @Override
@@ -181,10 +182,10 @@ public class ManagerEventDetailsFragment extends Fragment {
             Glide.with(this).load(eventDetailsData.getImage() == null ? "" : eventDetailsData.getImage()).apply(options).into(mBinding.imgEventProfile);
 
             String coverImage = "";
-            if (eventDetailsData.getImages().isEmpty()){
+            if (eventDetailsData.getImages().isEmpty()) {
                 coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
-            }else {
-                coverImage = eventDetailsData.getImages().get(0).getImages() == null? "": eventDetailsData.getImages().get(0).getImages();
+            } else {
+                coverImage = eventDetailsData.getImages().get(0).getImages() == null ? "" : eventDetailsData.getImages().get(0).getImages();
             }
 
             Glide.with(this).load(coverImage).apply(options).into(mBinding.imgEventCover);
@@ -212,6 +213,14 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
+
+            if (isEventLive()) {
+                mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
+                mBinding.tvEventEdit.setVisibility(View.GONE);
+            } else {
+                mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                mBinding.tvEventEdit.setVisibility(View.VISIBLE);
+            }
         }
     }
 
@@ -290,5 +299,25 @@ public class ManagerEventDetailsFragment extends Fragment {
             }
         }
         return eventTime;
+    }
+
+    private boolean isEventLive() {
+        boolean isLive = false;
+        Date currentDate = Calendar.getInstance().getTime();
+
+        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null) {
+            String eventTime = eventDetailsData.getDate() + " " + eventDetailsData.getStime();
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+            try {
+                Date eventDate = format.parse(eventTime);
+                if (currentDate.after(eventDate)) {
+                    isLive = true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return isLive;
     }
 }

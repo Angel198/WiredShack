@@ -94,4 +94,5 @@
     <string name="title_location_permission">Location Permission</string>
     <string name="text_location_permission">This app access your Location.</string>
     <string name="followed_count">%1s Followed</string>
+    <string name="live_now">Live Now</string>
 </resources>

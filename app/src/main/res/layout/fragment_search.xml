@@ -146,7 +146,7 @@
             <FrameLayout
                 android:id="@+id/frameMap"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_150sdp"
+                android:layout_height="@dimen/_170sdp"
                 android:layout_marginTop="@dimen/_5sdp"
                 android:layout_marginBottom="@dimen/_5sdp">
 

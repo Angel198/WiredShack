@@ -24,10 +24,12 @@ import java.util.ArrayList;
 public class UserWishListAdapter extends RecyclerView.Adapter<UserWishListAdapter.MyViewHolder> {
     Context mContext;
     ArrayList<UserWishListMainModel.UserWishList> list;
+    WishListEventClick listener;
 
-    public UserWishListAdapter(Context mContext, ArrayList<UserWishListMainModel.UserWishList> list) {
+    public UserWishListAdapter(Context mContext, ArrayList<UserWishListMainModel.UserWishList> list, WishListEventClick listener) {
         this.mContext = mContext;
         this.list = list;
+        this.listener = listener;
     }
 
     @NonNull
@@ -72,10 +74,17 @@ public class UserWishListAdapter extends RecyclerView.Adapter<UserWishListAdapte
 
             mBinding.tvEventManagerName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
             mBinding.constraintEvent.setOnClickListener(view -> {
-                Intent intent = new Intent(mContext, EventDetailsActivity.class);
-                intent.putExtra("eventId",data.getId());
-                mContext.startActivity(intent);
+                listener.onEventClick(data);
+            });
+
+            mBinding.imgEventVideo.setOnClickListener(view -> {
+                listener.onLikeEventClick(position,data);
             });
         }
+    }
+
+    public interface WishListEventClick{
+        void onEventClick(UserWishListMainModel.UserWishList data);
+        void onLikeEventClick(int pos, UserWishListMainModel.UserWishList data);
     }
 }

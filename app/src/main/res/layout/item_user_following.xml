@@ -3,14 +3,25 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/_12sdp"
+        android:elevation="@dimen/_10sdp"
+        app:cardBackgroundColor="@color/colorBackHome"
+        app:cardCornerRadius="@dimen/_8sdp"
+        app:cardElevation="@dimen/_10sdp">
     <LinearLayout
         android:id="@+id/linearViewSentRequest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/_10sdp"
-        android:background="@color/colorBackHome">
+        android:paddingStart="@dimen/_15sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_15sdp"
+        android:paddingBottom="@dimen/_10sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgUserProfile"
@@ -64,4 +75,5 @@
             android:paddingEnd="@dimen/_10sdp"
             android:background="@drawable/back_border_white"/>
     </LinearLayout>
+    </androidx.cardview.widget.CardView>
 </layout>

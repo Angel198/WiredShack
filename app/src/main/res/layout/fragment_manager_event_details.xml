@@ -124,35 +124,57 @@
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvEventName"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
                         android:text="DJ Party"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_13ssp"
-                        app:fontFamily="@font/poppins_medium" />
-
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvEventEdit"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/back_border_white"
-                        android:includeFontPadding="false"
-                        android:paddingStart="@dimen/_10sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_10sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:text="@string/edit_event"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
                         app:fontFamily="@font/poppins_medium"
-                        tools:ignore="RtlCompat" />
+                        android:layout_weight="1"
+                        android:layout_marginEnd="@dimen/_10sdp"
+                        />
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventEdit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/back_border_white"
+                            android:includeFontPadding="false"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:text="@string/edit_event"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            tools:ignore="RtlCompat"
+                            android:visibility="gone"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventLiveNow"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/back_follow"
+                            android:backgroundTint="@color/colorOptionText"
+                            android:includeFontPadding="false"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:text="@string/live_now"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            tools:ignore="RtlCompat"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <View
