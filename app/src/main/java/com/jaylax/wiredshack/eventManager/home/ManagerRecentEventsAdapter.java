@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.eventManager.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -24,14 +25,23 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
 
     Context context;
     ArrayList<RecentEventMainModel.RecentEventData> list;
-    HomeRecentEventAdapter.RecentEventClick listener;
+    ManagerEventClick listener;
     boolean isFromHome = false;
+    String listType = "";
 
-    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, HomeRecentEventAdapter.RecentEventClick listener, boolean isFromHome) {
+    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list,ManagerEventClick listener, boolean isFromHome) {
         this.context = context;
         this.list = list;
         this.listener = listener;
         this.isFromHome = isFromHome;
+    }
+
+    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, ManagerEventClick listener, boolean isFromHome, String listType) {
+        this.context = context;
+        this.list = list;
+        this.listener = listener;
+        this.isFromHome = isFromHome;
+        this.listType = listType;
     }
 
     @NonNull
@@ -48,9 +58,9 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
     @Override
     public int getItemCount() {
         int size;
-        if (isFromHome){
+        if (isFromHome) {
             size = Math.min(list.size(), 6);
-        }else {
+        } else {
             size = list.size();
         }
 
@@ -68,19 +78,29 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
             String imageUrl = "";
-            if (data.getImages().isEmpty()){
+            if (data.getImages().isEmpty()) {
                 imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
-            }else {
-                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
+            } else {
+                imageUrl = data.getImages().get(0).getImages() == null ? "" : data.getImages().get(0).getImages();
             }
 
             Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);
 
             mBinding.tvEventManagerName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
+
+            if (listType.isEmpty()){
+                mBinding.imgEventVideo.setVisibility(View.VISIBLE);
+            }else {
+                mBinding.imgEventVideo.setVisibility(View.GONE);
+            }
             mBinding.constraintEvent.setOnClickListener(view -> {
-                listener.onEventClick(data);
+                listener.onEventClick(data,listType);
             });
         }
+    }
+
+    public interface ManagerEventClick{
+        void onEventClick(RecentEventMainModel.RecentEventData data, String lisType);
     }
 }
 

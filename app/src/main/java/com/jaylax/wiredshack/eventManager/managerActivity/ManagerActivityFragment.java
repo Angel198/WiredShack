@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack.eventManager.managerActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.core.content.ContextCompat;
@@ -11,19 +12,35 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerActivityBinding;
+import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedAdapter;
+import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
+import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.notification.AcceptedRequestAdapter;
 import com.jaylax.wiredshack.user.notification.DummyModel;
 import com.jaylax.wiredshack.user.notification.ViewSentRequestAdapter;
+import com.jaylax.wiredshack.utils.Commons;
+import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
+import java.util.Objects;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ManagerActivityFragment extends Fragment {
 
     FragmentManagerActivityBinding mBinding;
     Boolean isRequest = true;
     Boolean isEvents = false;
+    Context mContext;
+    ProgressDialog progressDialog;
+    UserDetailsModel userDetailsModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,9 +54,17 @@ public class ManagerActivityFragment extends Fragment {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.fragment_manager_activity, container, false);
         mBinding.recyclerActivity.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mContext = getActivity();
+        progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
+        userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+
+        getIncomingRequest();
         setTabLayout();
 
         mBinding.tvIncomingRequest.setOnClickListener(view -> {
+            if (!isRequest) {
+                getIncomingRequest();
+            }
             isRequest = true;
             isEvents = false;
             setTabLayout();
@@ -56,25 +81,66 @@ public class ManagerActivityFragment extends Fragment {
     }
 
     private void setTabLayout() {
-        if (isRequest){
+        if (isRequest) {
             mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlackText));
-
-            mBinding.recyclerActivity.setAdapter(new ManagerIncomingRequestAdapter());
-        }else {
+            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+        } else {
             mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
         }
 
-        if (isEvents){
+        if (isEvents) {
             mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(),R.color.colorBlackText));
+            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            mBinding.recyclerActivity.setVisibility(View.VISIBLE);
 
             mBinding.recyclerActivity.setAdapter(new ManagerEventActivitiesAdapter());
 
-        }else {
+        } else {
             mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(),R.color.white));
+            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        }
+    }
+
+    private void getIncomingRequest() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().incomingRequest(header).enqueue(new Callback<IncomingRequestMainModel>() {
+                @Override
+                public void onResponse(Call<IncomingRequestMainModel> call, Response<IncomingRequestMainModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            setIncomingRequest(response.body().getData());
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<IncomingRequestMainModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setIncomingRequest(ArrayList<IncomingRequestMainModel.IncomingRequest> list) {
+        if (list.isEmpty()) {
+            mBinding.recyclerActivity.setVisibility(View.GONE);
+        } else {
+            mBinding.recyclerActivity.setVisibility(View.VISIBLE);
+            mBinding.recyclerActivity.setAdapter(new ManagerIncomingRequestAdapter(mContext,list));
         }
     }
 }

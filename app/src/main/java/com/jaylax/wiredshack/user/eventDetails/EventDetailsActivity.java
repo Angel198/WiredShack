@@ -53,6 +53,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     int likeCount = 0, commentCount = 0;
     boolean isLike = false;
     boolean isFollow = false;
+    String requestFlag ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -360,10 +361,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (Commons.isOnline(mContext)) {
                         progressDialog.show();
                         HashMap<String, String> params = new HashMap<>();
-                        params.put("event_id", eventId);
+                        params.put("manager_id", eventDetailsData.getManagerId());
 
                         String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-                        ApiClient.create().followEventManager(header, params).enqueue(new Callback<CommonResponseModel>() {
+                        ApiClient.create().followManager(header, params).enqueue(new Callback<CommonResponseModel>() {
                             @Override
                             public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                                 progressDialog.dismiss();
@@ -400,6 +401,51 @@ public class EventDetailsActivity extends AppCompatActivity {
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
                     }
+                }
+            }
+        });
+
+        mBinding.tvEventRequest.setOnClickListener(view -> {
+            if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                openLogin();
+            } else {
+                if (Commons.isOnline(mContext)) {
+                    progressDialog.show();
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("event_id", eventId);
+
+                    String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                    ApiClient.create().requestForLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200 && response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    if (response.body().getStatus().equals("200")) {
+
+                                    } else {
+                                        String msg = "";
+                                        if (response.body().getMessage().isEmpty()) {
+                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                                        } else {
+                                            msg = response.body().getMessage();
+                                        }
+                                        Commons.showToast(mContext, msg);
+                                    }
+                                }
+                            } else {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        }
+                    });
+                } else {
+                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
                 }
             }
         });

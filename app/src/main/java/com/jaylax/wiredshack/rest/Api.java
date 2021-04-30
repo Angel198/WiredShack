@@ -1,5 +1,7 @@
 package com.jaylax.wiredshack.rest;
 
+import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
+import com.jaylax.wiredshack.eventManager.managerActivity.IncomingRequestMainModel;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
@@ -8,6 +10,7 @@ import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
+import com.jaylax.wiredshack.user.wishlist.UserWishListMainModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +55,7 @@ public interface Api {
 
     @Multipart
     @POST("api/auth/addUpdateEvent")
-    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images,@Part("delete_images[]") ArrayList<Integer> deleteImage);
+    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images, @Part("delete_images[]") ArrayList<Integer> deleteImage);
 
     @POST("api/auth/comment")
     Call<CommonResponseModel> sendComment(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
@@ -72,6 +75,9 @@ public interface Api {
     @POST("api/auth/recentevent")
     Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
 
+    @POST("api/auth/pastevent")
+    Call<RecentEventMainModel> getPastEventsManager(@Header("Authorization") String authHeader);
+
     @POST("api/auth/managerlist")
     Call<ManagerListMainModel> getEventsManager(@Header("Authorization") String authHeader);
 
@@ -87,4 +93,18 @@ public interface Api {
     @POST("api/auth/managerdetails")
     Call<ManagerDetailsMainModel> getEventMangerDetails(@Body HashMap<String, String> params);
 
+    @POST("api/auth/managerdetails_token")
+    Call<ManagerDetailsMainModel> getEventMangerDetailsToken(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/followeduser")
+    Call<ManagerFollowedMainModel> getFollowedData(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/user-event-request")
+    Call<CommonResponseModel> requestForLiveStream(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/incoming-request")
+    Call<IncomingRequestMainModel> incomingRequest(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/wishlist")
+    Call<UserWishListMainModel> getWishList(@Header("Authorization") String authHeader);
 }

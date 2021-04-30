@@ -3,16 +3,15 @@ package com.jaylax.wiredshack.eventManager.eventdetails;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -21,10 +20,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerEventDetailsBinding;
-import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
-import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;

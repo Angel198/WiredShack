@@ -28,6 +28,7 @@ import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerEventActivitiesAdapter;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerIncomingRequestAdapter;
 import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.rest.Api;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
@@ -49,6 +50,9 @@ public class ManagerAccountFragment extends Fragment {
 
     Boolean isRecent = true;
     Boolean isPast = false;
+
+    static final String RECENT_EVENT = "recent";
+    static final String PAST_EVENT = "past";
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,7 +80,7 @@ public class ManagerAccountFragment extends Fragment {
 
         mBinding.tvRecentEvent.setOnClickListener(view -> {
             if (!isRecent){
-                getRecentEvents();
+                getManagerEventList(RECENT_EVENT);
             }
             isRecent = true;
             isPast = false;
@@ -85,6 +89,9 @@ public class ManagerAccountFragment extends Fragment {
         });
 
         mBinding.tvPastEvent.setOnClickListener(view -> {
+            if (!isPast){
+                getManagerEventList(PAST_EVENT);
+            }
             isRecent = false;
             isPast = true;
             setTabLayout();
@@ -112,6 +119,9 @@ public class ManagerAccountFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        isRecent = true;
+        isPast = false;
+        setTabLayout();
         getUserDetails();
     }
 
@@ -123,7 +133,7 @@ public class ManagerAccountFragment extends Fragment {
                 @Override
                 public void onResponse(Call<UserDetailsModel> call, Response<UserDetailsModel> response) {
                     progressDialog.dismiss();
-                    getRecentEvents();
+                    getManagerEventList(RECENT_EVENT);
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             SharePref.getInstance(mContext).save(SharePref.PREF_USER, Commons.convertObjectToString(response.body()));
@@ -137,7 +147,7 @@ public class ManagerAccountFragment extends Fragment {
                 @Override
                 public void onFailure(Call<UserDetailsModel> call, Throwable t) {
                     progressDialog.dismiss();
-                    getRecentEvents();
+                    getManagerEventList(RECENT_EVENT);
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                 }
             });
@@ -155,48 +165,58 @@ public class ManagerAccountFragment extends Fragment {
         mBinding.tvAccountProfileName.setText(userDetailsModel.getName());
     }
 
-    private void getRecentEvents() {
+    private void getManagerEventList(String type) {
         if (Commons.isOnline(mContext)){
-            progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getRecentEventsManager(header).enqueue(new Callback<RecentEventMainModel>() {
-                @Override
-                public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
-                    progressDialog.dismiss();
-                    if (response.code() == 200 && response.isSuccessful()) {
-                        if (response.body() != null) {
-                            setRecentEventData(response.body().getData());
-                            if (!response.body().getStatus().equals("200")){
+
+            Call<RecentEventMainModel> call = null;
+
+            if (type.equals(RECENT_EVENT)){
+                call = ApiClient.create().getRecentEventsManager(header);
+            }else {
+                call = ApiClient.create().getPastEventsManager(header);
+            }
+            if (call != null) {
+                progressDialog.show();
+                call.enqueue(new Callback<RecentEventMainModel>() {
+                    @Override
+                    public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                setRecentEventData(response.body().getData(),type);
+                                if (!response.body().getStatus().equals("200")){
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            }else {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
-                        }else {
+                        } else {
                             Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
-                    } else {
-                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                     }
-                }
 
-                @Override
-                public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
-                    progressDialog.dismiss();
-                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                }
-            });
+                    @Override
+                    public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            }
         }else {
             Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
         }
     }
 
-    private void setRecentEventData(ArrayList<RecentEventMainModel.RecentEventData> list){
+    private void setRecentEventData(ArrayList<RecentEventMainModel.RecentEventData> list, String type){
         if (list.isEmpty()){
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.GONE);
         }else {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
-            mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, data -> {
+            mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
                 DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
-            },true));
+            },false,type));
         }
     }
 

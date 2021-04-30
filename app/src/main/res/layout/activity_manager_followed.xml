@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/_12sdp"
             android:includeFontPadding="false"
-            android:text="600 Followed"
+            android:text="0 Followed"
             android:textColor="@color/white"
             android:textSize="@dimen/_12ssp"
             app:fontFamily="@font/poppins_light"

@@ -137,9 +137,11 @@ public class ManagerHomeFragment extends Fragment {
                 mBinding.tvViewAllRecentEvents.setVisibility(View.GONE);
             }
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
-            mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, data -> {
-                DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
-            },false));
+            mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
+                if (lisType.isEmpty()){
+                    DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
+                }
+            },true));
         }
     }
 }

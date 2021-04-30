@@ -93,4 +93,5 @@
     <string name="txt_ok">Ok</string>
     <string name="title_location_permission">Location Permission</string>
     <string name="text_location_permission">This app access your Location.</string>
+    <string name="followed_count">%1s Followed</string>
 </resources>

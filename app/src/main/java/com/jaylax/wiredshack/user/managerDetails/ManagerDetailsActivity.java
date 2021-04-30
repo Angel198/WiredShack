@@ -57,34 +57,43 @@ public class ManagerDetailsActivity extends AppCompatActivity {
 
     private void getManagerDetails() {
         if (Commons.isOnline(mContext)) {
-            progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
             HashMap<String, String> params = new HashMap<>();
             params.put("manager_id", mangerId);
-            ApiClient.create().getEventMangerDetails(params).enqueue(new Callback<ManagerDetailsMainModel>() {
-                @Override
-                public void onResponse(Call<ManagerDetailsMainModel> call, Response<ManagerDetailsMainModel> response) {
-                    progressDialog.dismiss();
-                    if (response.code() == 200 && response.isSuccessful()) {
-                        if (response.body() != null) {
-                            setRecentEventData(response.body().getData());
-                            if (!response.body().getStatus().equals("200")) {
+            Call<ManagerDetailsMainModel> call = null;
+
+            if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                call = ApiClient.create().getEventMangerDetails(params);
+            } else {
+                call = ApiClient.create().getEventMangerDetailsToken(header, params);
+            }
+            if (call != null) {
+                progressDialog.show();
+                call.enqueue(new Callback<ManagerDetailsMainModel>() {
+                    @Override
+                    public void onResponse(Call<ManagerDetailsMainModel> call, Response<ManagerDetailsMainModel> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                setRecentEventData(response.body().getData());
+                                if (!response.body().getStatus().equals("200")) {
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            } else {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
                         } else {
                             Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
-                    } else {
-                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ManagerDetailsMainModel> call, Throwable t) {
-                    progressDialog.dismiss();
-                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                }
-            });
+                    @Override
+                    public void onFailure(Call<ManagerDetailsMainModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            }
         } else {
             Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
         }
@@ -107,9 +116,9 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             }
         }
 
-        if (managerDetailsData.getFollowedCount() == null || managerDetailsData.getFollowedCount().isEmpty()){
+        if (managerDetailsData.getFollowedCount() == null || managerDetailsData.getFollowedCount().isEmpty()) {
             followCount = 0;
-        }else {
+        } else {
             followCount = Integer.parseInt(managerDetailsData.getFollowedCount());
         }
 
@@ -152,8 +161,10 @@ public class ManagerDetailsActivity extends AppCompatActivity {
                                         if (response.body().getStatus().equals("200")) {
                                             if (isFollow) {
                                                 isFollow = false;
+                                                followCount = followCount - 1;
                                             } else {
                                                 isFollow = true;
+                                                followCount = followCount + 1;
                                             }
                                             setFollowUI();
                                         } else {

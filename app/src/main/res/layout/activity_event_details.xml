@@ -165,6 +165,7 @@
                         tools:text="31st December DJ Party skadhjh asdjhkhajs" />
 
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvEventRequest"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/back_live_streaming"
