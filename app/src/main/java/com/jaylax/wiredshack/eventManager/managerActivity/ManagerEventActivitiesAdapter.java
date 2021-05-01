@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack.eventManager.managerActivity;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -7,12 +8,24 @@ import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemEventActivitiesBinding;
 import com.jaylax.wiredshack.databinding.ItemIncomingRequestBinding;
 
+import java.util.ArrayList;
+
 public class ManagerEventActivitiesAdapter extends RecyclerView.Adapter<ManagerEventActivitiesAdapter.MyViewHolder> {
-    public ManagerEventActivitiesAdapter() {
+
+    Context mContext;
+    ArrayList<ManagerActivityMainModel.ManagerActivityData> list;
+
+    public ManagerEventActivitiesAdapter(Context mContext, ArrayList<ManagerActivityMainModel.ManagerActivityData> list) {
+        this.mContext = mContext;
+        this.list = list;
     }
 
     @NonNull
@@ -23,12 +36,12 @@ public class ManagerEventActivitiesAdapter extends RecyclerView.Adapter<ManagerE
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind();
+        holder.bind(position,list.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return 10;
+        return list.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -39,7 +52,12 @@ public class ManagerEventActivitiesAdapter extends RecyclerView.Adapter<ManagerE
             this.mBinding = itemView;
         }
 
-        public void bind() {
+        public void bind(int position, ManagerActivityMainModel.ManagerActivityData data) {
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+            Glide.with(mContext).load(data.getProfileImage() == null ? "" : data.getProfileImage()).apply(options).into(mBinding.imgActivity);
+            mBinding.tvActivityUserName.setText(data.getName() == null ? "N/A" : data.getName());
+            mBinding.tvActivityDescription.setText(data.getMessage() == null ? " N/A" : " " + data.getMessage());
+            mBinding.tvActivityTime.setText(data.getTime() == null ? "" : " " +data.getTime());
 
         }
     }

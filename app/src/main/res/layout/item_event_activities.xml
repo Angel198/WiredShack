@@ -10,25 +10,28 @@
     android:gravity="center_vertical">
 
     <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/imgActivity"
         android:layout_width="@dimen/_40sdp"
         android:layout_height="@dimen/_40sdp"
-        android:src="@drawable/dummy"/>
+        android:src="@drawable/place_holder"/>
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvActivityUserName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/_10sdp"
         tools:ignore="RtlCompat"
-        android:text="Samantha Rose "
+        tools:text="Samantha Rose "
         android:textSize="@dimen/_10ssp"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/white"
         android:includeFontPadding="false"/>
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvActivityDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="requested to follow you "
+        tools:text="requested to follow you "
         android:textSize="@dimen/_10ssp"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/white"
@@ -36,9 +39,10 @@
 
 
     <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tvActivityTime"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="23h"
+        tools:text="23h"
         android:textSize="@dimen/_8ssp"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/colorHintTex"

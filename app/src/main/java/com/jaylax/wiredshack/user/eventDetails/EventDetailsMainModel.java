@@ -97,6 +97,9 @@ public class EventDetailsMainModel {
         @SerializedName("longitude")
         @Expose
         private String longitude;
+        @SerializedName("is_request")
+        @Expose
+        private String isRequest;
 
         public String getId() {
             return id;
@@ -274,6 +277,13 @@ public class EventDetailsMainModel {
             this.longitude = longitude;
         }
 
+        public String getIsRequest() {
+            return isRequest;
+        }
+
+        public void setIsRequest(String isRequest) {
+            this.isRequest = isRequest;
+        }
 
         public class EventImage implements Serializable {
             @SerializedName("images")

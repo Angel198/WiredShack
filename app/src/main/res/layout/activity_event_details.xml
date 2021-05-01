@@ -54,10 +54,10 @@
                         android:id="@+id/imgBack"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_12sdp"
                         android:src="@drawable/back_arrow"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:padding="@dimen/_12sdp"/>
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -164,22 +164,63 @@
                         app:fontFamily="@font/poppins_medium"
                         tools:text="31st December DJ Party skadhjh asdjhkhajs" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvEventRequest"
+                    <RelativeLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/back_live_streaming"
-                        android:includeFontPadding="false"
-                        android:paddingStart="@dimen/_10sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_10sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:text="@string/request_for_live_streaming"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
-                        app:fontFamily="@font/poppins_medium"
-                        tools:ignore="RtlCompat" />
+                        android:layout_height="wrap_content">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventCancelRequest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/back_border_white"
+                            android:includeFontPadding="false"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:text="@string/cancel_request_for_live_streaming"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            tools:ignore="RtlCompat"
+                            android:visibility="gone"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventRequest"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/back_live_streaming"
+                            android:includeFontPadding="false"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:text="@string/request_for_live_streaming"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            tools:ignore="RtlCompat"
+                            android:visibility="gone"/>
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventRequestAccepted"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:includeFontPadding="false"
+                            android:paddingStart="@dimen/_10sdp"
+                            android:paddingTop="@dimen/_3sdp"
+                            android:paddingEnd="@dimen/_10sdp"
+                            android:paddingBottom="@dimen/_3sdp"
+                            android:text="@string/request_accepted"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorGoogleGreen"
+                            android:textSize="@dimen/_10ssp"
+                            app:fontFamily="@font/poppins_bold"
+                            tools:ignore="RtlCompat"
+                            android:visibility="gone"/>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <View

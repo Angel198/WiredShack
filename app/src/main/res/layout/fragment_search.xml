@@ -45,6 +45,7 @@
             android:src="@drawable/search_white" />
 
         <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/edtSearchManager"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
@@ -104,13 +105,13 @@
                 android:id="@+id/linearSearchByLocation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingEnd="@dimen/_10sdp"
-                android:paddingStart="@dimen/_10sdp"
+                android:paddingEnd="@dimen/_12sdp"
+                android:paddingStart="@dimen/_12sdp"
                 android:layout_marginStart="@dimen/_12sdp"
                 android:layout_marginEnd="@dimen/_12sdp"
                 android:background="@drawable/back_search_round"
-                android:paddingTop="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_8sdp"
+                android:paddingTop="@dimen/_5sdp"
+                android:paddingBottom="@dimen/_5sdp"
                 android:gravity="center_vertical"
                 android:layout_marginTop="@dimen/_10sdp">
 
@@ -147,7 +148,7 @@
                 android:id="@+id/frameMap"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_170sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_marginBottom="@dimen/_5sdp">
 
                 <fragment

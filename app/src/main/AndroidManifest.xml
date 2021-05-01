@@ -7,8 +7,8 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".MyApp"
@@ -20,32 +20,51 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme.one"
         android:usesCleartextTraffic="true">
-        <activity android:name=".eventimage.EventImagesActivity"
+        <activity
+            android:name=".eventimage.EventImagesActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.followed.ManagerFollowedActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.wishlist.UserWishListActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.managerDetails.ManagerDetailsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.following.UserFollowingActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.editEvent.ManagerEditEventActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".EditProfileActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one"
             android:windowSoftInputMode="stateVisible|adjustResize" />
         <activity
             android:name=".user.eventDetails.EventDetailsActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.dashboard.DashboardEventManagerActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one">
 
             <!--
@@ -58,6 +77,8 @@
         </activity>
         <activity
             android:name=".user.dashboard.DashboardActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one">
 
             <!--
@@ -68,10 +89,26 @@
             </intent-filter>
             -->
         </activity>
-        <activity android:name=".ForgetPasswordActivity" />
-        <activity android:name=".LoginActivity" />
-        <activity android:name=".RegistrationActivity" />
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".ForgetPasswordActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one" />
+        <activity
+            android:name=".LoginActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one"/>
+        <activity
+            android:name=".RegistrationActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one" />
+        <activity
+            android:name=".MainActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

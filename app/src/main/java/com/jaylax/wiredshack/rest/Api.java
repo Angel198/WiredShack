@@ -2,14 +2,19 @@ package com.jaylax.wiredshack.rest;
 
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 import com.jaylax.wiredshack.eventManager.managerActivity.IncomingRequestMainModel;
+import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityMainModel;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
+import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
+import com.jaylax.wiredshack.user.notification.AcceptedEventMainModel;
+import com.jaylax.wiredshack.user.notification.PendingRequestMainModel;
 import com.jaylax.wiredshack.user.wishlist.UserWishListMainModel;
 
 import java.util.ArrayList;
@@ -70,7 +75,7 @@ public interface Api {
     Call<CommonResponseModel> followManager(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @GET("api/auth/recenteventlist")
-    Call<RecentEventMainModel> getRecentEventsUser(@Header("Authorization") String authHeader);
+    Call<RecentEventMainModel> getRecentEventsUser();
 
     @POST("api/auth/recentevent")
     Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
@@ -80,6 +85,15 @@ public interface Api {
 
     @POST("api/auth/managerlist")
     Call<ManagerListMainModel> getEventsManager(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/guestmanagerlist")
+    Call<ManagerListMainModel> getGuestEventsManager();
+
+    @POST("api/auth/managerlist")
+    Call<ManagerListMainModel> getEventsManagerFilter(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/guestmanagerlist")
+    Call<ManagerListMainModel> getGuestEventsManagerFilter(@Body HashMap<String, String> params);
 
     @POST("api/auth/geteventdetails")
     Call<EventDetailsMainModel> getEventDetails(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
@@ -99,6 +113,9 @@ public interface Api {
     @POST("api/auth/followeduser")
     Call<ManagerFollowedMainModel> getFollowedData(@Header("Authorization") String authHeader);
 
+    @POST("api/auth/followingmanager")
+    Call<UserFollowingMainModel> getFollowingData(@Header("Authorization") String authHeader);
+
     @POST("api/auth/user-event-request")
     Call<CommonResponseModel> requestForLiveStream(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
@@ -107,4 +124,19 @@ public interface Api {
 
     @POST("api/auth/wishlist")
     Call<UserWishListMainModel> getWishList(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/approve_cancel-request")
+    Call<CommonResponseModel> approveCancelRequest(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/event_following_user")
+    Call<FollowingEventMainModel> getUserFollowingEvents(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/event_activity")
+    Call<ManagerActivityMainModel> getAccountActivity(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/user-event-requestpending")
+    Call<PendingRequestMainModel> getUserSentEventRequest(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/user-event-requestaccepet")
+    Call<AcceptedEventMainModel> getUserAcceptedEvent(@Header("Authorization") String authHeader);
 }

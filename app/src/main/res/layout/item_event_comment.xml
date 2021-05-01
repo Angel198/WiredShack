@@ -22,8 +22,8 @@
 
             <de.hdodenhof.circleimageview.CircleImageView
                 android:id="@+id/imgCommentProfile"
-                android:layout_width="@dimen/_45sdp"
-                android:layout_height="@dimen/_45sdp"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
                 android:src="@drawable/dummy"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/imgCommentProfile"
                 app:layout_constraintStart_toEndOf="@id/imgCommentProfile"
                 app:layout_constraintTop_toTopOf="@id/imgCommentProfile"
-                app:layout_constraintEnd_toStartOf="@id/imgCommentOption"
+                app:layout_constraintEnd_toStartOf="@id/tvCommentTime"
                 android:layout_marginStart="@dimen/_5sdp"
                 tools:ignore="RtlCompat"
                 android:orientation="vertical">
@@ -49,7 +49,7 @@
                     android:includeFontPadding="false"
                     android:textColor="@color/white" />
 
-                <androidx.appcompat.widget.AppCompatTextView
+                <!--<androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvCommentTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -58,17 +58,30 @@
                     android:textSize="@dimen/_10ssp"
                     android:includeFontPadding="false"
                     android:textColor="@color/colorHintTex"
-                    android:layout_marginTop="@dimen/_3sdp"/>
+                    android:layout_marginTop="@dimen/_3sdp"/>-->
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tvCommentTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="2 Hours Ago"
+                app:fontFamily="@font/poppins_light"
+                android:textSize="@dimen/_10ssp"
+                android:includeFontPadding="false"
+                android:textColor="@color/colorHintTex"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/_10sdp"/>
+
+            <!--<androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgCommentOption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/comment_options"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                android:layout_marginTop="@dimen/_10sdp"/>-->
 
 
             <androidx.appcompat.widget.AppCompatTextView

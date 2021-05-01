@@ -33,15 +33,15 @@ public class ManagerFollowedMainModel {
         @SerializedName("id")
         @Expose
         private String id;
-        @SerializedName("manager_name")
+        @SerializedName("user_name")
         @Expose
-        private String managerName;
-        @SerializedName("manager_image")
+        private String userName;
+        @SerializedName("user_image")
         @Expose
-        private String managerImage;
-        @SerializedName("manager_cover_image")
+        private String userImage;
+        @SerializedName("user_cover_image")
         @Expose
-        private String managerCoverImage;
+        private String userCoverImage;
 
         public String getId() {
             return id;
@@ -51,28 +51,28 @@ public class ManagerFollowedMainModel {
             this.id = id;
         }
 
-        public String getManagerName() {
-            return managerName;
+        public String getUserName() {
+            return userName;
         }
 
-        public void setManagerName(String managerName) {
-            this.managerName = managerName;
+        public void setUserName(String userName) {
+            this.userName = userName;
         }
 
-        public String getManagerImage() {
-            return managerImage;
+        public String getUserImage() {
+            return userImage;
         }
 
-        public void setManagerImage(String managerImage) {
-            this.managerImage = managerImage;
+        public void setUserImage(String userImage) {
+            this.userImage = userImage;
         }
 
-        public String getManagerCoverImage() {
-            return managerCoverImage;
+        public String getUserCoverImage() {
+            return userCoverImage;
         }
 
-        public void setManagerCoverImage(String managerCoverImage) {
-            this.managerCoverImage = managerCoverImage;
+        public void setUserCoverImage(String userCoverImage) {
+            this.userCoverImage = userCoverImage;
         }
     }
 }

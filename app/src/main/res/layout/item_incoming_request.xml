@@ -46,10 +46,11 @@
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRequestAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="RtlCompat"
-            android:text="@string/accepted"
+            android:text="@string/accept"
             android:textSize="@dimen/_10ssp"
             app:fontFamily="@font/poppins_medium"
             android:includeFontPadding="false"
@@ -60,9 +61,11 @@
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
             android:background="@drawable/back_follow"
-            android:layout_marginEnd="@dimen/_5sdp"/>
+            android:layout_marginEnd="@dimen/_5sdp"
+            android:layout_gravity="center_vertical"/>
 
         <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tvRequestCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:ignore="RtlCompat"
@@ -76,6 +79,7 @@
             android:paddingBottom="@dimen/_3sdp"
             android:paddingStart="@dimen/_10sdp"
             android:paddingEnd="@dimen/_10sdp"
-            android:background="@drawable/back_border_white"/>
+            android:background="@drawable/back_border_white"
+            android:layout_gravity="center_vertical"/>
     </LinearLayout>
 </layout>

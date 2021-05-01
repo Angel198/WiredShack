@@ -25,6 +25,8 @@
     <string name="event_activities">Event Activities</string>
     <string name="txt_cancel">Cancel</string>
     <string name="request_for_live_streaming">Request for\nLive Streaming</string>
+    <string name="cancel_request_for_live_streaming">Cancel Request of\nLive Streaming</string>
+    <string name="request_accepted">Request\nAccepted</string>
     <string name="dummy_event_description">As conscious traveling Paupers we must always be concerned about our dear Mother Earth.</string>
     <string name="dummy_event_date">Event Date : 31 Jan 2021</string>
     <string name="event_date">Event Date : %1s</string>
@@ -95,4 +97,6 @@
     <string name="text_location_permission">This app access your Location.</string>
     <string name="followed_count">%1s Followed</string>
     <string name="live_now">Live Now</string>
+    <string name="accept">Accept</string>
+    <string name="request">Request</string>
 </resources>

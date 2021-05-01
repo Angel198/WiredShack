@@ -61,7 +61,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         replaceFragment(new HomeFragment(), "Home");
         initListener();
-        checkLocationPermission();
+//        checkLocationPermission();
     }
 
     private void replaceFragment(Fragment fragment, String tagFragment) {

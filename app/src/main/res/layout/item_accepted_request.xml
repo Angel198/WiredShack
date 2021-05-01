@@ -35,9 +35,10 @@
             android:paddingEnd="@dimen/_12sdp">
 
             <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgAcceptedProfile"
                 android:layout_width="@dimen/_40sdp"
                 android:layout_height="@dimen/_40sdp"
-                android:src="@drawable/dummy"
+                android:src="@drawable/place_holder"
                 />
 
             <LinearLayout
@@ -48,17 +49,19 @@
                 android:paddingHorizontal="@dimen/_10sdp">
 
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvManagerName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="User Name"
+                    tools:text="User Name"
                     app:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
                     android:textSize="@dimen/_14ssp"
                     android:textColor="@color/white" />
                 <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvEventName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Description"
+                    tools:text="Description"
                     app:fontFamily="@font/poppins_medium"
                     android:includeFontPadding="false"
                     android:textSize="@dimen/_8ssp"
@@ -66,7 +69,6 @@
             </LinearLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvViewSentRequest"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 tools:ignore="RtlCompat"

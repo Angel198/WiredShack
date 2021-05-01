@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -39,6 +40,7 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     String mangerId = "";
     boolean isFollow = false;
     int followCount = 0;
+    int searchDataPos = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,9 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             getManagerDetails();
         }
 
+        if (getIntent().hasExtra("listPos")){
+            searchDataPos = Integer.parseInt(getIntent().getStringExtra("listPos"));
+        }
         setClickListener();
     }
 
@@ -138,59 +143,58 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     }
 
     private void setClickListener() {
-        mBinding.imgBack.setOnClickListener(view -> onBackPressed());
+        mBinding.imgBack.setOnClickListener(view ->{
+            onBackPressed();
+        });
 
-        mBinding.tvFollow.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
-                    openLogin();
-                } else {
-                    if (Commons.isOnline(mContext)) {
-                        progressDialog.show();
-                        HashMap<String, String> params = new HashMap<>();
-                        params.put("manager_id", mangerId);
+        mBinding.tvFollow.setOnClickListener(view -> {
+            if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                openLogin();
+            } else {
+                if (Commons.isOnline(mContext)) {
+                    progressDialog.show();
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("manager_id", mangerId);
 
-                        String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-                        ApiClient.create().followManager(header, params).enqueue(new Callback<CommonResponseModel>() {
-                            @Override
-                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                                progressDialog.dismiss();
-                                if (response.code() == 200 && response.isSuccessful()) {
-                                    if (response.body() != null) {
-                                        if (response.body().getStatus().equals("200")) {
-                                            if (isFollow) {
-                                                isFollow = false;
-                                                followCount = followCount - 1;
-                                            } else {
-                                                isFollow = true;
-                                                followCount = followCount + 1;
-                                            }
-                                            setFollowUI();
+                    String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                    ApiClient.create().followManager(header, params).enqueue(new Callback<CommonResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200 && response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    if (response.body().getStatus().equals("200")) {
+                                        if (isFollow) {
+                                            isFollow = false;
+                                            followCount = followCount - 1;
                                         } else {
-                                            String msg = "";
-                                            if (response.body().getMessage().isEmpty()) {
-                                                msg = getResources().getString(R.string.please_try_after_some_time);
-                                            } else {
-                                                msg = response.body().getMessage();
-                                            }
-                                            Commons.showToast(mContext, msg);
+                                            isFollow = true;
+                                            followCount = followCount + 1;
                                         }
+                                        setFollowUI();
+                                    } else {
+                                        String msg = "";
+                                        if (response.body().getMessage().isEmpty()) {
+                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                                        } else {
+                                            msg = response.body().getMessage();
+                                        }
+                                        Commons.showToast(mContext, msg);
                                     }
-                                } else {
-                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                                 }
+                            } else {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
+                        }
 
-                            @Override
-                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                                progressDialog.dismiss();
-                                Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                            }
-                        });
-                    } else {
-                        Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
-                    }
+                        @Override
+                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        }
+                    });
+                } else {
+                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
                 }
             }
         });
@@ -199,7 +203,7 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     private void setFollowUI() {
         if (isFollow) {
             mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.back_border_white));
-            mBinding.tvFollow.setText(mContext.getResources().getString(R.string.unfollow));
+            mBinding.tvFollow.setText(mContext.getResources().getString(R.string.following));
         } else {
             mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.back_follow));
             mBinding.tvFollow.setText(mContext.getResources().getString(R.string.follow));
@@ -211,5 +215,17 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     private void openLogin() {
         Intent intent = new Intent(mContext, LoginActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (searchDataPos != (-1)){
+            String followFlag = isFollow ? "1": "0";
+            Intent intent = new Intent();
+            intent.putExtra("listPos",String.valueOf(searchDataPos));
+            intent.putExtra("followFlag",followFlag);
+            setResult(Activity.RESULT_OK,intent);
+        }
+        super.onBackPressed();
     }
 }

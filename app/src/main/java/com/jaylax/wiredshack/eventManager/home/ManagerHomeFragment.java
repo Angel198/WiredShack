@@ -41,6 +41,7 @@ public class ManagerHomeFragment extends Fragment {
     Context mContext;
     ProgressDialog progressDialog;
     UserDetailsModel userDetailsModel;
+    String followedCount = "0";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,7 +62,6 @@ public class ManagerHomeFragment extends Fragment {
         Glide.with(this).load(userDetailsModel.getCoverImage() == null ? "" : userDetailsModel.getCoverImage()).apply(options).into(mBinding.imgAccountCover);
 
         mBinding.tvAccountProfileName.setText(userDetailsModel.getName());
-        String followedCount = "0";
         if (userDetailsModel.getFollowed() != null  ){
             if (!userDetailsModel.getFollowed().isEmpty()) {
                 followedCount = userDetailsModel.getFollowed();
@@ -81,8 +81,10 @@ public class ManagerHomeFragment extends Fragment {
         });
 
         mBinding.linearFollowedCount.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), ManagerFollowedActivity.class);
-            mContext.startActivity(intent);
+            if (Integer.parseInt(followedCount) > 0) {
+                Intent intent = new Intent(getActivity(), ManagerFollowedActivity.class);
+                mContext.startActivity(intent);
+            }
         });
     }
 

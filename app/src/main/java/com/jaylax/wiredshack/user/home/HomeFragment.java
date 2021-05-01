@@ -64,34 +64,43 @@ public class HomeFragment extends Fragment {
     }
     private void getEventManagerList(){
         if (Commons.isOnline(context)){
-            progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getEventsManager(header).enqueue(new Callback<ManagerListMainModel>() {
-                @Override
-                public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
-                    progressDialog.dismiss();
-                    getEventList();
-                    if (response.code() == 200 && response.isSuccessful()) {
-                        if (response.body() != null) {
-                            setEventManagerData(response.body().getData());
-                            if (!response.body().getStatus().equals("200")){
+
+            Call<ManagerListMainModel> call;
+            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()){
+                call = ApiClient.create().getGuestEventsManager();
+            }else {
+                call = ApiClient.create().getEventsManager(header);
+            }
+            if (call != null) {
+                progressDialog.show();
+                call.enqueue(new Callback<ManagerListMainModel>() {
+                    @Override
+                    public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
+                        progressDialog.dismiss();
+                        getEventList();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                setEventManagerData(response.body().getData());
+                                if (!response.body().getStatus().equals("200")){
+                                    Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            }else {
                                 Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                             }
-                        }else {
+                        } else {
                             Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                         }
-                    } else {
-                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                     }
-                }
 
-                @Override
-                public void onFailure(Call<ManagerListMainModel> call, Throwable t) {
-                    progressDialog.dismiss();
-                    getEventList();
-                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
-                }
-            });
+                    @Override
+                    public void onFailure(Call<ManagerListMainModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        getEventList();
+                        Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            }
         }else {
             Commons.showToast(context, context.getResources().getString(R.string.no_internet_connection));
         }
@@ -115,7 +124,7 @@ public class HomeFragment extends Fragment {
         if (Commons.isOnline(context)){
             progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getRecentEventsUser(header).enqueue(new Callback<RecentEventMainModel>() {
+            ApiClient.create().getRecentEventsUser().enqueue(new Callback<RecentEventMainModel>() {
                 @Override
                 public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
                     progressDialog.dismiss();

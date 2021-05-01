@@ -1,20 +1,19 @@
-package com.jaylax.wiredshack.model;
+package com.jaylax.wiredshack.user.account;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
+import com.jaylax.wiredshack.model.RecentEventMainModel;
 
 import java.util.ArrayList;
-import java.util.List;
 
-public class RecentEventMainModel {
+public class FollowingEventMainModel {
 
     @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("data")
     @Expose
-    private ArrayList<RecentEventData> data = new ArrayList<>();
+    private ArrayList<FollowingEventData> data = new ArrayList<>();
 
     public String getStatus() {
         return status;
@@ -24,16 +23,15 @@ public class RecentEventMainModel {
         this.status = status;
     }
 
-    public ArrayList<RecentEventData> getData() {
+    public ArrayList<FollowingEventData> getData() {
         return data;
     }
 
-    public void setData(ArrayList<RecentEventData> data) {
+    public void setData(ArrayList<FollowingEventData> data) {
         this.data = data;
     }
 
-
-    public static class RecentEventData {
+    public class FollowingEventData{
         @SerializedName("id")
         @Expose
         private String id;
@@ -67,21 +65,18 @@ public class RecentEventMainModel {
         @SerializedName("created_at")
         @Expose
         private String createdAt;
-        @SerializedName("latitude")
+        @SerializedName("request_status")
         @Expose
-        private String latitude;
-        @SerializedName("longitude")
-        @Expose
-        private String longitude;
+        private String requestStatus;
         @SerializedName("images")
         @Expose
-        private ArrayList<EventImage> images = new ArrayList<>();
+        private ArrayList<FollowingEventImage> images = new ArrayList<>();
 
-        public ArrayList<EventImage> getImages() {
+        public ArrayList<FollowingEventImage> getImages() {
             return images;
         }
 
-        public void setImages(ArrayList<EventImage> images) {
+        public void setImages(ArrayList<FollowingEventImage> images) {
             this.images = images;
         }
 
@@ -173,36 +168,28 @@ public class RecentEventMainModel {
             this.createdAt = createdAt;
         }
 
-        public String getLatitude() {
-            return latitude;
+        public String getRequestStatus() {
+            return requestStatus;
         }
 
-        public void setLatitude(String latitude) {
-            this.latitude = latitude;
+        public void setRequestStatus(String requestStatus) {
+            this.requestStatus = requestStatus;
         }
 
-        public String getLongitude() {
-            return longitude;
-        }
-
-        public void setLongitude(String longitude) {
-            this.longitude = longitude;
-        }
-
-        public static class EventImage {
-            @SerializedName("images")
+        public class FollowingEventImage {
+            @SerializedName("image")
             @Expose
-            private String images;
+            private String image;
             @SerializedName("id")
             @Expose
             private String id;
 
-            public String getImages() {
-                return images;
+            public String getImage() {
+                return image;
             }
 
-            public void setImages(String images) {
-                this.images = images;
+            public void setImage(String images) {
+                this.image = images;
             }
 
             public String getId() {
@@ -214,4 +201,5 @@ public class RecentEventMainModel {
             }
         }
     }
+
 }

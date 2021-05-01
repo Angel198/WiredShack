@@ -1,23 +1,18 @@
 package com.jaylax.wiredshack.eventManager.followed;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerFollowedBinding;
-import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
-import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
-import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.following.UserFollowingAdapter;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 

@@ -22,9 +22,11 @@ import com.jaylax.wiredshack.EditProfileActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentAccountBinding;
+import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
+import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 import com.jaylax.wiredshack.user.wishlist.UserWishListActivity;
@@ -43,6 +45,7 @@ public class AccountFragment extends Fragment {
     FragmentAccountBinding mBinding;
     Context mContext;
     ProgressDialog progressDialog;
+    String followingCount = "0";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,11 +61,6 @@ public class AccountFragment extends Fragment {
         mContext = getActivity();
         progressDialog = new ProgressDialog(mContext);
 
-        mBinding.recyclerAccountFollowingEvents.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-        mBinding.recyclerAccountFollowingEvents.setAdapter(new HomeRecentEventAdapter(mContext, new ArrayList<>(), data -> {
-
-        }));
-
         mBinding.tvAccountEditProfile.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), EditProfileActivity.class);
             Objects.requireNonNull(getActivity()).startActivity(intent);
@@ -74,8 +72,10 @@ public class AccountFragment extends Fragment {
         });
 
         mBinding.linearAccountFollowing.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), UserFollowingActivity.class);
-            Objects.requireNonNull(getActivity()).startActivity(intent);
+            if (Integer.parseInt(followingCount) > 0) {
+                Intent intent = new Intent(getActivity(), UserFollowingActivity.class);
+                Objects.requireNonNull(getActivity()).startActivity(intent);
+            }
         });
 
         mBinding.imgAccountLogout.setOnClickListener(view -> {
@@ -127,14 +127,60 @@ public class AccountFragment extends Fragment {
 
         mBinding.tvAccountProfileName.setText(userDetailsModel.getName());
 
-        String followingCount = "0";
         if (userDetailsModel.getFollowing() != null){
             if (!userDetailsModel.getFollowing().isEmpty()) {
                 followingCount = userDetailsModel.getFollowing();
             }
         }
         mBinding.tvFollowCount.setText(followingCount);
+        getFollowingEvents();
+    }
 
+    private void getFollowingEvents() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().getUserFollowingEvents(header).enqueue(new Callback<FollowingEventMainModel>() {
+                @Override
+                public void onResponse(Call<FollowingEventMainModel> call, Response<FollowingEventMainModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            setFollowingEventData(response.body().getData());
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<FollowingEventMainModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setFollowingEventData(ArrayList<FollowingEventMainModel.FollowingEventData> list) {
+        if (list.isEmpty()){
+            mBinding.linearAccountFollowingEvent.setVisibility(View.GONE);
+        }else {
+            mBinding.linearAccountFollowingEvent.setVisibility(View.VISIBLE);
+            mBinding.recyclerAccountFollowingEvents.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            mBinding.recyclerAccountFollowingEvents.setAdapter(new AccountFollowingEventAdapter(mContext, list, data -> {
+                Intent intent = new Intent(mContext, EventDetailsActivity.class);
+                intent.putExtra("eventId",data.getId());
+                mContext.startActivity(intent);
+            }));
+        }
     }
 
     private void showLogoutDialog() {

@@ -52,8 +52,8 @@ public class ManagerFollowedAdapter extends RecyclerView.Adapter<ManagerFollowed
 
         void bind(int pos, ManagerFollowedMainModel.ManagerFollowedData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
-            Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgUserProfile);
-            mBinding.tvUserName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
+            Glide.with(context).load(data.getUserImage() == null ? "" : data.getUserImage()).apply(options).into(mBinding.imgUserProfile);
+            mBinding.tvUserName.setText(data.getUserName() == null ? "N/A" : data.getUserName());
             mBinding.tvFollow.setText(context.getResources().getString(R.string.following));
         }
     }

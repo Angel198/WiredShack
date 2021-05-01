@@ -160,6 +160,9 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
             setLikeCommentCount();
 
+            requestFlag = eventDetailsData.getIsRequest() ==  null ?"":eventDetailsData.getIsRequest();
+            setRequestUI();
+
 //            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
             mBinding.tvEventName.setText(eventDetailsData.getEventName());
             if (eventDetailsData.getImages().isEmpty()) {
@@ -422,7 +425,55 @@ public class EventDetailsActivity extends AppCompatActivity {
                             if (response.code() == 200 && response.isSuccessful()) {
                                 if (response.body() != null) {
                                     if (response.body().getStatus().equals("200")) {
+                                        requestFlag = "1";
+                                        setRequestUI();
+                                    } else {
+                                        String msg = "";
+                                        if (response.body().getMessage().isEmpty()) {
+                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                                        } else {
+                                            msg = response.body().getMessage();
+                                        }
+                                        Commons.showToast(mContext, msg);
+                                    }
+                                }
+                            } else {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }
 
+                        @Override
+                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        }
+                    });
+                } else {
+                    Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+                }
+            }
+        });
+
+        mBinding.tvEventCancelRequest.setOnClickListener(view -> {
+            if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                openLogin();
+            } else {
+                if (Commons.isOnline(mContext)) {
+                    progressDialog.show();
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("event_id", eventId);
+//                    params.put("status","0");
+
+                    String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                    ApiClient.create().approveCancelRequest(header, params).enqueue(new Callback<CommonResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200 && response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    if (response.body().getStatus().equals("200")) {
+                                        requestFlag = "0";
+                                        setRequestUI();
                                     } else {
                                         String msg = "";
                                         if (response.body().getMessage().isEmpty()) {
@@ -454,7 +505,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private void setFollowUI() {
         if (isFollow) {
             mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.back_border_white));
-            mBinding.tvFollow.setText(mContext.getResources().getString(R.string.unfollow));
+            mBinding.tvFollow.setText(mContext.getResources().getString(R.string.following));
         } else {
             mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(mContext, R.drawable.back_follow));
             mBinding.tvFollow.setText(mContext.getResources().getString(R.string.follow));
@@ -477,6 +528,22 @@ public class EventDetailsActivity extends AppCompatActivity {
                     drawable.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(mBinding.tvEventLike.getContext(), R.color.white), PorterDuff.Mode.SRC_IN));
                 }
             }
+        }
+    }
+
+    private void setRequestUI(){
+        if (requestFlag.equals("1")){
+            mBinding.tvEventRequest.setVisibility(View.GONE);
+            mBinding.tvEventCancelRequest.setVisibility(View.VISIBLE);
+            mBinding.tvEventRequestAccepted.setVisibility(View.GONE);
+        }else if (requestFlag.equals("2")){
+            mBinding.tvEventRequest.setVisibility(View.GONE);
+            mBinding.tvEventCancelRequest.setVisibility(View.GONE);
+            mBinding.tvEventRequestAccepted.setVisibility(View.VISIBLE);
+        }else {
+            mBinding.tvEventRequest.setVisibility(View.VISIBLE);
+            mBinding.tvEventCancelRequest.setVisibility(View.GONE);
+            mBinding.tvEventRequestAccepted.setVisibility(View.GONE);
         }
     }
 

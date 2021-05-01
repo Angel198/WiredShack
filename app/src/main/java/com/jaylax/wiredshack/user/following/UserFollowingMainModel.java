@@ -1,17 +1,18 @@
-package com.jaylax.wiredshack.user.home;
+package com.jaylax.wiredshack.user.following;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 
 import java.util.ArrayList;
 
-public class ManagerListMainModel {
+public class UserFollowingMainModel {
     @SerializedName("status")
     @Expose
     private String status;
     @SerializedName("data")
     @Expose
-    private ArrayList<ManagerListData> data = new ArrayList<>();
+    private ArrayList<UserFollowingData> data = new ArrayList<>();
 
     public String getStatus() {
         return status;
@@ -21,15 +22,15 @@ public class ManagerListMainModel {
         this.status = status;
     }
 
-    public ArrayList<ManagerListData> getData() {
+    public ArrayList<UserFollowingData> getData() {
         return data;
     }
 
-    public void setData(ArrayList<ManagerListData> data) {
+    public void setData(ArrayList<UserFollowingData> data) {
         this.data = data;
     }
 
-    public class ManagerListData{
+    public class UserFollowingData{
         @SerializedName("id")
         @Expose
         private String id;
@@ -39,12 +40,11 @@ public class ManagerListMainModel {
         @SerializedName("manager_image")
         @Expose
         private String managerImage;
-        @SerializedName("manager_cover_image")
+        @SerializedName("managerCoverImage")
         @Expose
         private String managerCoverImage;
-        @SerializedName("following")
-        @Expose
-        private String following;
+
+        private String isFollow;
 
         public String getId() {
             return id;
@@ -78,12 +78,12 @@ public class ManagerListMainModel {
             this.managerCoverImage = managerCoverImage;
         }
 
-        public String getFollowing() {
-            return following;
+        public String getIsFollow() {
+            return isFollow;
         }
 
-        public void setFollowing(String following) {
-            this.following = following;
+        public void setIsFollow(String isFollow) {
+            this.isFollow = isFollow;
         }
     }
 }
