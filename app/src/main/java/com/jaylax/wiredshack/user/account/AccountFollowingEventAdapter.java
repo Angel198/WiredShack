@@ -83,7 +83,7 @@ public class AccountFollowingEventAdapter extends RecyclerView.Adapter<AccountFo
         }
     }
 
-    interface FollowingEventClick{
+    public interface FollowingEventClick{
         void onEventClick(FollowingEventMainModel.FollowingEventData data);
     }
 }

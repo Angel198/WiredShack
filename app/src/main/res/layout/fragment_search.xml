@@ -180,7 +180,8 @@
                     android:layout_height="@dimen/_30sdp"
                     android:layout_gravity="end|bottom"
                     android:layout_margin="@dimen/_15sdp"
-                    android:src="@drawable/ic_current_location_add" />
+                    android:src="@drawable/ic_current_location_add"
+                    android:visibility="gone"/>
 
             </FrameLayout>
 

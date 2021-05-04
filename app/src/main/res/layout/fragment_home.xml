@@ -74,6 +74,7 @@
                 </LinearLayout>
 
                 <RelativeLayout
+                    android:id="@+id/relativeUpcomingEvent"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_200sdp"
                     android:layout_marginStart="@dimen/_10sdp"
@@ -82,22 +83,30 @@
                     android:layout_marginBottom="@dimen/_10sdp">
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgUpcomingEvent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:background="@color/white37" />
 
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@color/colorBlackTrans"/>
                     <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvUpcomingEvent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
                         android:gravity="center_horizontal"
                         android:includeFontPadding="false"
                         android:text="@string/upcoming_live_stream"
-                        android:textColor="@color/white37"
-                        android:textSize="@dimen/_22ssp"
-                        app:fontFamily="@font/poppins_medium" />
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_20ssp"
+                        app:fontFamily="@font/poppins_medium"
+                        android:layout_margin="@dimen/_10sdp"/>
 
                     <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgUpcomingEventVideo"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"

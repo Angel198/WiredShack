@@ -217,7 +217,10 @@ public class ManagerEventDetailsFragment extends Fragment {
             if (isEventLive()) {
                 mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
                 mBinding.tvEventEdit.setVisibility(View.GONE);
-            } else {
+            } else if (isEventClose()){
+                mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                mBinding.tvEventEdit.setVisibility(View.GONE);
+            }else {
                 mBinding.tvEventLiveNow.setVisibility(View.GONE);
                 mBinding.tvEventEdit.setVisibility(View.VISIBLE);
             }
@@ -304,20 +307,42 @@ public class ManagerEventDetailsFragment extends Fragment {
     private boolean isEventLive() {
         boolean isLive = false;
         Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null) {
-            String eventTime = eventDetailsData.getDate() + " " + eventDetailsData.getStime();
-            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null&& eventDetailsData.getEtime() != null) {
+            String eventSTime = eventDetailsData.getDate() + " " + eventDetailsData.getStime();
+
+            String eventETime = eventDetailsData.getDate() + " " + eventDetailsData.getEtime();
             try {
-                Date eventDate = format.parse(eventTime);
-                if (currentDate.after(eventDate)) {
+                Date eventSDate = format.parse(eventSTime);
+                Date eventEDate = format.parse(eventETime);
+                if (currentDate.after(eventSDate) && currentDate.before(eventEDate)) {
                     isLive = true;
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-
         return isLive;
+    }
+
+    private boolean isEventClose() {
+        boolean isClose = false;
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null) {
+
+            String eventETime = eventDetailsData.getDate() + " " + eventDetailsData.getEtime();
+            try {
+                Date eventEDate = format.parse(eventETime);
+                if (currentDate.after(eventEDate)) {
+                    isClose = true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return isClose;
     }
 }

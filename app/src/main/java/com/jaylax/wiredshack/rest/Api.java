@@ -12,6 +12,7 @@ import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
+import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
 import com.jaylax.wiredshack.user.notification.AcceptedEventMainModel;
 import com.jaylax.wiredshack.user.notification.PendingRequestMainModel;
@@ -88,6 +89,12 @@ public interface Api {
 
     @POST("api/auth/guestmanagerlist")
     Call<ManagerListMainModel> getGuestEventsManager();
+
+    @POST("api/auth/getupcomingevent")
+    Call<UpcomingEventMainModel> getUpcomingEvent(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/getupcomingevent_guest")
+    Call<UpcomingEventMainModel> getGuestUpcomingEvent();
 
     @POST("api/auth/managerlist")
     Call<ManagerListMainModel> getEventsManagerFilter(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);

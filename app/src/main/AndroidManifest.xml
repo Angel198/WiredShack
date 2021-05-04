@@ -21,6 +21,11 @@
         android:theme="@style/BaseTheme.one"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".user.upcoming.UpcomingEventActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one" />
+        <activity
             android:name=".eventimage.EventImagesActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
@@ -98,7 +103,7 @@
             android:name=".LoginActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/BaseTheme.one"/>
+            android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".RegistrationActivity"
             android:configChanges="orientation"
@@ -119,10 +124,7 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
-
-        <!--
-             The API key for Google Maps-based APIs.
-        -->
+        <!--              The API key for Google Maps-based APIs. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_place_key" />
