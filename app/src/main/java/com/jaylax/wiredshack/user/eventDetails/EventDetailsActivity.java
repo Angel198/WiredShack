@@ -27,6 +27,7 @@ import com.jaylax.wiredshack.databinding.ActivityEventDetailsBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.eventManager.eventdetails.EventImagesAdapter;
 import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
@@ -53,7 +54,12 @@ public class EventDetailsActivity extends AppCompatActivity {
     int likeCount = 0, commentCount = 0;
     boolean isLike = false;
     boolean isFollow = false;
-    String requestFlag ="";
+    String requestFlag = "";
+
+    ArrayList<EventCommentMainModel.EventCommentData> commentList = new ArrayList<>();
+    EventCommentAdapter commentAdapter = null;
+
+    UserDetailsModel userDetailsModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,9 @@ public class EventDetailsActivity extends AppCompatActivity {
 
         mContext = this;
         progressDialog = new ProgressDialog(mContext);
+        if (!SharePref.getInstance(mContext).get(SharePref.PREF_USER, "").toString().isEmpty()) {
+            userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+        }
 
         if (getIntent().hasExtra("eventId")) {
             eventId = getIntent().getStringExtra("eventId");
@@ -126,10 +135,10 @@ public class EventDetailsActivity extends AppCompatActivity {
             Glide.with(this).load(eventDetailsData.getImage() == null ? "" : eventDetailsData.getImage()).apply(options).into(mBinding.imgEventProfile);
 
             String coverImage = "";
-            if (eventDetailsData.getImages().isEmpty()){
+            if (eventDetailsData.getImages().isEmpty()) {
                 coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
-            }else {
-                coverImage = eventDetailsData.getImages().get(0).getImages() == null? "": eventDetailsData.getImages().get(0).getImages();
+            } else {
+                coverImage = eventDetailsData.getImages().get(0).getImages() == null ? "" : eventDetailsData.getImages().get(0).getImages();
             }
 
             Glide.with(this).load(coverImage).apply(options).into(mBinding.imgEventCover);
@@ -160,7 +169,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             }
             setLikeCommentCount();
 
-            requestFlag = eventDetailsData.getIsRequest() ==  null ?"":eventDetailsData.getIsRequest();
+            requestFlag = eventDetailsData.getIsRequest() == null ? "" : eventDetailsData.getIsRequest();
             setRequestUI();
 
 //            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
@@ -232,9 +241,24 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (list.isEmpty()) {
             mBinding.recyclerEventComment.setVisibility(View.GONE);
         } else {
+            commentList = new ArrayList<>();
+            commentList = list;
+            if (userDetailsModel != null) {
+                for (EventCommentMainModel.EventCommentData commentData : commentList) {
+                    if (userDetailsModel.getId().equals(commentData.getUserId())) {
+                        commentData.setLoginUser(true);
+                    } else {
+                        commentData.setLoginUser(false);
+                    }
+                }
+            }
+
+            commentAdapter = new EventCommentAdapter(mContext, commentList, (pos, data) -> {
+                deleteComment(pos, data);
+            });
             mBinding.recyclerEventComment.setVisibility(View.VISIBLE);
             mBinding.recyclerEventComment.setLayoutManager(new LinearLayoutManager(this));
-            mBinding.recyclerEventComment.setAdapter(new EventCommentAdapter(mContext, list));
+            mBinding.recyclerEventComment.setAdapter(commentAdapter);
 
             if (isRefresh) {
 //                mBinding.nestedScrollEvent.scrollTo(0, mBinding.nestedScrollEvent.getBottom());
@@ -245,6 +269,55 @@ public class EventDetailsActivity extends AppCompatActivity {
                     }
                 });
             }
+        }
+    }
+
+    private void deleteComment(int pos, EventCommentMainModel.EventCommentData data) {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("id", data.getId());
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().deleteComment(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                if (!commentList.isEmpty()) {
+                                    commentList.remove(pos);
+                                }
+                                if (commentAdapter != null) {
+                                    commentAdapter.notifyItemRemoved(pos);
+                                    commentAdapter.notifyDataSetChanged();
+                                }
+                                commentCount = commentCount - 1;
+                                setLikeCommentCount();
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(mContext, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
         }
     }
 
@@ -531,16 +604,16 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
     }
 
-    private void setRequestUI(){
-        if (requestFlag.equals("1")){
+    private void setRequestUI() {
+        if (requestFlag.equals("1")) {
             mBinding.tvEventRequest.setVisibility(View.GONE);
             mBinding.tvEventCancelRequest.setVisibility(View.VISIBLE);
             mBinding.tvEventRequestAccepted.setVisibility(View.GONE);
-        }else if (requestFlag.equals("2")){
+        } else if (requestFlag.equals("2")) {
             mBinding.tvEventRequest.setVisibility(View.GONE);
             mBinding.tvEventCancelRequest.setVisibility(View.GONE);
             mBinding.tvEventRequestAccepted.setVisibility(View.VISIBLE);
-        }else {
+        } else {
             mBinding.tvEventRequest.setVisibility(View.VISIBLE);
             mBinding.tvEventCancelRequest.setVisibility(View.GONE);
             mBinding.tvEventRequestAccepted.setVisibility(View.GONE);

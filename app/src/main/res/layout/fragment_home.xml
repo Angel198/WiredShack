@@ -73,7 +73,7 @@
                         android:padding="@dimen/_5sdp" />
                 </LinearLayout>
 
-                <RelativeLayout
+                <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/relativeUpcomingEvent"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_200sdp"
@@ -86,37 +86,104 @@
                         android:id="@+id/imgUpcomingEvent"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/white37" />
+                        android:background="@color/white37"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/colorBlackTrans"/>
+                        android:background="@color/colorBlackTrans"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvUpcomingEventName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_10sdp"
+                        android:includeFontPadding="false"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_16ssp"
+                        app:fontFamily="@font/poppins_medium"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Event Name" />
+
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/tvUpcomingEvent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_centerInParent="true"
+                        android:layout_margin="@dimen/_10sdp"
                         android:gravity="center_horizontal"
                         android:includeFontPadding="false"
                         android:text="@string/upcoming_live_stream"
-                        android:textColor="@color/white"
+                        android:textColor="@color/colorWhiteTrans"
                         android:textSize="@dimen/_20ssp"
                         app:fontFamily="@font/poppins_medium"
-                        android:layout_margin="@dimen/_10sdp"/>
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgUpcomingEventVideo"
-                        android:layout_width="wrap_content"
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginEnd="@dimen/_7sdp"
-                        android:layout_marginRight="@dimen/_7sdp"
-                        android:layout_marginBottom="@dimen/_7sdp"
-                        android:src="@drawable/video_camera_green" />
-                </RelativeLayout>
+                        android:layout_margin="@dimen/_10sdp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUpcomingEventDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_date"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:text="Event Name"
+                            android:gravity="center_vertical"/>
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="1dp"
+                            android:layout_weight="1" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvUpcomingEventTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:drawableStart="@drawable/ic_time"
+                            android:drawablePadding="@dimen/_3sdp"
+                            android:includeFontPadding="false"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp"
+                            app:fontFamily="@font/poppins_medium"
+                            tools:text="Event Name"
+                            android:gravity="center_vertical"/>
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imgUpcomingEventVideo"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/video_camera_green" />
+                    </LinearLayout>
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <LinearLayout
                     android:id="@+id/linearHomeRecentEvent"

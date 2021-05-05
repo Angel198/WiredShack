@@ -34,7 +34,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/imgCommentProfile"
                 app:layout_constraintStart_toEndOf="@id/imgCommentProfile"
                 app:layout_constraintTop_toTopOf="@id/imgCommentProfile"
-                app:layout_constraintEnd_toStartOf="@id/tvCommentTime"
+                app:layout_constraintEnd_toStartOf="@id/linearCommentTimeOption"
                 android:layout_marginStart="@dimen/_5sdp"
                 tools:ignore="RtlCompat"
                 android:orientation="vertical">
@@ -61,27 +61,35 @@
                     android:layout_marginTop="@dimen/_3sdp"/>-->
             </LinearLayout>
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvCommentTime"
+            <LinearLayout
+                android:id="@+id/linearCommentTimeOption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2 Hours Ago"
-                app:fontFamily="@font/poppins_light"
-                android:textSize="@dimen/_10ssp"
-                android:includeFontPadding="false"
-                android:textColor="@color/colorHintTex"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>
+                android:layout_marginTop="@dimen/_10sdp">
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvCommentTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 Hours Ago"
+                    app:fontFamily="@font/poppins_light"
+                    android:textSize="@dimen/_10ssp"
+                    android:includeFontPadding="false"
+                    android:textColor="@color/colorHintTex"
+                    android:layout_marginEnd="@dimen/_5sdp"/>
 
-            <!--<androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imgCommentOption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/comment_options"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginTop="@dimen/_10sdp"/>-->
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/imgCommentOption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/comment_options"
+                    android:paddingTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/_5sdp"/>
+            </LinearLayout>
+
 
 
             <androidx.appcompat.widget.AppCompatTextView

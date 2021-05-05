@@ -94,11 +94,6 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 setEventManagerData(response.body().getData());
-                                if (!response.body().getStatus().equals("200")) {
-                                    Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
-                                }
-                            } else {
-                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                             }
                         } else {
                             Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
@@ -158,11 +153,9 @@ public class HomeFragment extends Fragment {
                                 }
                             } else {
                                 hideUpcomingEventData();
-                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                             }
                         } else {
                             hideUpcomingEventData();
-                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                         }
                     }
 
@@ -193,18 +186,20 @@ public class HomeFragment extends Fragment {
         String txtUpcoming = "";
         if (eventData.getIsActive() == null) {
             mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
-            txtUpcoming = getActivity().getResources().getString(R.string.upcoming_live_stream) + "\n" + eventData.getEventName() + " on " + getEventDate(eventData.getDate()) + " " + getEventTime(eventData.getStime());
+            mBinding.tvUpcomingEventTime.setVisibility(View.VISIBLE);
         } else {
             if (eventData.getIsActive().equals("1")) {
                 mBinding.imgUpcomingEventVideo.setVisibility(View.VISIBLE);
-                txtUpcoming = getActivity().getResources().getString(R.string.live_stream) + "\n" + eventData.getEventName();
+                mBinding.tvUpcomingEventTime.setVisibility(View.GONE);
             } else {
                 mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
-                txtUpcoming = getActivity().getResources().getString(R.string.upcoming_live_stream) + "\n" + eventData.getEventName() + " on " + getEventDate(eventData.getDate()) + " " + getEventTime(eventData.getStime());
+                mBinding.tvUpcomingEventTime.setVisibility(View.VISIBLE);
             }
         }
 
-        mBinding.tvUpcomingEvent.setText(txtUpcoming);
+        mBinding.tvUpcomingEventName.setText(eventData.getEventName());
+        mBinding.tvUpcomingEventDate.setText(getEventDate(eventData.getDate()));
+        mBinding.tvUpcomingEventTime.setText(getEventTime(eventData.getStime()));
 
         mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
             if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
@@ -241,14 +236,7 @@ public class HomeFragment extends Fragment {
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             setRecentEventData(response.body().getData());
-                            if (!response.body().getStatus().equals("200")) {
-                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
-                            }
-                        } else {
-                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                         }
-                    } else {
-                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                     }
                 }
 

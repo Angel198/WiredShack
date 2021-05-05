@@ -373,4 +373,5 @@
     <color name="colorBlackText">#242A37</color>
     <color name="colorOptionText">#F54B64</color>
     <color name="colorBlackTrans">#7D000000</color>
+    <color name="colorWhiteTrans">#5EFFFFFF</color>
 </resources>

@@ -146,4 +146,7 @@ public interface Api {
 
     @POST("api/auth/user-event-requestaccepet")
     Call<AcceptedEventMainModel> getUserAcceptedEvent(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/deletecomment")
+    Call<CommonResponseModel> deleteComment(@Header("Authorization") String authHeader,  @Body HashMap<String, String> params);
 }

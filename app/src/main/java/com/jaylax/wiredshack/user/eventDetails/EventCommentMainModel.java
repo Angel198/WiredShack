@@ -45,6 +45,9 @@ public class EventCommentMainModel {
         @SerializedName("manager_cover_image")
         @Expose
         private String managerCoverImage;
+        @SerializedName("userid")
+        @Expose
+        private String userid;
         @SerializedName("user_name")
         @Expose
         private String userName;
@@ -57,6 +60,8 @@ public class EventCommentMainModel {
         @SerializedName("created_at")
         @Expose
         private String createdAt;
+
+        private boolean isLoginUser = false;
 
         public String getId() {
             return id;
@@ -98,6 +103,14 @@ public class EventCommentMainModel {
             this.managerCoverImage = managerCoverImage;
         }
 
+        public String getUserId() {
+            return userid;
+        }
+
+        public void setUserId(String userid) {
+            this.userid = userid;
+        }
+
         public String getUserName() {
             return userName;
         }
@@ -128,6 +141,14 @@ public class EventCommentMainModel {
 
         public void setCreatedAt(String createdAt) {
             this.createdAt = createdAt;
+        }
+
+        public boolean isLoginUser() {
+            return isLoginUser;
+        }
+
+        public void setLoginUser(boolean loginUser) {
+            isLoginUser = loginUser;
         }
     }
 }

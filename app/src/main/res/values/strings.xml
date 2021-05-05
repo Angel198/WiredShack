@@ -100,4 +100,7 @@
     <string name="live_now">Live Now</string>
     <string name="accept">Accept</string>
     <string name="request">Request</string>
+    <string name="time_tag">Time : %1s</string>
+    <string name="date_tag">Date : %1s</string>
+    <string name="delete">Delete</string>
 </resources>
