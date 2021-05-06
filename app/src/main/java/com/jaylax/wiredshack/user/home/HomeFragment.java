@@ -147,7 +147,7 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 if (response.body().getStatus().equals("200") && response.body().getData() != null) {
-                                    setUpcomingEventDat(response.body().getData());
+                                    setUpcomingEventDat(response.body().getData(),response.body().getFollowingEventCount() == null ?"":response.body().getFollowingEventCount());
                                 } else {
                                     hideUpcomingEventData();
                                 }
@@ -173,7 +173,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private void setUpcomingEventDat(UpcomingEventMainModel.UpcomingEventData eventData) {
+    private void setUpcomingEventDat(UpcomingEventMainModel.UpcomingEventData eventData, String followCount) {
         mBinding.relativeUpcomingEvent.setVisibility(View.VISIBLE);
         RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
         String coverImage = "";
@@ -208,9 +208,15 @@ public class HomeFragment extends Fragment {
                 context.startActivity(intent);
             } else {
                 //TODO : OpenUpcomingEventScreen
-                Intent intent = new Intent(context, UpcomingEventActivity.class);
-                intent.putExtra("eventId", eventData.getId());
-                context.startActivity(intent);
+                if (Integer.parseInt(followCount) > 0) {
+                    Intent intent = new Intent(context, UpcomingEventActivity.class);
+                    intent.putExtra("eventId", eventData.getId());
+                    context.startActivity(intent);
+                }else {
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra("eventId", eventData.getId());
+                    context.startActivity(intent);
+                }
             }
         });
 

@@ -27,7 +27,7 @@
         android:textColor="@color/white"
         android:includeFontPadding="false"/>
 
-    <androidx.appcompat.widget.AppCompatTextView
+    <!--<androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/tvActivityDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -46,7 +46,7 @@
         android:textSize="@dimen/_8ssp"
         android:fontFamily="@font/poppins_light"
         android:textColor="@color/colorHintTex"
-        android:includeFontPadding="false"/>
+        android:includeFontPadding="false"/>-->
 
 </LinearLayout>
 </layout>

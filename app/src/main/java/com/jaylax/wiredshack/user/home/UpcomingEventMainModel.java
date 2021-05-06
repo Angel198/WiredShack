@@ -10,6 +10,9 @@ public class UpcomingEventMainModel {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("following_event_count")
+    @Expose
+    private String followingEventCount;
     @SerializedName("data")
     @Expose
     private UpcomingEventData data;
@@ -28,6 +31,14 @@ public class UpcomingEventMainModel {
 
     public void setData(UpcomingEventData data) {
         this.data = data;
+    }
+
+    public String getFollowingEventCount() {
+        return followingEventCount;
+    }
+
+    public void setFollowingEventCount(String followingEventCount) {
+        this.followingEventCount = followingEventCount;
     }
 
     public class UpcomingEventData{

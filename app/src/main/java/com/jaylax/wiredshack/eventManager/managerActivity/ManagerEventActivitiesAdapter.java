@@ -1,6 +1,10 @@
 package com.jaylax.wiredshack.eventManager.managerActivity;
 
 import android.content.Context;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -14,7 +18,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemEventActivitiesBinding;
-import com.jaylax.wiredshack.databinding.ItemIncomingRequestBinding;
 
 import java.util.ArrayList;
 
@@ -55,10 +58,24 @@ public class ManagerEventActivitiesAdapter extends RecyclerView.Adapter<ManagerE
         public void bind(int position, ManagerActivityMainModel.ManagerActivityData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(mContext).load(data.getProfileImage() == null ? "" : data.getProfileImage()).apply(options).into(mBinding.imgActivity);
-            mBinding.tvActivityUserName.setText(data.getName() == null ? "N/A" : data.getName());
-            mBinding.tvActivityDescription.setText(data.getMessage() == null ? " N/A" : " " + data.getMessage());
-            mBinding.tvActivityTime.setText(data.getTime() == null ? "" : " " +data.getTime());
+//            mBinding.tvActivityUserName.setText(data.getName() == null ? "N/A" : data.getName());
+//            mBinding.tvActivityDescription.setText(data.getMessage() == null ? " N/A" : " " + data.getMessage());
+//            mBinding.tvActivityTime.setText(data.getTime() == null ? "" : " " +data.getTime());
 
+            SpannableString name = new SpannableString(data.getName() == null ? "N/A" : data.getName());
+            name.setSpan(new RelativeSizeSpan(1f), 0, name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            name.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.white)),0,name.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mBinding.tvActivityUserName.setText(name);
+
+            SpannableString activityTxt = new SpannableString(data.getMessage() == null ? " N/A" : " " + data.getMessage());
+            activityTxt.setSpan(new RelativeSizeSpan(1f), 0, activityTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            activityTxt.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.white)),0,activityTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mBinding.tvActivityUserName.append(activityTxt);
+
+            SpannableString timeTxt = new SpannableString(data.getTime() == null ? "" : "\n" +data.getTime());
+            timeTxt.setSpan(new RelativeSizeSpan(0.8f), 0, timeTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            timeTxt.setSpan(new ForegroundColorSpan(mContext.getResources().getColor(R.color.colorHintTex)),0,timeTxt.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            mBinding.tvActivityUserName.append(timeTxt);
         }
     }
 }
