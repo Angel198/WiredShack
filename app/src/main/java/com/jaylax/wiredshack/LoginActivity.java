@@ -53,8 +53,12 @@ public class LoginActivity extends AppCompatActivity {
                 String userType = "0";
                 if (radioButton.getText().toString().equals(getResources().getString(R.string.user))) {
                     userType = "1";
-                } else {
+                } else if (radioButton.getText().toString().equals(getResources().getString(R.string.event_organiser))) {
                     userType = "2";
+                } else if (radioButton.getText().toString().equals(getResources().getString(R.string.dj))) {
+                    userType = "3";
+                } else {
+                    userType = "1";
                 }
 
                 if (email.isEmpty()) {
