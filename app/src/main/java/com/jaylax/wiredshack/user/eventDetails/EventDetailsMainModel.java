@@ -76,6 +76,9 @@ public class EventDetailsMainModel {
         @SerializedName("cover_image")
         @Expose
         private String coverImage;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("images")
         @Expose
         private ArrayList<EventImage> images = new ArrayList<>();
@@ -219,6 +222,14 @@ public class EventDetailsMainModel {
 
         public void setCoverImage(String coverImage) {
             this.coverImage = coverImage;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
 
         public ArrayList<EventImage> getImages() {

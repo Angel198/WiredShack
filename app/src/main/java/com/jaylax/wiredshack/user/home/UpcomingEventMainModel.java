@@ -93,6 +93,9 @@ public class UpcomingEventMainModel {
         @SerializedName("cover_image")
         @Expose
         private String coverImage;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("is_active")
         @Expose
         private String isActive;
@@ -187,6 +190,14 @@ public class UpcomingEventMainModel {
 
         public void setLongitude(String longitude) {
             this.longitude = longitude;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
 
         public String getIsactived() {

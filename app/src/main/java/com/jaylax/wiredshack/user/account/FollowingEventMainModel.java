@@ -53,6 +53,9 @@ public class FollowingEventMainModel {
         @SerializedName("etime")
         @Expose
         private String etime;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("manager_name")
         @Expose
         private String managerName;
@@ -134,6 +137,14 @@ public class FollowingEventMainModel {
 
         public void setEtime(String etime) {
             this.etime = etime;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
 
         public String getManagerName() {

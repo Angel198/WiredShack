@@ -45,6 +45,9 @@ public class ManagerListMainModel {
         @SerializedName("following")
         @Expose
         private String following;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
 
         public String getId() {
             return id;
@@ -84,6 +87,14 @@ public class ManagerListMainModel {
 
         public void setFollowing(String following) {
             this.following = following;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
     }
 }

@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.jaylax.wiredshack.LoginActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentHomeBinding;
@@ -24,6 +25,7 @@ import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
@@ -202,7 +204,7 @@ public class HomeFragment extends Fragment {
         mBinding.tvUpcomingEventTime.setText(getEventTime(eventData.getStime()));
 
         mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
-            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+            /*if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("eventId", eventData.getId());
                 context.startActivity(intent);
@@ -217,6 +219,15 @@ public class HomeFragment extends Fragment {
                     intent.putExtra("eventId", eventData.getId());
                     context.startActivity(intent);
                 }
+            }*/
+
+            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                Intent intent = new Intent(getActivity(), LoginActivity.class);
+                getActivity().startActivity(intent);
+            } else {
+                Intent intent = new Intent(getActivity(), LiveVideoPlayerActivity.class);
+                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+                getActivity().startActivity(intent);
             }
         });
 

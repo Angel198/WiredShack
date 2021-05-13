@@ -43,6 +43,9 @@ public class AcceptedEventMainModel {
         @SerializedName("manager_name")
         @Expose
         private String managerName;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("manager_profile_image")
         @Expose
         private String managerProfileImage;
@@ -82,6 +85,14 @@ public class AcceptedEventMainModel {
 
         public void setManagerName(String managerName) {
             this.managerName = managerName;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
 
         public String getManagerProfileImage() {

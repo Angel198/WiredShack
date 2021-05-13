@@ -234,6 +234,40 @@
                     <TableRow android:layout_marginTop="@dimen/_10sdp">
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvEventOrganiserSelectionTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="start"
+                            android:includeFontPadding="false"
+                            android:text="@string/select_organiser"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_13ssp"
+                            app:fontFamily="@font/poppins_light" />
+
+                        <androidx.appcompat.widget.AppCompatEditText
+                            android:id="@+id/editEventOrganiserSelection"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_10sdp"
+                            android:layout_weight="1"
+                            android:background="@drawable/back_border_black"
+                            android:editable="false"
+                            android:fontFamily="@font/poppins_light"
+                            android:gravity="start"
+                            android:imeOptions="actionNext"
+                            android:includeFontPadding="false"
+                            android:lines="1"
+                            android:maxLines="1"
+                            android:padding="@dimen/_5sdp"
+                            android:singleLine="true"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_13ssp"
+                            tools:ignore="RtlCompat" />
+                    </TableRow>
+
+                    <TableRow android:layout_marginTop="@dimen/_10sdp">
+
+                        <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="start"

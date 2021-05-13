@@ -83,7 +83,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         context = this;
         progressDialog = new ProgressDialog(context);
 
-        if (getIntent().hasExtra("eventId")){
+        if (getIntent().hasExtra("eventId")) {
             editEventID = getIntent().getStringExtra("eventId");
         }
 
@@ -102,12 +102,22 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
         mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(this, 4));
 
+        if (userDetailsModel.getUserType() == null) {
+            mBinding.tvEventOrganiserSelectionTitle.setText(getResources().getString(R.string.select_organiser));
+        } else {
+            if (userDetailsModel.getUserType().equals("2")) {
+                mBinding.tvEventOrganiserSelectionTitle.setText(getResources().getString(R.string.select_dj_organiser));
+            } else {
+                mBinding.tvEventOrganiserSelectionTitle.setText(getResources().getString(R.string.select_event_organiser));
+            }
+        }
+
     }
 
     private void setEditEventUI() {
-        if (editEventID.isEmpty()){
+        if (editEventID.isEmpty()) {
             setEventImagesAdapter();
-        }else {
+        } else {
             getEventDetails();
         }
     }
@@ -149,7 +159,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
     }
 
     private void setEventDataForEdit() {
-        if (eventDetailsData != null){
+        if (eventDetailsData != null) {
             mBinding.editEventName.setText(eventDetailsData.getEventName());
             mBinding.editEventDescription.setText(eventDetailsData.getDescription());
             mBinding.editEventLocation.setText(eventDetailsData.getLocation());
@@ -198,24 +208,24 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
             deleteImages = new ArrayList<>();
             imageList = new ArrayList<>();
-            for (EventDetailsMainModel.EventDetailsData.EventImage data : eventDetailsData.getImages()){
-                imageList.add(new EventImageModel(data.getImages(),data.getId(),"",null));
+            for (EventDetailsMainModel.EventDetailsData.EventImage data : eventDetailsData.getImages()) {
+                imageList.add(new EventImageModel(data.getImages(), data.getId(), "", null));
             }
             setEventImagesAdapter();
 
             latitude = eventDetailsData.getLatitude();
             longitude = eventDetailsData.getLongitude();
 
-            Log.e("BeforeEditLatLng : ", latitude +", "+longitude);
+            Log.e("BeforeEditLatLng : ", latitude + ", " + longitude);
         }
     }
 
 
-    private void setEventImagesAdapter(){
+    private void setEventImagesAdapter() {
         imagesAdapter = new EventImagesAdapter(context, true, imageList, new EventImagesAdapter.EventImageClick() {
             @Override
             public void onImageRemove(int position) {
-                if (!imageList.get(position).getImageId().isEmpty()){
+                if (!imageList.get(position).getImageId().isEmpty()) {
                     deleteImages.add(Integer.parseInt(imageList.get(position).getImageId()));
                 }
                 imageList.remove(position);
@@ -295,11 +305,11 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             String eventDate = mBinding.editEventDate.getText().toString().trim();
 
             boolean isValid = false;
-            Log.e("OnEditLatLng : ", latitude +", "+longitude);
+            Log.e("OnEditLatLng : ", latitude + ", " + longitude);
 
-            if (imageList.isEmpty()){
+            if (imageList.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.add_atleast_one_image));
-            }else if (eventName.isEmpty()) {
+            } else if (eventName.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_name));
             } else if (eventDescription.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_description));
@@ -365,12 +375,12 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 imagesAdapter.notifyDataSetChanged();
             }
         } else if (requestCode == 102) {
-            if (resultCode == Activity.RESULT_OK && data != null){
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 place = Autocomplete.getPlaceFromIntent(data);
 
                 String placeName = place.getName() == null ? "N/A" : place.getName();
                 String placeAddress = place.getAddress() == null ? "N/A" : place.getAddress();
-                String address = placeName + ", "+ placeAddress;
+                String address = placeName + ", " + placeAddress;
                 latitude = String.valueOf(place.getLatLng().latitude);
                 longitude = String.valueOf(place.getLatLng().longitude);
                 mBinding.editEventLocation.setText(address);
@@ -404,7 +414,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
             progressDialog.show();
-            ApiClient.create().addEditEvent(header, params, imagesMultiPart,deleteImages).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();

@@ -58,6 +58,9 @@ public class RecentEventMainModel {
         @SerializedName("manager_name")
         @Expose
         private String managerName;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("manager_image")
         @Expose
         private String managerImage;
@@ -147,6 +150,14 @@ public class RecentEventMainModel {
 
         public void setManagerName(String managerName) {
             this.managerName = managerName;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
 
         public String getManagerImage() {

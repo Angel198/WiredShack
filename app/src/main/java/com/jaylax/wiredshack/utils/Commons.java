@@ -9,6 +9,8 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 
 public class Commons {
+    public static String RTMP_URL = "rtmp://estandardcodex.in/LiveApp/";
+
     public static boolean isValidEmail(CharSequence target) {
         return Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
@@ -37,4 +39,5 @@ public class Commons {
         String sharePreValue = SharePref.getInstance(context).get(key,"").toString();
         return new Gson().fromJson(sharePreValue,className);
     }
+
 }

@@ -22,6 +22,7 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerEventDetailsBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
+import com.jaylax.wiredshack.eventManager.liveVideoBroadcaster.LiveVideoBroadcasterActivity;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
@@ -76,6 +77,12 @@ public class ManagerEventDetailsFragment extends Fragment {
         mBinding.tvEventEdit.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), ManagerEditEventActivity.class);
             intent.putExtra("eventId", eventDetailsData.getId());
+            getActivity().startActivity(intent);
+        });
+
+        mBinding.tvEventLiveNow.setOnClickListener(view -> {
+            Intent intent = new Intent(getActivity(), LiveVideoBroadcasterActivity.class);
+            intent.putExtra("eventStream", eventDetailsData.getId() + "_"+eventDetailsData.getEventName());
             getActivity().startActivity(intent);
         });
     }
@@ -214,7 +221,7 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
 
-            if (isEventLive()) {
+            /*if (isEventLive()) {
                 mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
                 mBinding.tvEventEdit.setVisibility(View.GONE);
             } else if (isEventClose()){
@@ -223,7 +230,9 @@ public class ManagerEventDetailsFragment extends Fragment {
             }else {
                 mBinding.tvEventLiveNow.setVisibility(View.GONE);
                 mBinding.tvEventEdit.setVisibility(View.VISIBLE);
-            }
+            }*/
+            mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
+            mBinding.tvEventEdit.setVisibility(View.GONE);
         }
     }
 

@@ -37,6 +37,9 @@ public class ManagerDetailsMainModel {
         @SerializedName("manager_name")
         @Expose
         private String managerName;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
         @SerializedName("manager_image")
         @Expose
         private String managerImage;
