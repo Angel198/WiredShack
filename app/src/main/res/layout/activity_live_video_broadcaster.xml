@@ -20,7 +20,6 @@
         android:id="@+id/cameraPreview_surfaceView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:visibility="gone"
         android:layout_gravity="center" />
     <View
@@ -96,16 +95,22 @@
         android:padding="24dp"
         android:visibility="visible"
         >
-        <Button
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/toggle_broadcasting"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/Base.Widget.AppCompat.Button.Colored"
             android:textColor="@android:color/white"
-            android:text="@string/start_event"
+            android:text="@string/go_live"
             android:onClick="toggleBroadcasting"
             android:layout_gravity="center_horizontal"
             android:textAppearance="?android:textAppearanceMedium"
-            />
+            android:background="@drawable/back_go_live"
+            android:paddingEnd="@dimen/_20sdp"
+            android:paddingStart="@dimen/_20sdp"
+            android:paddingTop="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_10sdp"
+            android:fontFamily="@font/poppins_medium"
+            android:textSize="@dimen/_14ssp"
+            android:includeFontPadding="false"/>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

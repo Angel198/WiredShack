@@ -43,8 +43,7 @@
                         android:id="@+id/radioGroup"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="5dp">
+                        android:orientation="horizontal">
 
                         <RadioButton
                             android:id="@+id/radioButton2"
@@ -55,31 +54,34 @@
                             android:fontFamily="@font/poppins_medium"
                             android:text="@string/user"
                             android:textColor="@color/white"
-                            android:textSize="17sp" />
+                            android:textSize="@dimen/_13ssp"
+                            android:includeFontPadding="false"/>
 
                         <RadioButton
                             android:id="@+id/radioButton"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="@dimen/_5sdp"
                             android:buttonTint="@color/white"
                             android:checked="false"
                             android:fontFamily="@font/poppins_medium"
                             android:text="@string/event_organiser"
                             android:textColor="@color/white"
-                            android:textSize="17sp" />
+                            android:textSize="@dimen/_13ssp"
+                            android:includeFontPadding="false"/>
 
                         <RadioButton
                             android:id="@+id/radioButton3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
+                            android:layout_marginStart="@dimen/_5sdp"
                             android:buttonTint="@color/white"
                             android:checked="false"
                             android:fontFamily="@font/poppins_medium"
                             android:text="@string/dj"
                             android:textColor="@color/white"
-                            android:textSize="17sp" />
+                            android:textSize="@dimen/_13ssp"
+                            android:includeFontPadding="false"/>
 
                     </RadioGroup>
 

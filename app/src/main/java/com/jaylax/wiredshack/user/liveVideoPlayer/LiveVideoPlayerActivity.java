@@ -108,7 +108,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
   private RtmpDataSource.RtmpDataSourceFactory rtmpDataSourceFactory;
   protected String userAgent;
 //  private EditText videoNameEditText;
-  private View videoStartControlLayout;
+//  private View videoStartControlLayout;
 
   private String streamName = "";
   // Activity lifecycle
@@ -129,9 +129,6 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
 
     setContentView(R.layout.activity_live_video_player);
 
-    if (getIntent().hasExtra("liveStream")){
-      streamName = getIntent().getStringExtra("liveStream");
-    }
     View rootView = findViewById(R.id.root);
     rootView.setOnClickListener(this);
 //    debugRootView = (LinearLayout) findViewById(R.id.controls_root);
@@ -140,12 +137,19 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
 //    retryButton.setOnClickListener(this);
 //
 //    videoNameEditText = (EditText) findViewById(R.id.video_name_edit_text);
-    videoStartControlLayout = findViewById(R.id.video_start_control_layout);
+//    videoStartControlLayout = findViewById(R.id.video_start_control_layout);
 
     simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.player_view);
     simpleExoPlayerView.setControllerVisibilityListener(this);
     simpleExoPlayerView.requestFocus();
 
+    if (getIntent().hasExtra("liveStream")){
+      streamName = getIntent().getStringExtra("liveStream");
+      String URL = Commons.RTMP_URL + streamName.replace(" ","");
+      //String URL = "http://192.168.1.34:5080/vod/streams/test_adaptive.m3u8";
+      initializePlayer(URL);
+//      videoStartControlLayout.setVisibility(View.GONE);
+    }
   }
 
   @Override
@@ -378,7 +382,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
 
   @Override
   public void onPlayerError(ExoPlaybackException e) {
-    videoStartControlLayout.setVisibility(View.VISIBLE);
+//    videoStartControlLayout.setVisibility(View.VISIBLE);
     String errorString = null;
     if (e.type == ExoPlaybackException.TYPE_RENDERER) {
       Exception cause = e.getRendererException();
@@ -474,6 +478,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
     String URL = Commons.RTMP_URL + streamName.replace(" ","");
     //String URL = "http://192.168.1.34:5080/vod/streams/test_adaptive.m3u8";
     initializePlayer(URL);
-    videoStartControlLayout.setVisibility(View.GONE);
+//    videoStartControlLayout.setVisibility(View.GONE);
   }
+
 }

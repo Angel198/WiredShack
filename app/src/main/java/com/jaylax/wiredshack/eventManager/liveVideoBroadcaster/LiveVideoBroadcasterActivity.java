@@ -28,6 +28,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.fragment.app.Fragment;
@@ -60,7 +61,7 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
     private TextView mStreamLiveStatus;
     private GLSurfaceView mGLView;
     private ILiveVideoBroadcaster mLiveVideoBroadcaster;
-    private Button mBroadcastControlButton;
+    private AppCompatTextView mBroadcastControlButton;
     private String streamName = "";
 
     /**
@@ -113,7 +114,7 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
 //        mSettingsButton = (ImageButton) findViewById(R.id.settings_button);
         mStreamLiveStatus = (TextView) findViewById(R.id.stream_live_status);
 
-        mBroadcastControlButton = (Button) findViewById(R.id.toggle_broadcasting);
+        mBroadcastControlButton = (AppCompatTextView) findViewById(R.id.toggle_broadcasting);
 
         // Configure the GLSurfaceView.  This will start the Renderer thread, with an
         // appropriate EGL activity.
@@ -189,8 +190,9 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
         if (mCameraResolutionsDialog != null && mCameraResolutionsDialog.isVisible()) {
             mCameraResolutionsDialog.dismiss();
         }
-        if (mLiveVideoBroadcaster != null)
-        mLiveVideoBroadcaster.pause();
+        if (mLiveVideoBroadcaster != null) {
+            mLiveVideoBroadcaster.pause();
+        }
     }
 
 
@@ -297,7 +299,7 @@ public class LiveVideoBroadcasterActivity extends AppCompatActivity {
 
     public void triggerStopRecording() {
         if (mIsRecording) {
-            mBroadcastControlButton.setText(R.string.start_event);
+            mBroadcastControlButton.setText(R.string.go_live);
 
             mStreamLiveStatus.setVisibility(View.GONE);
             mStreamLiveStatus.setText(R.string.live_indicator);

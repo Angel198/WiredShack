@@ -106,7 +106,8 @@ public class ManagerDetailsActivity extends AppCompatActivity {
 
     private void setRecentEventData(ManagerDetailsMainModel.ManagerDetailsData managerDetailsData) {
         RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
-        Glide.with(this).load(managerDetailsData.getManagerImage() == null ? "" : managerDetailsData.getManagerImage()).apply(options).into(mBinding.imgAccountProfile);
+        String image = managerDetailsData.getManagerImage() == null ? "" : managerDetailsData.getManagerImage();
+        Glide.with(this).load(image).apply(options).into(mBinding.imgAccountProfile);
         Glide.with(this).load(managerDetailsData.getManagerCoverImage() == null ? "" : managerDetailsData.getManagerCoverImage()).apply(options).into(mBinding.imgAccountCover);
 
         mBinding.tvEventManagerName.setText(managerDetailsData.getManagerName());

@@ -184,7 +184,7 @@ public class HomeFragment extends Fragment {
         } else {
             coverImage = eventData.getImages().get(0).getImages() == null ? "" : eventData.getImages().get(0).getImages();
         }
-        Glide.with(this).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
+        Glide.with(getContext()).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
         String txtUpcoming = "";
         if (eventData.getIsActive() == null) {
             mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
@@ -204,31 +204,56 @@ public class HomeFragment extends Fragment {
         mBinding.tvUpcomingEventTime.setText(getEventTime(eventData.getStime()));
 
         mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
-            /*if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("eventId", eventData.getId());
                 context.startActivity(intent);
             } else {
                 //TODO : OpenUpcomingEventScreen
-                if (Integer.parseInt(followCount) > 0) {
+                Intent intent = new Intent(context, UpcomingEventActivity.class);
+                intent.putExtra("eventId", eventData.getId());
+                context.startActivity(intent);
+
+               /* if (Integer.parseInt(followCount) > 0) {
                     Intent intent = new Intent(context, UpcomingEventActivity.class);
                     intent.putExtra("eventId", eventData.getId());
                     context.startActivity(intent);
                 }else {
-                    Intent intent = new Intent(context, EventDetailsActivity.class);
-                    intent.putExtra("eventId", eventData.getId());
-                    context.startActivity(intent);
-                }
-            }*/
+                    Intent intent = new Intent(getActivity(), LiveVideoPlayerActivity.class);
+//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+                    intent.putExtra("liveStream", eventData.getId());
+                    getActivity().startActivity(intent);
 
-            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                    *//*if (eventData.getIsActive() == null) {
+                        Intent intent = new Intent(context, EventDetailsActivity.class);
+                        intent.putExtra("eventId", eventData.getId());
+                        context.startActivity(intent);
+                    } else {
+                        if (eventData.getIsActive().equals("1")) {
+                            Intent intent = new Intent(getActivity(), LiveVideoPlayerActivity.class);
+//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+                            intent.putExtra("liveStream",eventData.getId());
+                            getActivity().startActivity(intent);
+                        } else {
+                            Intent intent = new Intent(context, EventDetailsActivity.class);
+                            intent.putExtra("eventId", eventData.getId());
+                            context.startActivity(intent);
+                        }
+                    }*//*
+
+
+                }*/
+            }
+
+           /* if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
                 Intent intent = new Intent(getActivity(), LoginActivity.class);
                 getActivity().startActivity(intent);
             } else {
                 Intent intent = new Intent(getActivity(), LiveVideoPlayerActivity.class);
-                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+                intent.putExtra("liveStream",eventData.getId());
                 getActivity().startActivity(intent);
-            }
+            }*/
         });
 
         /*if (isEventLive(eventData.getDate(), eventData.getStime(), eventData.getEtime())) {

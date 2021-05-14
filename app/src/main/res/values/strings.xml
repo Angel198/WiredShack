@@ -150,4 +150,6 @@
 
     <string name="sample_list_load_error">One or more sample lists failed to load</string>
     <string name="stream_not_started">Failed to start. Please check server url and security credentials.</string>
+    <string name="live">Live</string>
+    <string name="go_live">Go Live</string>
 </resources>

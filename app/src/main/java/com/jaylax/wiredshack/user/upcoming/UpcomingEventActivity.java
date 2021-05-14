@@ -21,6 +21,7 @@ import com.jaylax.wiredshack.user.account.AccountFollowingEventAdapter;
 import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -54,7 +55,18 @@ public class UpcomingEventActivity extends AppCompatActivity {
             getEventDetails();
         }
 
+        setClickListener();
+    }
+
+    private void setClickListener() {
         mBinding.imgBack.setOnClickListener(view -> onBackPressed());
+
+        mBinding.relativeUpcomingEventLiveView.setOnClickListener(view -> {
+            Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
+//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+            intent.putExtra("liveStream", eventId);
+            startActivity(intent);
+        });
     }
 
     private void getEventDetails() {
@@ -114,22 +126,23 @@ public class UpcomingEventActivity extends AppCompatActivity {
             coverImage = eventData.getImages().get(0).getImages() == null ? "" : eventData.getImages().get(0).getImages();
         }
         Glide.with(this).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
-        if (isEventLive(eventData.getDate(), eventData.getStime(), eventData.getEtime())) {
+        /*if (isEventLive(eventData.getDate(), eventData.getStime(), eventData.getEtime())) {
             mBinding.relativeUpcomingEventNotLiveView.setVisibility(View.GONE);
             mBinding.relativeUpcomingEventLiveView.setVisibility(View.VISIBLE);
         } else {
             mBinding.relativeUpcomingEventNotLiveView.setVisibility(View.VISIBLE);
             mBinding.relativeUpcomingEventLiveView.setVisibility(View.GONE);
-        }
-        String txtUpcoming = getResources().getString(R.string.live_stream) + "\n" +" on " + getEventDate(eventData.getDate()) + " " + getEventTime(eventData.getStime());
+        }*/
+        mBinding.relativeUpcomingEventLiveView.setVisibility(View.VISIBLE);
+        String txtUpcoming = getResources().getString(R.string.live_stream) + "\n" + " on " + getEventDate(eventData.getDate()) + " " + getEventTime(eventData.getStime());
         mBinding.tvUpcomingEvent.setText(txtUpcoming);
 
-        if (eventData.getIsRequest() == null){
+        if (eventData.getIsRequest() == null) {
             mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
-        }else {
+        } else {
             if (eventData.getIsRequest().equals("2")) {
                 mBinding.imgUpcomingEventVideo.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
             }
         }

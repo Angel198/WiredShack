@@ -82,7 +82,8 @@ public class ManagerEventDetailsFragment extends Fragment {
 
         mBinding.tvEventLiveNow.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), LiveVideoBroadcasterActivity.class);
-            intent.putExtra("eventStream", eventDetailsData.getId() + "_"+eventDetailsData.getEventName());
+//            intent.putExtra("eventStream", eventDetailsData.getId() + "_"+eventDetailsData.getEventName());
+            intent.putExtra("eventStream", eventDetailsData.getId());
             getActivity().startActivity(intent);
         });
     }
@@ -318,7 +319,7 @@ public class ManagerEventDetailsFragment extends Fragment {
         Date currentDate = Calendar.getInstance().getTime();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
 
-        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null&& eventDetailsData.getEtime() != null) {
+        if (eventDetailsData.getDate() != null && eventDetailsData.getStime() != null && eventDetailsData.getEtime() != null) {
             String eventSTime = eventDetailsData.getDate() + " " + eventDetailsData.getStime();
 
             String eventETime = eventDetailsData.getDate() + " " + eventDetailsData.getEtime();
