@@ -222,7 +222,7 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
 
-            /*if (isEventLive()) {
+            if (isEventLive()) {
                 mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
                 mBinding.tvEventEdit.setVisibility(View.GONE);
             } else if (isEventClose()){
@@ -231,9 +231,9 @@ public class ManagerEventDetailsFragment extends Fragment {
             }else {
                 mBinding.tvEventLiveNow.setVisibility(View.GONE);
                 mBinding.tvEventEdit.setVisibility(View.VISIBLE);
-            }*/
-            mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
-            mBinding.tvEventEdit.setVisibility(View.GONE);
+            }
+//            mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
+//            mBinding.tvEventEdit.setVisibility(View.GONE);
         }
     }
 

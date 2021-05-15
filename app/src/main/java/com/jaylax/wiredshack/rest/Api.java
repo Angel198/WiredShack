@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack.rest;
 
+import com.jaylax.wiredshack.eventManager.editEvent.SelectManagerListModel;
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 import com.jaylax.wiredshack.eventManager.managerActivity.IncomingRequestMainModel;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityMainModel;
@@ -149,4 +150,7 @@ public interface Api {
 
     @POST("api/auth/deletecomment")
     Call<CommonResponseModel> deleteComment(@Header("Authorization") String authHeader,  @Body HashMap<String, String> params);
+
+    @POST("api/auth/djlist")
+    Call<SelectManagerListModel> managerListForSelect(@Header("Authorization") String authHeader);
 }

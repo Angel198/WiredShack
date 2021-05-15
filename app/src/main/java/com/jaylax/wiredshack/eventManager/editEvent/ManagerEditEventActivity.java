@@ -16,6 +16,7 @@ import android.widget.DatePicker;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
@@ -57,6 +58,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static androidx.fragment.app.DialogFragment.STYLE_NO_FRAME;
+
 public class ManagerEditEventActivity extends AppCompatActivity {
 
     ActivityManagerEditEventBinding mBinding;
@@ -75,6 +78,9 @@ public class ManagerEditEventActivity extends AppCompatActivity {
     EventDetailsMainModel.EventDetailsData eventDetailsData = null;
     ArrayList<Integer> deleteImages = new ArrayList<>();
     String latitude = "", longitude = "";
+    String selectedManagerID = "";
+
+    ArrayList<SelectManagerListModel.SelectManagerListData> listData = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +95,8 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_place_key));
 
-        setEditEventUI();
+//        setEditEventUI();
+        getManagerListForSelection();
 
         setClickListener();
 
@@ -112,6 +119,48 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             }
         }
 
+    }
+
+    private void getManagerListForSelection(){
+        if (Commons.isOnline(context)) {
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+            progressDialog.show();
+            ApiClient.create().managerListForSelect(header).enqueue(new Callback<SelectManagerListModel>() {
+                @Override
+                public void onResponse(Call<SelectManagerListModel> call, Response<SelectManagerListModel> response) {
+                    progressDialog.dismiss();
+                    setEditEventUI();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            setSelectManagerUI(response.body().getData());
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<SelectManagerListModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    setEditEventUI();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            setEditEventUI();
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setSelectManagerUI(ArrayList<SelectManagerListModel.SelectManagerListData> list) {
+        if (list == null || list.isEmpty()){
+            listData = new ArrayList<>();
+        }else {
+            listData = list;
+        }
     }
 
     private void setEditEventUI() {
@@ -317,6 +366,16 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_location));
             } else if (eventDate.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_date));
+            } else if (selectedManagerID.isEmpty()) {
+                if (userDetailsModel.getUserType() == null) {
+                    Commons.showToast(context, getResources().getString(R.string.select_organiser_error));
+                } else {
+                    if (userDetailsModel.getUserType().equals("2")) {
+                        Commons.showToast(context, getResources().getString(R.string.select_dj_organiser_error));
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.select_event_organiser_error));
+                    }
+                }
             } else if (selectedStartTimeCal == null) {
                 Commons.showToast(context, getResources().getString(R.string.enter_event_start_time));
             } else if (selectedEndTimeCal == null) {
@@ -345,6 +404,16 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         mBinding.editEventLocation.setOnClickListener(view -> {
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)).build(context);
             startActivityForResult(intent, 102);
+        });
+
+        mBinding.editEventOrganiserSelection.setOnClickListener(view -> {
+            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context,listData,(pos, model) -> {
+                selectedManagerID = model.getId();
+                mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
+
+            });
+            bottomSheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+            bottomSheet.show(getSupportFragmentManager(),"select");
         });
     }
 
@@ -410,6 +479,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             params.put("event_id", RequestBody.create(MultipartBody.FORM, editEventID));
             params.put("latitude", RequestBody.create(MultipartBody.FORM, latitude));
             params.put("longitude", RequestBody.create(MultipartBody.FORM, longitude));
+            params.put("uid", RequestBody.create(MultipartBody.FORM, selectedManagerID));
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 

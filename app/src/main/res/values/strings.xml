@@ -105,8 +105,14 @@
     <string name="delete">Delete</string>
     <string name="dj">DJ</string>
     <string name="select_organiser">Select\nOrganiser :</string>
+    <string name="select_organiser_line">Select Organiser</string>
+    <string name="select_organiser_error">Select Organiser</string>
     <string name="select_event_organiser">Select Event\nOrganiser :</string>
+    <string name="select_event_organiser_line">Select Event Organiser</string>
+    <string name="select_event_organiser_error">Select Event Organiser</string>
     <string name="select_dj_organiser">Select DJ\nOrganiser :</string>
+    <string name="select_dj_organiser_line">Select DJ Organiser</string>
+    <string name="select_dj_organiser_error">Select DJ Organiser</string>
     <string name="start_event">Start Event</string>
     <string name="event_not_started">Event Not Started</string>
     <string name="storage_permission_denied">Storage Permission Denied</string>
@@ -152,4 +158,6 @@
     <string name="stream_not_started">Failed to start. Please check server url and security credentials.</string>
     <string name="live">Live</string>
     <string name="go_live">Go Live</string>
+    <string name="send_email">Send Email</string>
+    <string name="select">Select</string>
 </resources>
