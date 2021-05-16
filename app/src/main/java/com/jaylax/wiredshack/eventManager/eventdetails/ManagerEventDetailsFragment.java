@@ -219,6 +219,27 @@ public class ManagerEventDetailsFragment extends Fragment {
             }
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
+
+            if (eventDetailsData.getSelectedManager() == null){
+                mBinding.linearSelectManager.setVisibility(View.GONE);
+            }else {
+                mBinding.linearSelectManager.setVisibility(View.VISIBLE);
+
+                if (eventDetailsData.getSelectedManager().getUserType() == null){
+                    mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.organiser));
+                }else {
+                    if (eventDetailsData.getSelectedManager().getUserType().equals("2")){
+                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.event_organiser));
+                    }else {
+                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.dj_organiser));
+                    }
+                }
+
+                String imageURL = eventDetailsData.getSelectedManager().getImage() == null ? "" : eventDetailsData.getSelectedManager().getImage() ;
+                Glide.with(mContext).load(imageURL).apply(options).into(mBinding.imgSelectManagerProfile);
+                mBinding.tvSelectManagerName.setText(eventDetailsData.getSelectedManager().getName() == null ? "" : eventDetailsData.getSelectedManager().getName());
+            }
+
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
 

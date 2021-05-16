@@ -160,4 +160,6 @@
     <string name="go_live">Go Live</string>
     <string name="send_email">Send Email</string>
     <string name="select">Select</string>
+    <string name="organiser">Organiser</string>
+    <string name="dj_organiser">DJ Organiser</string>
 </resources>

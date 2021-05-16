@@ -103,6 +103,9 @@ public class EventDetailsMainModel {
         @SerializedName("is_request")
         @Expose
         private String isRequest;
+        @SerializedName("selected_manager")
+        @Expose
+        private SelectedManagerData selectedManager;
 
         public String getId() {
             return id;
@@ -296,6 +299,14 @@ public class EventDetailsMainModel {
             this.isRequest = isRequest;
         }
 
+        public SelectedManagerData getSelectedManager() {
+            return selectedManager;
+        }
+
+        public void setSelectedManager(SelectedManagerData selectedManager) {
+            this.selectedManager = selectedManager;
+        }
+
         public class EventImage implements Serializable {
             @SerializedName("images")
             @Expose
@@ -318,6 +329,64 @@ public class EventDetailsMainModel {
 
             public void setId(String id) {
                 this.id = id;
+            }
+        }
+
+        public class SelectedManagerData{
+            @SerializedName("name")
+            @Expose
+            private String name;
+            @SerializedName("id")
+            @Expose
+            private String id;
+            @SerializedName("image")
+            @Expose
+            private String image;
+            @SerializedName("cover_image")
+            @Expose
+            private String coverImage;
+            @SerializedName("user_type")
+            @Expose
+            private String userType;
+
+            public String getName() {
+                return name;
+            }
+
+            public void setName(String name) {
+                this.name = name;
+            }
+
+            public String getId() {
+                return id;
+            }
+
+            public void setId(String id) {
+                this.id = id;
+            }
+
+            public String getImage() {
+                return image;
+            }
+
+            public void setImage(String image) {
+                this.image = image;
+            }
+
+            public String getCoverImage() {
+                return coverImage;
+            }
+
+            public void setCoverImage(String coverImage) {
+                this.coverImage = coverImage;
+            }
+
+            public String getUserType() {
+                return userType;
+            }
+
+            public void setUserType(String userType) {
+                this.userType = userType;
             }
         }
     }

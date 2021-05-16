@@ -121,7 +121,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
     }
 
-    private void getManagerListForSelection(){
+    private void getManagerListForSelection() {
         if (Commons.isOnline(context)) {
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
             progressDialog.show();
@@ -156,9 +156,9 @@ public class ManagerEditEventActivity extends AppCompatActivity {
     }
 
     private void setSelectManagerUI(ArrayList<SelectManagerListModel.SelectManagerListData> list) {
-        if (list == null || list.isEmpty()){
+        if (list == null || list.isEmpty()) {
             listData = new ArrayList<>();
-        }else {
+        } else {
             listData = list;
         }
     }
@@ -264,6 +264,13 @@ public class ManagerEditEventActivity extends AppCompatActivity {
 
             latitude = eventDetailsData.getLatitude();
             longitude = eventDetailsData.getLongitude();
+
+            if (eventDetailsData.getSelectedManager() != null) {
+                if (eventDetailsData.getSelectedManager().getName() != null && eventDetailsData.getSelectedManager().getId() != null) {
+                    mBinding.editEventOrganiserSelection.setText(eventDetailsData.getSelectedManager().getName());
+                    selectedManagerID = eventDetailsData.getSelectedManager().getId();
+                }
+            }
 
             Log.e("BeforeEditLatLng : ", latitude + ", " + longitude);
         }
@@ -407,13 +414,13 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         });
 
         mBinding.editEventOrganiserSelection.setOnClickListener(view -> {
-            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context,listData,(pos, model) -> {
+            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, listData, (pos, model) -> {
                 selectedManagerID = model.getId();
                 mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
 
             });
             bottomSheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-            bottomSheet.show(getSupportFragmentManager(),"select");
+            bottomSheet.show(getSupportFragmentManager(), "select");
         });
     }
 
@@ -480,6 +487,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             params.put("latitude", RequestBody.create(MultipartBody.FORM, latitude));
             params.put("longitude", RequestBody.create(MultipartBody.FORM, longitude));
             params.put("uid", RequestBody.create(MultipartBody.FORM, selectedManagerID));
+            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getUserType()));
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
