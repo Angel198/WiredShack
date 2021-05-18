@@ -103,6 +103,9 @@ public class EventDetailsMainModel {
         @SerializedName("is_request")
         @Expose
         private String isRequest;
+        @SerializedName("created_by")
+        @Expose
+        private String createdBy;
         @SerializedName("selected_manager")
         @Expose
         private SelectedManagerData selectedManager;
@@ -297,6 +300,14 @@ public class EventDetailsMainModel {
 
         public void setIsRequest(String isRequest) {
             this.isRequest = isRequest;
+        }
+
+        public String getCreatedBy() {
+            return createdBy;
+        }
+
+        public void setCreatedBy(String createdBy) {
+            this.createdBy = createdBy;
         }
 
         public SelectedManagerData getSelectedManager() {

@@ -18,13 +18,18 @@ import androidx.recyclerview.widget.GridLayoutManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.birjuvachhani.locus.Locus;
+import com.birjuvachhani.locus.LocusResult;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -69,6 +74,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     ArrayList<ManagerListMainModel.ManagerListData> managerList = new ArrayList<>();
     SearchSuggestionAdapter searchAdapter = null;
     String previousMarkerTag = "";
+    LatLng latLng = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -93,8 +99,14 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         });
         Places.initialize(getActivity().getApplicationContext(), getResources().getString(R.string.google_place_key));
 
-//        checkLocationPermission();
-        getRecentEvent();
+        Locus.INSTANCE.getCurrentLocation(getActivity(), locusResult -> {
+            Log.e("CuurrentLocation : ", locusResult.getLocation().toString());
+            if (locusResult.getLocation() != null) {
+                latLng = new LatLng(locusResult.getLocation().getLatitude(), locusResult.getLocation().getLongitude());
+                getRecentEvent(true);
+            }
+            return null;
+        });
         setViewClickListener();
         return mBinding.getRoot();
     }
@@ -137,14 +149,19 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         });
     }
 
-    private void getRecentEvent() {
+    private void getRecentEvent(boolean isCallManagerList) {
         if (Commons.isOnline(mContext)) {
             progressDialog.show();
-            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getRecentEventsUser().enqueue(new Callback<RecentEventMainModel>() {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("latitude", latLng.latitude + "");
+            params.put("longitude", latLng.longitude + "");
+            ApiClient.create().getNearByEvent(params).enqueue(new Callback<RecentEventMainModel>() {
                 @Override
                 public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
                     progressDialog.dismiss();
+                    if (isCallManagerList){
+                        searchManager();
+                    }
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             setRecentEventMarker(response.body().getData());
@@ -159,6 +176,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
                     progressDialog.dismiss();
+                    if (isCallManagerList){
+                        searchManager();
+                    }
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                 }
             });
@@ -176,8 +196,21 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 LatLngBounds bounds = null;
                 for (RecentEventMainModel.RecentEventData data : list) {
                     if (data.getLatitude() != null && data.getLongitude() != null) {
+                        BitmapDescriptor bitmapDescriptor;
+                        if (data.getUserType() == null) {
+                            bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                        } else {
+                            if (data.getUserType().equals("2")) {
+                                bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                            } else if (data.getUserType().equals("3")) {
+                                bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN);
+                            } else {
+                                bitmapDescriptor = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED);
+                            }
+                        }
                         LatLng latLng = new LatLng(Double.parseDouble(data.getLatitude()), Double.parseDouble(data.getLongitude()));
-                        Marker marker = mMap.addMarker(new MarkerOptions().position(latLng).title(data.getEventName()));
+                        Marker marker = mMap.addMarker(new MarkerOptions().icon(bitmapDescriptor)
+                                .position(latLng).title(data.getEventName()));
                         marker.setTag(data.getId());
                         builder.include(latLng);
                     }
@@ -329,47 +362,10 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
     public static final int MY_PERMISSIONS_REQUEST_LOCATION = 99;
 
-    public boolean checkLocationPermission() {
-        if (ContextCompat.checkSelfPermission(getActivity(),
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-                new AlertDialog.Builder(getActivity())
-                        .setTitle(R.string.title_location_permission)
-                        .setMessage(R.string.text_location_permission)
-                        .setPositiveButton(R.string.txt_ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
-                                ActivityCompat.requestPermissions(getActivity(),
-                                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                        MY_PERMISSIONS_REQUEST_LOCATION);
-                            }
-                        })
-                        .create()
-                        .show();
-            } else {
-                // No explanation needed, we can request the permission.
-                ActivityCompat.requestPermissions(getActivity(),
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 
     @Override
@@ -392,6 +388,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 place = Autocomplete.getPlaceFromIntent(data);
                 getMapCameraPos(place.getLatLng());
+                latLng = place.getLatLng();
+                getRecentEvent(false);
             }
         }
     }

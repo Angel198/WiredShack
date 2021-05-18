@@ -457,7 +457,8 @@ public class EventDetailsActivity extends AppCompatActivity {
                     if (Commons.isOnline(mContext)) {
                         progressDialog.show();
                         HashMap<String, String> params = new HashMap<>();
-                        params.put("manager_id", eventDetailsData.getManagerId());
+
+                        params.put("manager_id", eventDetailsData.getCreatedBy());
 
                         String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
                         ApiClient.create().followManager(header, params).enqueue(new Callback<CommonResponseModel>() {

@@ -487,7 +487,8 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             params.put("latitude", RequestBody.create(MultipartBody.FORM, latitude));
             params.put("longitude", RequestBody.create(MultipartBody.FORM, longitude));
             params.put("uid", RequestBody.create(MultipartBody.FORM, selectedManagerID));
-            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getUserType()));
+//            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getUserType()));
+            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getId()));
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 

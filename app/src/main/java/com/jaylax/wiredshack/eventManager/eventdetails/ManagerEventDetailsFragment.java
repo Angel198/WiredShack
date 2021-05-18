@@ -202,6 +202,16 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventLike.setText(eventDetailsData.getLikesCount() == null ? "0" : eventDetailsData.getLikesCount());
             mBinding.tvEventComment.setText(eventDetailsData.getCommnets() == null ? "0" : eventDetailsData.getCommnets());
 
+            if (isEventLive()) {
+                mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
+                mBinding.tvEventEdit.setVisibility(View.GONE);
+            } else if (isEventClose()){
+                mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                mBinding.tvEventEdit.setVisibility(View.GONE);
+            }else {
+                mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                mBinding.tvEventEdit.setVisibility(View.VISIBLE);
+            }
 
 //            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
             mBinding.tvEventName.setText(eventDetailsData.getEventName());
@@ -242,19 +252,6 @@ public class ManagerEventDetailsFragment extends Fragment {
 
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
-
-            if (isEventLive()) {
-                mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
-                mBinding.tvEventEdit.setVisibility(View.GONE);
-            } else if (isEventClose()){
-                mBinding.tvEventLiveNow.setVisibility(View.GONE);
-                mBinding.tvEventEdit.setVisibility(View.GONE);
-            }else {
-                mBinding.tvEventLiveNow.setVisibility(View.GONE);
-                mBinding.tvEventEdit.setVisibility(View.VISIBLE);
-            }
-//            mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
-//            mBinding.tvEventEdit.setVisibility(View.GONE);
         }
     }
 

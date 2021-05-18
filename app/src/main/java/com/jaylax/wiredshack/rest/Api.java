@@ -82,6 +82,9 @@ public interface Api {
     @POST("api/auth/recentevent")
     Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
 
+    @POST("api/auth/neareventlist")
+    Call<RecentEventMainModel> getNearByEvent(@Body HashMap<String,String> params);
+
     @POST("api/auth/pastevent")
     Call<RecentEventMainModel> getPastEventsManager(@Header("Authorization") String authHeader);
 
@@ -149,7 +152,7 @@ public interface Api {
     Call<AcceptedEventMainModel> getUserAcceptedEvent(@Header("Authorization") String authHeader);
 
     @POST("api/auth/deletecomment")
-    Call<CommonResponseModel> deleteComment(@Header("Authorization") String authHeader,  @Body HashMap<String, String> params);
+    Call<CommonResponseModel> deleteComment(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/auth/djlist")
     Call<SelectManagerListModel> managerListForSelect(@Header("Authorization") String authHeader);

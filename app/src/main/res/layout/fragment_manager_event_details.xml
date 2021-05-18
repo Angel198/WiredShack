@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:paddingBottom="@dimen/_12sdp">
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -35,7 +35,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/_250sdp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
                             android:id="@+id/imgEventProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/dummy" />
+                            android:src="@drawable/place_holder" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvEventManagerName"
@@ -72,7 +72,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="@dimen/_10sdp"
                             android:includeFontPadding="false"
-                            android:text="User Name"
+                            tools:text="User Name"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_14ssp"
                             app:fontFamily="@font/poppins_bold"
@@ -94,7 +94,7 @@
                             android:drawableLeft="@drawable/heart"
                             android:drawablePadding="@dimen/_5sdp"
                             android:includeFontPadding="false"
-                            android:text="1122"
+                            tools:text="1122"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
                             app:fontFamily="@font/poppins_light" />
@@ -107,7 +107,7 @@
                             android:drawableLeft="@drawable/comment"
                             android:drawablePadding="@dimen/_5sdp"
                             android:includeFontPadding="false"
-                            android:text="348"
+                            tools:text="348"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_13ssp"
                             app:fontFamily="@font/poppins_light"
@@ -127,7 +127,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:includeFontPadding="false"
-                        android:text="DJ Party"
+                        tools:text="DJ Party"
                         android:textColor="@color/white"
                         android:textSize="@dimen/_13ssp"
                         app:fontFamily="@font/poppins_medium"
@@ -197,7 +197,7 @@
                     android:includeFontPadding="false"
                     android:paddingStart="@dimen/_12sdp"
                     android:paddingEnd="@dimen/_12sdp"
-                    android:text="@string/dummy_event_description"
+                    tools:text="@string/dummy_event_description"
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light" />
@@ -263,7 +263,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light"
-                    android:text="@string/dummy_event_date" />
+                    tools:text="@string/dummy_event_date" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvEventTime"
@@ -278,7 +278,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light"
-                    android:text="@string/dummy_event_time" />
+                    tools:text="@string/dummy_event_time" />
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvEventLocation"
@@ -293,7 +293,7 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_13ssp"
                     app:fontFamily="@font/poppins_light"
-                    android:text="@string/dummy_event_location" />
+                    tools:text="@string/dummy_event_location" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerEventComment"
