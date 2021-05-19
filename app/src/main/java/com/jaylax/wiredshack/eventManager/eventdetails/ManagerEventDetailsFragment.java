@@ -136,7 +136,20 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.linearEventMain.setVisibility(View.GONE);
             mBinding.tvNoEventFound.setVisibility(View.VISIBLE);
         } else {
-            getEventDetails(list.get(0).getId());
+            String eventId = "";
+            for (RecentEventMainModel.RecentEventData data : list){
+                String createdByID = data.getCreatedBy() == null ? "" : data.getCreatedBy();
+                if (userDetailsModel.getId().equals(createdByID)){
+                    eventId = data.getId();
+                    break;
+                }
+            }
+            if (eventId.isEmpty()){
+                mBinding.linearEventMain.setVisibility(View.GONE);
+                mBinding.tvNoEventFound.setVisibility(View.VISIBLE);
+            }else {
+                getEventDetails(eventId);
+            }
         }
     }
 
@@ -202,15 +215,21 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventLike.setText(eventDetailsData.getLikesCount() == null ? "0" : eventDetailsData.getLikesCount());
             mBinding.tvEventComment.setText(eventDetailsData.getCommnets() == null ? "0" : eventDetailsData.getCommnets());
 
-            if (isEventLive()) {
-                mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
-                mBinding.tvEventEdit.setVisibility(View.GONE);
-            } else if (isEventClose()){
+            String createdByID = eventDetailsData.getCreatedBy() == null ? "" : eventDetailsData.getCreatedBy();
+            if (userDetailsModel.getId().equals(createdByID)) {
+                if (isEventLive()) {
+                    mBinding.tvEventLiveNow.setVisibility(View.VISIBLE);
+                    mBinding.tvEventEdit.setVisibility(View.GONE);
+                } else if (isEventClose()) {
+                    mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                    mBinding.tvEventEdit.setVisibility(View.GONE);
+                } else {
+                    mBinding.tvEventLiveNow.setVisibility(View.GONE);
+                    mBinding.tvEventEdit.setVisibility(View.VISIBLE);
+                }
+            } else {
                 mBinding.tvEventLiveNow.setVisibility(View.GONE);
                 mBinding.tvEventEdit.setVisibility(View.GONE);
-            }else {
-                mBinding.tvEventLiveNow.setVisibility(View.GONE);
-                mBinding.tvEventEdit.setVisibility(View.VISIBLE);
             }
 
 //            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
@@ -230,22 +249,22 @@ public class ManagerEventDetailsFragment extends Fragment {
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
 
-            if (eventDetailsData.getSelectedManager() == null){
+            if (eventDetailsData.getSelectedManager() == null) {
                 mBinding.linearSelectManager.setVisibility(View.GONE);
-            }else {
+            } else {
                 mBinding.linearSelectManager.setVisibility(View.VISIBLE);
 
-                if (eventDetailsData.getSelectedManager().getUserType() == null){
+                if (eventDetailsData.getSelectedManager().getUserType() == null) {
                     mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.organiser));
-                }else {
-                    if (eventDetailsData.getSelectedManager().getUserType().equals("2")){
+                } else {
+                    if (eventDetailsData.getSelectedManager().getUserType().equals("2")) {
                         mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.event_organiser));
-                    }else {
+                    } else {
                         mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.dj_organiser));
                     }
                 }
 
-                String imageURL = eventDetailsData.getSelectedManager().getImage() == null ? "" : eventDetailsData.getSelectedManager().getImage() ;
+                String imageURL = eventDetailsData.getSelectedManager().getImage() == null ? "" : eventDetailsData.getSelectedManager().getImage();
                 Glide.with(mContext).load(imageURL).apply(options).into(mBinding.imgSelectManagerProfile);
                 mBinding.tvSelectManagerName.setText(eventDetailsData.getSelectedManager().getName() == null ? "" : eventDetailsData.getSelectedManager().getName());
             }

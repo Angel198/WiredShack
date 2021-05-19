@@ -76,6 +76,9 @@ public class RecentEventMainModel {
         @SerializedName("longitude")
         @Expose
         private String longitude;
+        @SerializedName("created_by")
+        @Expose
+        private String createdBy;
         @SerializedName("images")
         @Expose
         private ArrayList<EventImage> images = new ArrayList<>();
@@ -198,6 +201,14 @@ public class RecentEventMainModel {
 
         public void setLongitude(String longitude) {
             this.longitude = longitude;
+        }
+
+        public String getCreatedBy() {
+            return createdBy;
+        }
+
+        public void setCreatedBy(String createdBy) {
+            this.createdBy = createdBy;
         }
 
         public static class EventImage {
