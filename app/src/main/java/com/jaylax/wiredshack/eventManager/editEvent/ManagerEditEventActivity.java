@@ -414,10 +414,17 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         });
 
         mBinding.editEventOrganiserSelection.setOnClickListener(view -> {
-            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, listData, (pos, model) -> {
-                selectedManagerID = model.getId();
-                mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
+            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, mBinding.editEventName.getText().toString().trim(),listData, new SelectManagerBottomSheet.BottomSheetListener() {
+                @Override
+                public void onManagerSelect(int pos, SelectManagerListModel.SelectManagerListData model) {
+                        selectedManagerID = model.getId();
+                        mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
+                }
 
+                @Override
+                public void onEmailSend(String stEmail) {
+                    senEmail(stEmail);
+                }
             });
             bottomSheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
             bottomSheet.show(getSupportFragmentManager(), "select");
@@ -524,6 +531,49 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             });
 
         } else {
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void senEmail(String stEmail){
+        if (Commons.isOnline(context)) {
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+
+            HashMap<String,String> params = new HashMap<>();
+            params.put("event_name", mBinding.editEventName.getText().toString().trim());
+            params.put("email", stEmail);
+            params.put("manager_name", userDetailsModel.getName() == null ? "Event Organiser" : userDetailsModel.getName());
+
+            progressDialog.show();
+            ApiClient.create().sendEmail(header,params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (!response.body().getStatus().equals("200")) {
+                                mBinding.editEventOrganiserSelection.performClick();
+                            }
+                            Commons.showToast(context, response.body().getMessage() == null ? "" : response.body().getMessage());
+                        }else {
+                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            mBinding.editEventOrganiserSelection.performClick();
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                        mBinding.editEventOrganiserSelection.performClick();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                    mBinding.editEventOrganiserSelection.performClick();
+                }
+            });
+        } else {
+            setEditEventUI();
             Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
         }
     }

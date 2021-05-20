@@ -10,6 +10,9 @@ public class CommonResponseModel {
     @SerializedName("status")
     @Expose
     private String status;
+    @SerializedName("data")
+    @Expose
+    private String stData;
 
     public String getMessage() {
         return message;

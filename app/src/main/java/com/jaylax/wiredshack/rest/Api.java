@@ -156,4 +156,7 @@ public interface Api {
 
     @POST("api/auth/djlist")
     Call<SelectManagerListModel> managerListForSelect(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/send-mail")
+    Call<CommonResponseModel> sendEmail(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
 }

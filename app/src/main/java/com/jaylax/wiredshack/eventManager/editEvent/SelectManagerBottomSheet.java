@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -31,15 +32,16 @@ public class SelectManagerBottomSheet extends DialogFragment {
     ArrayList<SelectManagerListModel.SelectManagerListData> list;
     BottomSheetListener listener;
     UserDetailsModel userDetailsModel = null;
-
+    String eventName = "";
     BottomSelectManagerLayoutBinding mBinding;
 
     boolean isFromList = true;
 
-    public SelectManagerBottomSheet(Context mContext, ArrayList<SelectManagerListModel.SelectManagerListData> list, BottomSheetListener listener) {
+    public SelectManagerBottomSheet(Context mContext, String eventName, ArrayList<SelectManagerListModel.SelectManagerListData> list, BottomSheetListener listener) {
         this.mContext = mContext;
+        this.eventName = eventName;
         this.list = list;
-        this.listener =listener;
+        this.listener = listener;
     }
 
     @Override
@@ -80,10 +82,10 @@ public class SelectManagerBottomSheet extends DialogFragment {
     }
 
     private void initUI() {
-        if (userDetailsModel == null){
+        if (userDetailsModel == null) {
             mBinding.tvSelectManagerTitle.setText(getResources().getString(R.string.select_organiser_line));
             mBinding.tvSelectManagerBottom.setVisibility(View.GONE);
-        }else {
+        } else {
             if (userDetailsModel.getUserType() == null) {
                 mBinding.tvSelectManagerTitle.setText(getResources().getString(R.string.select_organiser_line));
                 mBinding.tvSelectManagerBottom.setVisibility(View.GONE);
@@ -101,8 +103,8 @@ public class SelectManagerBottomSheet extends DialogFragment {
         setSelectUI();
 
         mBinding.recycleSelectManager.setLayoutManager(new LinearLayoutManager(mContext));
-        mBinding.recycleSelectManager.setAdapter(new SelectManagerAdapter(mContext,list,(pos, data) -> {
-            listener.onManagerSelect(pos,data);
+        mBinding.recycleSelectManager.setAdapter(new SelectManagerAdapter(mContext, list, (pos, data) -> {
+            listener.onManagerSelect(pos, data);
             dismiss();
         }));
 
@@ -120,22 +122,37 @@ public class SelectManagerBottomSheet extends DialogFragment {
         });
 
         mBinding.tvSelectManagerEmailSend.setOnClickListener(view -> {
-            dismiss();
+            if (eventName.isEmpty()) {
+                Commons.showToast(mContext, mContext.getResources().getString(R.string.enter_event_name));
+            } else {
+                String stEmail = mBinding.editSelectManagerEmail.getText().toString().trim();
+                if (stEmail.isEmpty()) {
+                    Commons.showToast(mContext, mContext.getResources().getString(R.string.enter_email));
+                } else if (!Commons.isValidEmail(stEmail)) {
+                    Commons.showToast(mContext, mContext.getResources().getString(R.string.enter_valid_email));
+                } else {
+                    listener.onEmailSend(mBinding.editSelectManagerEmail.getText().toString().trim());
+                    dismiss();
+                }
+            }
         });
     }
 
-    private void setSelectUI(){
-        if (isFromList){
+    private void setSelectUI() {
+        if (isFromList) {
             mBinding.recycleSelectManager.setVisibility(View.VISIBLE);
             mBinding.linearSelectManagerEmail.setVisibility(View.GONE);
             mBinding.tvSelectManagerBottom.setText(mContext.getResources().getString(R.string.send_email));
-        }else {
+        } else {
             mBinding.recycleSelectManager.setVisibility(View.GONE);
             mBinding.linearSelectManagerEmail.setVisibility(View.VISIBLE);
             mBinding.tvSelectManagerBottom.setText(mContext.getResources().getString(R.string.select));
         }
     }
-    public interface BottomSheetListener{
+
+    public interface BottomSheetListener {
         void onManagerSelect(int pos, SelectManagerListModel.SelectManagerListData model);
+
+        void onEmailSend(String stEmail);
     }
 }
