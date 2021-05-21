@@ -162,4 +162,6 @@
     <string name="select">Select</string>
     <string name="organiser">Organiser</string>
     <string name="dj_organiser">DJ Organiser</string>
+    <string name="already_requested_msg">You already requested this Event. Wait for the Organizer to approve the request.</string>
+    <string name="request_event_msg">You have to request an Organizer to watch this Event Live.</string>
 </resources>

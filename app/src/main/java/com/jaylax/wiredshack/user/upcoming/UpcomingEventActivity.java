@@ -43,6 +43,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
     Context mContext;
     ProgressDialog progressDialog;
     String eventId = "";
+    String isRequested = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
             Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
 //                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
             intent.putExtra("liveStream", eventId);
+            intent.putExtra("isRequested", isRequested);
             startActivity(intent);
         });
     }
@@ -146,6 +148,8 @@ public class UpcomingEventActivity extends AppCompatActivity {
                 mBinding.imgUpcomingEventVideo.setVisibility(View.GONE);
             }
         }
+
+        isRequested = eventData.getIsRequest() == null ? "": eventData.getIsRequest();
     }
 
     private void getFollowingEvents() {
