@@ -534,13 +534,11 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
             // which they seeked.
             updateResumePosition();
         }
-        Log.e("ExoPlayer : ", "onPositionDiscontinuity");
     }
 
     @Override
     public void onTimelineChanged(Timeline timeline, Object manifest) {
         // Do nothing.
-        Log.e("ExoPlayer : ", "onTimelineChanged");
     }
 
     @Override

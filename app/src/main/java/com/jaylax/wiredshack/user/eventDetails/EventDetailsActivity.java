@@ -134,6 +134,18 @@ public class EventDetailsActivity extends AppCompatActivity {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(this).load(eventDetailsData.getImage() == null ? "" : eventDetailsData.getImage()).apply(options).into(mBinding.imgEventProfile);
 
+            if (eventDetailsData.getUserType() ==null){
+                mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+            }else {
+                if (eventDetailsData.getUserType().equals("2")){
+                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+                }else if (eventDetailsData.getUserType().equals("3")){
+                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_profile));
+                }else {
+                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+                }
+            }
+
             String coverImage = "";
             if (eventDetailsData.getImages().isEmpty()) {
                 coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();

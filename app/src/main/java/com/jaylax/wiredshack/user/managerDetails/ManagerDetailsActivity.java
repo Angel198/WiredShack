@@ -110,6 +110,18 @@ public class ManagerDetailsActivity extends AppCompatActivity {
         Glide.with(this).load(image).apply(options).into(mBinding.imgAccountProfile);
         Glide.with(this).load(managerDetailsData.getManagerCoverImage() == null ? "" : managerDetailsData.getManagerCoverImage()).apply(options).into(mBinding.imgAccountCover);
 
+        if (managerDetailsData.getUserType() ==null){
+            mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+        }else {
+            if (managerDetailsData.getUserType().equals("2")){
+                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+            }else if (managerDetailsData.getUserType().equals("3")){
+                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_profile));
+            }else {
+                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+            }
+        }
+
         mBinding.tvEventManagerName.setText(managerDetailsData.getManagerName());
 
         if (managerDetailsData.getFollow() == null) {

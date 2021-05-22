@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -47,6 +48,12 @@ public class HomeFragment extends Fragment {
     Context context;
     UserDetailsModel userDetailsModel;
     ProgressDialog progressDialog;
+    Boolean isManager = true;
+    Boolean isDJ = false;
+
+
+    ArrayList<ManagerListMainModel.ManagerListData> managerList = new ArrayList<>();
+    ArrayList<ManagerListMainModel.ManagerListData> djList = new ArrayList<>();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,6 +73,7 @@ public class HomeFragment extends Fragment {
 
 //        getEventList();
         getEventManagerList();
+        setClickListener();
 
         return mBinding.getRoot();
     }
@@ -120,7 +128,69 @@ public class HomeFragment extends Fragment {
             mBinding.linearHomeManager.setVisibility(View.GONE);
         } else {
             mBinding.linearHomeManager.setVisibility(View.VISIBLE);
+            for (ManagerListMainModel.ManagerListData data : list) {
+                if (data.getUserType() == null) {
+                    managerList.add(data);
+                } else {
+                    if (data.getUserType().equals("2")) {
+                        managerList.add(data);
+                    } else if (data.getUserType().equals("3")) {
+                        djList.add(data);
+                    } else {
+                        managerList.add(data);
+                    }
+                }
+            }
             mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            setTabLayout();
+        }
+    }
+
+
+    private void setClickListener() {
+        mBinding.tvEventOrganiser.setOnClickListener(view -> {
+            if (!isManager) {
+                mBinding.recyclerHomeManager.setVisibility(View.GONE);
+            }
+            isManager = true;
+            isDJ = false;
+            setTabLayout();
+        });
+
+        mBinding.tvDJOrganiser.setOnClickListener(view -> {
+            if (!isDJ) {
+                mBinding.recyclerHomeManager.setVisibility(View.GONE);
+            }
+            isManager = false;
+            isDJ = true;
+            setTabLayout();
+        });
+    }
+
+    private void setTabLayout() {
+        ArrayList<ManagerListMainModel.ManagerListData> list = new ArrayList<>();
+        if (isManager) {
+            mBinding.tvEventOrganiser.setBackgroundResource(R.drawable.back_round_white);
+            mBinding.tvEventOrganiser.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            list = managerList;
+        } else {
+            mBinding.tvEventOrganiser.setBackgroundResource(R.drawable.back_border_white);
+            mBinding.tvEventOrganiser.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        }
+
+        if (isDJ) {
+            mBinding.tvDJOrganiser.setBackgroundResource(R.drawable.back_round_white);
+            mBinding.tvDJOrganiser.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            list = djList;
+        } else {
+            mBinding.tvDJOrganiser.setBackgroundResource(R.drawable.back_border_white);
+            mBinding.tvDJOrganiser.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        }
+
+        if (list.isEmpty()){
+            mBinding.recyclerHomeManager.setVisibility(View.GONE);
+        }else {
+            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeManager.setAdapter(new HomeTopStoryAdapter(context, list, data -> {
                 Intent intent = new Intent(context, ManagerDetailsActivity.class);
                 intent.putExtra("managerId", data.getId());
@@ -128,6 +198,7 @@ public class HomeFragment extends Fragment {
             }));
         }
     }
+
 
     private void getUpcomingEvent() {
         if (Commons.isOnline(context)) {
@@ -149,7 +220,7 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 if (response.body().getStatus().equals("200") && response.body().getData() != null) {
-                                    setUpcomingEventDat(response.body().getData(),response.body().getFollowingEventCount() == null ?"":response.body().getFollowingEventCount());
+                                    setUpcomingEventDat(response.body().getData(), response.body().getFollowingEventCount() == null ? "" : response.body().getFollowingEventCount());
                                 } else {
                                     hideUpcomingEventData();
                                 }

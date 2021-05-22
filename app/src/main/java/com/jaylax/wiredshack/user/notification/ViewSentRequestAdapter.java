@@ -55,6 +55,18 @@ public class ViewSentRequestAdapter extends RecyclerView.Adapter<ViewSentRequest
         void bind(int pos, PendingRequestMainModel.PendingRequestData data){
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(context).load(data.getManagerProfileImage() == null ? "" : data.getManagerProfileImage()).apply(options).into(mBinding.imgRequestProfile);
+            if (data.getUserType() ==null){
+                mBinding.imgRequestProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+            }else {
+                if (data.getUserType().equals("2")){
+                    mBinding.imgRequestProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }else if (data.getUserType().equals("3")){
+                    mBinding.imgRequestProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_dj_border));
+                }else {
+                    mBinding.imgRequestProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }
+            }
+
             mBinding.tvRequestManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
             mBinding.tvRequestEventName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
             if (data.getRequestStatus().equals("1")) {

@@ -111,5 +111,13 @@ public class ManagerDetailsMainModel {
         public void setRecentEvent(ArrayList<RecentEventMainModel.RecentEventData> recentEvent) {
             this.recentEvent = recentEvent;
         }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
+        }
     }
 }

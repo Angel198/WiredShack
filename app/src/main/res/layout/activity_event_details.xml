@@ -73,7 +73,8 @@
                             android:id="@+id/imgEventProfile"
                             android:layout_width="@dimen/_80sdp"
                             android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/place_holder" />
+                            android:src="@drawable/place_holder"
+                            android:padding="@dimen/_2sdp"/>
 
                         <LinearLayout
                             android:layout_width="wrap_content"

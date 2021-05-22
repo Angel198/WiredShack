@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,6 +60,18 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
             Glide.with(context).load(data.getManagerCoverImage() == null ? "" : data.getManagerCoverImage()).apply(options).into(mBinding.imgItemHomeManagerCover);
 
             mBinding.tvHomeManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
+
+            if (data.getUserType() ==null){
+                mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+            }else {
+                if (data.getUserType().equals("2")){
+                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }else if (data.getUserType().equals("3")){
+                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_dj_border));
+                }else {
+                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }
+            }
 
             mBinding.constraintMain.setOnClickListener(view -> {
                 listener.onManagerClick(data);

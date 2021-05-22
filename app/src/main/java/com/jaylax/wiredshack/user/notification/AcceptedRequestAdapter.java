@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -61,6 +62,18 @@ public class AcceptedRequestAdapter extends RecyclerView.Adapter<AcceptedRequest
             }
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(context).load(data.getManagerProfileImage() == null ? "" : data.getManagerProfileImage()).apply(options).into(mBinding.imgAcceptedProfile);
+            if (data.getUserType() ==null){
+                mBinding.imgAcceptedProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+            }else {
+                if (data.getUserType().equals("2")){
+                    mBinding.imgAcceptedProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }else if (data.getUserType().equals("3")){
+                    mBinding.imgAcceptedProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_dj_border));
+                }else {
+                    mBinding.imgAcceptedProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                }
+            }
+
             mBinding.tvManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
             mBinding.tvEventName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
 

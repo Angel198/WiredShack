@@ -5,7 +5,9 @@
         android:dashGap="3dp"
         android:dashWidth="5dp"
         android:width="1dp"
-        android:color="@color/orange_A800" />
+        android:color="#00FF00" >
+
+    </stroke>
 
     <corners
         android:radius="@dimen/_50sdp"/>
