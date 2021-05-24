@@ -63,6 +63,5 @@ public class RtmpDataSource implements DataSource {
     @Override
     public int read(byte[] buffer, int offset, int readLength) throws IOException {
         return rtmpClient.read(buffer, offset, readLength);
-
     }
 }

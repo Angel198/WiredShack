@@ -76,26 +76,6 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
                 }
             }
 
-            if (data.getUserType() ==null){
-                mBinding.viewManager.setBackground(ContextCompat.getDrawable(context, R.drawable.back_manager_data));
-//                mBinding.tvManagerType.setText(context.getResources().getString(R.string.event_organiser));
-//                mBinding.tvManagerType.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light));
-            }else {
-                if (data.getUserType().equals("2")){
-                    mBinding.viewManager.setBackground(ContextCompat.getDrawable(context, R.drawable.back_manager_data));
-//                    mBinding.tvManagerType.setText(context.getResources().getString(R.string.event_organiser));
-//                    mBinding.tvManagerType.setTextColor(ContextCompat.getColor(context, android.R.color.holo_red_light));
-                }else if (data.getUserType().equals("3")){
-                    mBinding.viewManager.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dj_data));
-//                    mBinding.tvManagerType.setText(context.getResources().getString(R.string.dj_organiser));
-//                    mBinding.tvManagerType.setTextColor(ContextCompat.getColor(context, android.R.color.holo_green_light));
-                }else {
-                    mBinding.viewManager.setBackground(ContextCompat.getDrawable(context, R.drawable.back_manager_data));
-//                    mBinding.tvManagerType.setText(context.getResources().getString(R.string.event_organiser));
-//                    mBinding.tvManagerType.setTextColor(ContextCompat.getColor(context,android.R.color.holo_red_light));
-                }
-            }
-
             mBinding.tvFollow.setOnClickListener(view -> {
                 listener.onManagerClick(position,data,"follow");
             });

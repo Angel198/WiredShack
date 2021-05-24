@@ -33,14 +33,6 @@
                 app:srcCompat="@drawable/dummy" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <View
-            android:id="@+id/viewManager"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_5sdp"
-            android:layout_marginStart="@dimen/_2sdp"
-            android:layout_marginEnd="@dimen/_2sdp"
-            android:background="@drawable/back_manager_data" />
-
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvManagerName"
             android:layout_width="wrap_content"

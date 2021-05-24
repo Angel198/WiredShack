@@ -106,6 +106,9 @@ public class EventDetailsMainModel {
         @SerializedName("created_by")
         @Expose
         private String createdBy;
+        @SerializedName("freestream")
+        @Expose
+        private String freestream;
         @SerializedName("selected_manager")
         @Expose
         private SelectedManagerData selectedManager;
@@ -308,6 +311,14 @@ public class EventDetailsMainModel {
 
         public void setCreatedBy(String createdBy) {
             this.createdBy = createdBy;
+        }
+
+        public String getFreestream() {
+            return freestream;
+        }
+
+        public void setFreestream(String freestream) {
+            this.freestream = freestream;
         }
 
         public SelectedManagerData getSelectedManager() {

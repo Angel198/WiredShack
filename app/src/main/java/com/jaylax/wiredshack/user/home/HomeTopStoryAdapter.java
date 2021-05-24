@@ -61,7 +61,7 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
 
             mBinding.tvHomeManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
 
-            if (data.getUserType() ==null){
+            /*if (data.getUserType() ==null){
                 mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
             }else {
                 if (data.getUserType().equals("2")){
@@ -71,8 +71,7 @@ public class HomeTopStoryAdapter extends RecyclerView.Adapter<HomeTopStoryAdapte
                 }else {
                     mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
                 }
-            }
-
+            }*/
             mBinding.constraintMain.setOnClickListener(view -> {
                 listener.onManagerClick(data);
             });

@@ -1,11 +1,14 @@
 package com.jaylax.wiredshack.user.upcoming;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 
@@ -16,6 +19,7 @@ import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityUpcomingEventBinding;
+import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.account.AccountFollowingEventAdapter;
 import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
@@ -44,6 +48,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     String eventId = "";
     String isRequested = "";
+    String isFreeStream = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +58,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
         progressDialog = new ProgressDialog(mContext);
         if (getIntent().hasExtra("eventId")) {
             eventId = getIntent().getStringExtra("eventId");
-            getEventDetails();
+            getEventDetails(true);
         }
 
         setClickListener();
@@ -63,15 +68,27 @@ public class UpcomingEventActivity extends AppCompatActivity {
         mBinding.imgBack.setOnClickListener(view -> onBackPressed());
 
         mBinding.relativeUpcomingEventLiveView.setOnClickListener(view -> {
-            Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
+            if (isRequested.equals("2")) {
+                Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
 //                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
-            intent.putExtra("liveStream", eventId);
-            intent.putExtra("isRequested", isRequested);
-            startActivity(intent);
+                intent.putExtra("liveStream", eventId);
+                intent.putExtra("isRequested", isRequested);
+                startActivityForResult(intent, 101);
+            }else {
+                if (isFreeStream.equals("0")){
+                    showRequestDialog();
+                }else {
+                    Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
+//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
+                    intent.putExtra("liveStream", eventId);
+                    intent.putExtra("isRequested", isRequested);
+                    startActivityForResult(intent, 101);
+                }
+            }
         });
     }
 
-    private void getEventDetails() {
+    private void getEventDetails(boolean isFirst) {
         if (Commons.isOnline(mContext)) {
             HashMap<String, String> params = new HashMap<>();
             params.put("event_id", eventId);
@@ -91,7 +108,9 @@ public class UpcomingEventActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<EventDetailsMainModel> call, Response<EventDetailsMainModel> response) {
                         progressDialog.dismiss();
-                        getFollowingEvents();
+                        if (isFirst) {
+                            getFollowingEvents();
+                        }
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 if (response.body().getStatus().equals("200")) {
@@ -108,7 +127,9 @@ public class UpcomingEventActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<EventDetailsMainModel> call, Throwable t) {
                         progressDialog.dismiss();
-                        getFollowingEvents();
+                        if (isFirst) {
+                            getFollowingEvents();
+                        }
                         Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                     }
                 });
@@ -150,6 +171,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
         }
 
         isRequested = eventData.getIsRequest() == null ? "": eventData.getIsRequest();
+        isFreeStream = eventData.getFreestream() == null ? "": eventData.getFreestream();
     }
 
     private void getFollowingEvents() {
@@ -196,6 +218,80 @@ public class UpcomingEventActivity extends AppCompatActivity {
                 intent.putExtra("eventId", data.getId());
                 mContext.startActivity(intent);
             }));
+        }
+    }
+
+    private void showRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String msg = "";
+        String positiveTxt = "";
+        String negativeTxt = "";
+        if (isRequested.equals("1")) {
+            msg = getResources().getString(R.string.already_requested_msg);
+            positiveTxt = getResources().getString(R.string.txt_ok);
+            negativeTxt = "";
+        } else {
+            msg = getResources().getString(R.string.request_event_msg);
+            positiveTxt = getResources().getString(R.string.txt_cancel);
+            negativeTxt = getResources().getString(R.string.request);
+        }
+
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton(positiveTxt, (dialogInterface, i) -> {
+            //TODO : Call stream_check Api
+        });
+
+        if (!isRequested.equals("1")) {
+            builder.setNegativeButton(negativeTxt, (dialogInterface, i) -> {
+                //TODO : RequestLiveStream and close thi activity
+                requestStream();
+            });
+        }
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+    }
+
+    private void requestStream() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", eventId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().requestForLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                getEventDetails(false);
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(mContext, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
         }
     }
 
@@ -249,5 +345,15 @@ public class UpcomingEventActivity extends AppCompatActivity {
             }
         }
         return isLive;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 101){
+            if (!isRequested.equals("2")){
+                getEventDetails(false);
+            }
+        }
     }
 }

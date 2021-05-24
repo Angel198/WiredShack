@@ -76,7 +76,9 @@ import com.google.android.exoplayer2.util.Util;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
@@ -190,6 +192,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
             if (isRequested.equals("2")) {
                 tvStreamCountDown.setVisibility(View.GONE);
             } else {
+                streamCheck("1");
                 tvStreamCountDown.setVisibility(View.VISIBLE);
             }
         }
@@ -237,7 +240,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
         builder.setCancelable(false);
         builder.setPositiveButton(positiveTxt, (dialogInterface, i) -> {
             //TODO : Call stream_check Api
-            finish();
+            streamCheck("0");
         });
 
         if (!isRequested.equals("1")) {
@@ -250,6 +253,56 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
         dialog.show();
         dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+    }
+
+    private void streamCheck(String isEnable) {
+        ProgressDialog progressDialog = new ProgressDialog(mContext);
+        UserDetailsModel userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("uid", userDetailsModel.getId());
+            params.put("event_id", streamName);
+            params.put("is_enabale", isEnable);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().streamCheck(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            finish();
+                        }, 1500);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            finish();
+                        }, 1500);
+                    }
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
     }
 
     private void requestStream() {
@@ -282,24 +335,33 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                     }
-
-                    new Handler().postDelayed(() -> {
+                    streamCheck("0");
+                    /*new Handler().postDelayed(() -> {
                         finish();
-                    }, 1500);
+                    }, 1500);*/
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     progressDialog.dismiss();
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-
-                    new Handler().postDelayed(() -> {
+                    streamCheck("0");
+                    /*new Handler().postDelayed(() -> {
                         finish();
-                    }, 1500);
+                    }, 1500);*/
                 }
             });
         } else {
             Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (isRequested.equals("2")) {
+            super.onBackPressed();
+        } else {
+            streamCheck("0");
         }
     }
 
