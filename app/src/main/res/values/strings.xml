@@ -164,4 +164,13 @@
     <string name="dj_organiser">DJ Organiser</string>
     <string name="already_requested_msg">You already requested this Event. Wait for the Organizer to approve the request.</string>
     <string name="request_event_msg">You have to request an Organizer to watch this Event Live.</string>
+    <string name="welcome">Welcome!</string>
+    <string name="login">Login</string>
+    <string name="club">Club</string>
+    <string name="email_address">Email Address</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="signup">SignUp</string>
+    <string name="password">Password</string>
+    <string name="txt_forgot_password">Forgot\nPassword</string>
+    <string name="send_code">Send Code</string>
 </resources>

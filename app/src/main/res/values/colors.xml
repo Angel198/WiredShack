@@ -374,4 +374,12 @@
     <color name="colorOptionText">#F54B64</color>
     <color name="colorBlackTrans">#7D000000</color>
     <color name="colorWhiteTrans">#5EFFFFFF</color>
+    
+    
+    <color name="colorBlack20">#202136</color>
+    <color name="colorBlack26">#26202136</color>
+    <color name="colorBlack32">#32324A</color>
+    <color name="colorWhite26">#26FFFFFF</color>
+    <color name="colorWhite1A">#1AFFFFFF</color>
+    <color name="colorWhite33">#33FFFFFF</color>
 </resources>

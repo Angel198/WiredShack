@@ -1,12 +1,14 @@
 package com.jaylax.wiredshack.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Patterns;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.jaylax.wiredshack.LoginSignupActivity;
 
 public class Commons {
     public static String RTMP_URL = "rtmp://estandardcodex.in/LiveApp/";
@@ -40,4 +42,8 @@ public class Commons {
         return new Gson().fromJson(sharePreValue,className);
     }
 
+    public static void openLoginScree (Context context){
+        Intent intent = new Intent(context, LoginSignupActivity.class);
+        context.startActivity(intent);
+    }
 }

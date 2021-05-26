@@ -11,7 +11,6 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
-
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -22,12 +21,17 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme.one"
         android:usesCleartextTraffic="true">
+        <activity android:name=".LoginSignupActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one"
+            android:windowSoftInputMode="adjustResize" />
+
         <service android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster" />
 
-
-
-        <activity android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
-            android:theme="@style/BaseTheme.one"             />
+        <activity
+            android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
+            android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.liveVideoBroadcaster.LiveVideoBroadcasterActivity"
             android:theme="@style/BaseTheme.one" />
@@ -109,7 +113,8 @@
             android:name=".ForgetPasswordActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/BaseTheme.one" />
+            android:theme="@style/BaseTheme.one"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation"
@@ -134,8 +139,7 @@
 
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version" />
-        <!--              The API key for Google Maps-based APIs. -->
+            android:value="@integer/google_play_services_version" /> <!-- The API key for Google Maps-based APIs. -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_place_key" />

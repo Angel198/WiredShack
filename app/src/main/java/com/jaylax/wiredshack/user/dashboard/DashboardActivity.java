@@ -1,5 +1,11 @@
 package com.jaylax.wiredshack.user.dashboard;
 
+import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.os.Bundle;
+
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -8,25 +14,17 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.Manifest;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Bundle;
-
 import com.google.android.material.tabs.TabLayout;
-import com.jaylax.wiredshack.LoginActivity;
 import com.jaylax.wiredshack.R;
-import com.jaylax.wiredshack.user.account.AccountFragment;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
+import com.jaylax.wiredshack.user.account.AccountFragment;
 import com.jaylax.wiredshack.user.home.HomeFragment;
 import com.jaylax.wiredshack.user.notification.NotificationFragment;
 import com.jaylax.wiredshack.user.search.SearchFragment;
+import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 public class DashboardActivity extends AppCompatActivity {
 
@@ -81,15 +79,13 @@ public class DashboardActivity extends AppCompatActivity {
                     replaceFragment(new SearchFragment(), "Search");
                 } else if (tab.getPosition() == 2) {
                     if (SharePref.getInstance(context).get(SharePref.PREF_USER, "").toString().isEmpty()) {
-                        Intent intent = new Intent(context, LoginActivity.class);
-                        startActivity(intent);
+                        Commons.openLoginScree(context);
                     } else {
                         replaceFragment(new NotificationFragment(), "Notification");
                     }
                 } else if (tab.getPosition() == 3) {
                     if (SharePref.getInstance(context).get(SharePref.PREF_USER, "").toString().isEmpty()) {
-                        Intent intent = new Intent(context, LoginActivity.class);
-                        startActivity(intent);
+                        Commons.openLoginScree(context);
                     } else {
                         replaceFragment(new AccountFragment(), "Account");
                     }

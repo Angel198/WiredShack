@@ -1,31 +1,37 @@
 package com.jaylax.wiredshack;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
 
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.jaylax.wiredshack.databinding.ActivityForgetPasswordBinding;
+
 public class ForgetPasswordActivity extends AppCompatActivity {
 
-    EditText username;
-    String _email;
-    TextView code;
+    ActivityForgetPasswordBinding mBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_forget_password);
+        mBinding = DataBindingUtil.setContentView(this,R.layout.activity_forget_password);
 
-        username = (EditText) findViewById(R.id.username);
-        code = (TextView) findViewById(R.id.send_code);
-
-        code.setOnClickListener(new View.OnClickListener() {
+        mBinding.tvSendCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                _email = username.getText().toString();
+
             }
+        });
+
+        mBinding.imgClose.setOnClickListener(view -> {
+            onBackPressed();
+        });
+
+        mBinding.imgLogin.setOnClickListener(view -> {
+            onBackPressed();
         });
     }
 }
