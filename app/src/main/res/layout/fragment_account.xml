@@ -6,14 +6,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackHome"
-        tools:context=".user.account.AccountFragment">
+        android:background="@color/colorBlack20">
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:clipToPadding="false"
             android:fillViewport="true"
             android:overScrollMode="never"
+            android:paddingBottom="@dimen/_65sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -29,97 +30,70 @@
                     android:layout_height="wrap_content">
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgAccountCover"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/_250sdp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/place_holder"
-                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:id="@+id/imgProfileBack"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/background_profile"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:background="@drawable/back_gradient"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgProfileLogout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_15sdp"
+                        android:padding="@dimen/_10sdp"
+                        android:src="@drawable/ic_profile_logout"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgAccountLogout"
+                        android:id="@+id/imgProfileEdit"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_12sdp"
-                        android:src="@drawable/logoutbutton"
+                        android:layout_margin="@dimen/_15sdp"
+                        android:padding="@dimen/_5sdp"
+                        android:src="@drawable/ic_edit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_12sdp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
+                    <de.hdodenhof.circleimageview.CircleImageView
+                        android:id="@+id/imgAccountProfile"
+                        android:layout_width="@dimen/_90sdp"
+                        android:layout_height="@dimen/_90sdp"
+                        android:layout_marginStart="@dimen/_40sdp"
+                        android:layout_marginTop="@dimen/_75sdp"
+                        android:src="@drawable/place_holder"
+                        app:layout_constraintStart_toStartOf="@id/imgProfileBack"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                        <de.hdodenhof.circleimageview.CircleImageView
-                            android:id="@+id/imgAccountProfile"
-                            android:layout_width="@dimen/_80sdp"
-                            android:layout_height="@dimen/_80sdp"
-                            android:src="@drawable/place_holder" />
+                    <LinearLayout
+                        android:id="@+id/linearProfileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_5sdp"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toEndOf="@id/imgAccountProfile"
+                        app:layout_constraintTop_toBottomOf="@id/imgAccountProfile">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvAccountProfileName"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_10sdp"
                             android:includeFontPadding="false"
-                            tools:text="User Name"
+                            android:text="User Name"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_14ssp"
-                            app:fontFamily="@font/poppins_bold"
-                            tools:ignore="RtlCompat" />
-                    </LinearLayout>
+                            android:textSize="@dimen/_18ssp"
+                            app:fontFamily="@font/roboto_bold" />
 
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvAccountWishList"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_12sdp"
-                        android:background="@drawable/back_border_white"
-                        android:includeFontPadding="false"
-                        android:paddingStart="@dimen/_10sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_10sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:text="@string/wish_list"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
-                        app:fontFamily="@font/poppins_medium"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        tools:ignore="RtlCompat" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:padding="@dimen/_12sdp">
-
-                    <LinearLayout
-                        android:id="@+id/linearAccountFollowing"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="vertical">
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_10ssp"
+                            android:includeFontPadding="false"
+                            android:text="@string/following"
+                            android:textColor="@color/white"
+                            app:fontFamily="@font/roboto_regular" />
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvFollowCount"
@@ -128,97 +102,68 @@
                             android:includeFontPadding="false"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_14ssp"
-                            app:fontFamily="@font/poppins_bold"
-                            tools:text="600" />
+                            app:fontFamily="@font/roboto_bold"
+                            tools:text="1" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearProfileAboutMe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/_18sdp"
+                        android:background="@drawable/back_about_me"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_15sdp"
+                        android:visibility="visible"
+                        app:layout_constraintBottom_toTopOf="@id/imgGoLive"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/linearProfileName">
 
                         <androidx.appcompat.widget.AppCompatTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="@dimen/_5sdp"
                             android:includeFontPadding="false"
-                            android:text="@string/following"
+                            android:text="@string/about_me"
                             android:textColor="@color/white"
-                            app:fontFamily="@font/poppins_light" />
+                            android:textSize="@dimen/_14ssp"
+                            app:fontFamily="@font/roboto_bold" />
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:includeFontPadding="false"
+                            android:text="@string/dummy_about_me"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12ssp"
+                            app:fontFamily="@font/roboto_regular" />
                     </LinearLayout>
 
-                    <View
-                        android:layout_width="0dp"
-                        android:layout_height="0dp"
-                        android:layout_weight="1" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvAccountEditProfile"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/back_border_white"
-                        android:includeFontPadding="false"
-                        android:paddingStart="@dimen/_10sdp"
-                        android:paddingTop="@dimen/_3sdp"
-                        android:paddingEnd="@dimen/_10sdp"
-                        android:paddingBottom="@dimen/_3sdp"
-                        android:text="@string/edit_profile"
-                        android:textAlignment="center"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
-                        app:fontFamily="@font/poppins_medium"
-                        tools:ignore="RtlCompat" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/black" />
-
-                <!-- <androidx.appcompat.widget.AppCompatTextView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:padding="@dimen/_12sdp"
-                     android:text="@string/about_me"
-                     app:fontFamily="@font/poppins_medium"
-                     android:textSize="@dimen/_15ssp"
-                     android:textColor="@color/white"
-                     android:includeFontPadding="false" />
-
-                 <androidx.appcompat.widget.AppCompatTextView
-                     android:layout_width="match_parent"
-                     android:layout_height="wrap_content"
-                     android:paddingStart="@dimen/_12sdp"
-                     android:paddingEnd="@dimen/_12sdp"
-                     android:text="@string/dummy_about_me"
-                     app:fontFamily="@font/poppins_light"
-                     android:includeFontPadding="false"
-                     android:textColor="@color/white"
-                     android:textSize="@dimen/_13ssp"/>-->
-
-
-                <LinearLayout
-                    android:id="@+id/linearAccountFollowingEvent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_12sdp"
-                    android:orientation="vertical"
-                    android:paddingStart="@dimen/_12sdp"
-                    tools:ignore="RtlCompat">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:includeFontPadding="false"
-                        android:text="@string/following_events"
-                        android:textColor="@color/white"
-                        app:fontFamily="@font/poppins_light" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerAccountFollowingEvents"
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgGoLive"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/_13sdp"
                         android:layout_marginTop="@dimen/_10sdp"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:paddingEnd="@dimen/_5sdp" />
-                </LinearLayout>
+                        android:layout_marginEnd="@dimen/_13sdp"
+                        android:src="@drawable/ic_upload_button"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerAccountFollowingEvents"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/_18sdp"
+                    android:paddingEnd="@dimen/_11sdp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

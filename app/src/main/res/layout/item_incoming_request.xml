@@ -6,17 +6,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:background="@drawable/back_login_selection_main"
+        android:backgroundTint="@color/colorWhite1A"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/_10sdp"
-        android:background="@color/colorBackHome">
+        android:orientation="horizontal"
+        android:padding="@dimen/_7sdp">
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/imgRequestUserImage"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
-            android:src="@drawable/place_holder"
-            />
+            android:src="@drawable/place_holder" />
 
         <LinearLayout
             android:layout_width="0dp"
@@ -29,57 +30,60 @@
                 android:id="@+id/tvRequestUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="User Name"
-                app:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_14ssp"
-                android:textColor="@color/white" />
+                app:fontFamily="@font/roboto_regular"
+                tools:text="User Name" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvRequestEventName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                tools:text="Description"
-                app:fontFamily="@font/poppins_medium"
                 android:includeFontPadding="false"
+                android:textColor="@color/white"
                 android:textSize="@dimen/_8ssp"
-                android:textColor="@color/white" />
+                app:fontFamily="@font/roboto_regular"
+                tools:text="Description" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvRequestAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:ignore="RtlCompat"
-            android:text="@string/accept"
-            android:textSize="@dimen/_10ssp"
-            app:fontFamily="@font/poppins_medium"
-            android:includeFontPadding="false"
-            android:textColor="@color/white"
-            android:textAlignment="center"
-            android:paddingTop="@dimen/_3sdp"
-            android:paddingBottom="@dimen/_3sdp"
-            android:paddingStart="@dimen/_10sdp"
-            android:paddingEnd="@dimen/_10sdp"
-            android:background="@drawable/back_follow"
+            android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/_5sdp"
-            android:layout_gravity="center_vertical"/>
+            android:background="@drawable/back_round_black"
+            android:backgroundTint="@color/colorWhite1A"
+            android:includeFontPadding="false"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/accept"
+            android:textAlignment="center"
+            android:textColor="@color/colorPink88"
+            android:textSize="@dimen/_10ssp"
+            app:fontFamily="@font/roboto_regular"
+            tools:ignore="RtlCompat" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvRequestCancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            tools:ignore="RtlCompat"
-            android:text="@string/txt_cancel"
-            android:textSize="@dimen/_10ssp"
-            app:fontFamily="@font/poppins_medium"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/back_round_black"
+            android:backgroundTint="@color/colorWhite1A"
             android:includeFontPadding="false"
-            android:textColor="@color/white"
+            android:paddingStart="@dimen/_12sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingEnd="@dimen/_12sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:text="@string/txt_cancel"
             android:textAlignment="center"
-            android:paddingTop="@dimen/_3sdp"
-            android:paddingBottom="@dimen/_3sdp"
-            android:paddingStart="@dimen/_10sdp"
-            android:paddingEnd="@dimen/_10sdp"
-            android:background="@drawable/back_border_white"
-            android:layout_gravity="center_vertical"/>
+            android:textColor="@color/colorRed"
+            android:textSize="@dimen/_10ssp"
+            app:fontFamily="@font/roboto_regular"
+            tools:ignore="RtlCompat" />
     </LinearLayout>
 </layout>

@@ -8,11 +8,12 @@
         android:layout_height="match_parent"
         tools:context=".user.dashboard.DashboardActivity">
 
+
         <RelativeLayout
             android:id="@+id/viewDashboard"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toTopOf="@id/tabDashboard"
+            android:layout_height="match_parent"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -20,13 +21,25 @@
         <com.google.android.material.tabs.TabLayout
             android:id="@+id/tabDashboard"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/colorBackTab"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_margin="@dimen/_12sdp"
+            android:background="@drawable/back_login_selection_main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:tabBackground="@drawable/selected_tab_background"
             app:tabIndicator="@null"
-            app:tabBackground="@android:color/transparent"
-            app:tabRippleColor="@null"/>
+            app:tabRippleColor="@null" />
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgDashboardAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/tabDashboard"
+            app:layout_constraintTop_toTopOf="@id/tabDashboard"
+            android:src="@drawable/floating_button_add"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

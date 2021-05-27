@@ -1,6 +1,7 @@
 package com.jaylax.wiredshack.eventManager.dashboard;
 
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -22,7 +23,6 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
     static ActivityDashboardBinding mBinding;
 
     ArrayList<Integer> arySelect = new ArrayList<>();
-    ArrayList<Integer> aryUnSelect = new ArrayList<>();
 
     static String eventId = "";
 
@@ -31,20 +31,12 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_dashboard);
 
-        arySelect.add(R.drawable.home_white);
-        arySelect.add(R.drawable.event_white);
-        arySelect.add(R.drawable.notification_white);
+        mBinding.imgDashboardAdd.setVisibility(View.VISIBLE);
         arySelect.add(R.drawable.account_white);
+        arySelect.add(R.drawable.notification_white);
 
-        aryUnSelect.add(R.drawable.home);
-        aryUnSelect.add(R.drawable.event);
-        aryUnSelect.add(R.drawable.notification);
-        aryUnSelect.add(R.drawable.account);
-
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(0).setIcon(R.drawable.home_white));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(1).setIcon(R.drawable.event));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(2).setIcon(R.drawable.notification));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(0).setIcon(R.drawable.account_white));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(1).setIcon(R.drawable.notification_white));
 
         replaceFragment(new ManagerHomeFragment(), "Home");
         initListener();
@@ -73,17 +65,13 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
                 if (tab.getPosition() == 0) {
                     replaceFragment(new ManagerHomeFragment(), "Home");
                 } else if (tab.getPosition() == 1) {
-                    replaceFragment(new ManagerEventDetailsFragment(), "EventDetails");
-                } else if (tab.getPosition() == 2) {
-                    replaceFragment(new ManagerActivityFragment(), "Activity");
-                } else if (tab.getPosition() == 3) {
-                    replaceFragment(new ManagerAccountFragment(), "Account");
+                    replaceFragment(new ManagerActivityFragment(), "EventDetails");
                 }
             }
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.setIcon(aryUnSelect.get((Integer) tab.getTag()));
+
             }
 
             @Override

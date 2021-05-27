@@ -20,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     Context mContext;
     ActivityMainBinding mainBinding;
+    boolean isLogout = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,15 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = this;
 
-        new Handler().postDelayed(this::redirectToFlow, 3000);
+        if (getIntent().hasExtra("isLogout")) {
+            isLogout = getIntent().getBooleanExtra("isLogout", false);
+        }
+
+        if (isLogout) {
+            redirectToFlow();
+        } else {
+            new Handler().postDelayed(this::redirectToFlow, 2000);
+        }
         setListener();
     }
 
@@ -49,10 +58,11 @@ public class MainActivity extends AppCompatActivity {
             finishAffinity();
         }
     }
-    private void setListener(){
+
+    private void setListener() {
         mainBinding.imgClose.setOnClickListener(view -> {
-            Intent intent = new Intent(mContext,LoginSignupActivity.class);
-            intent.putExtra("fromSplash",true);
+            Intent intent = new Intent(mContext, LoginSignupActivity.class);
+            intent.putExtra("fromSplash", true);
             startActivity(intent);
             finishAffinity();
         });

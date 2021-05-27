@@ -76,7 +76,7 @@
     <string name="enter_dob">enter Date of Birth</string>
     <string name="txt_no">No</string>
     <string name="logout">Log Out</string>
-    <string name="logout_msg">Are you sure want to Logout?</string>
+    <string name="logout_msg">Are you sure\nyou want to logout ?</string>
     <string name="enter_event_name">Enter Event Name</string>
     <string name="enter_event_description">Enter Event Descriptions</string>
     <string name="enter_event_location">Enter Event Location</string>
@@ -173,4 +173,5 @@
     <string name="password">Password</string>
     <string name="txt_forgot_password">Forgot\nPassword</string>
     <string name="send_code">Send Code</string>
+    <string name="txt_yes">Yes</string>
 </resources>

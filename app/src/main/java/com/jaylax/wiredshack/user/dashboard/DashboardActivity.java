@@ -32,7 +32,6 @@ public class DashboardActivity extends AppCompatActivity {
     Context context;
 
     ArrayList<Integer> arySelect = new ArrayList<>();
-    ArrayList<Integer> aryUnSelect = new ArrayList<>();
 
 
     @Override
@@ -47,15 +46,10 @@ public class DashboardActivity extends AppCompatActivity {
         arySelect.add(R.drawable.notification_white);
         arySelect.add(R.drawable.account_white);
 
-        aryUnSelect.add(R.drawable.home);
-        aryUnSelect.add(R.drawable.search);
-        aryUnSelect.add(R.drawable.notification);
-        aryUnSelect.add(R.drawable.account);
-
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(0).setIcon(R.drawable.home_white));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(1).setIcon(R.drawable.search));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(2).setIcon(R.drawable.notification));
-        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(1).setIcon(R.drawable.search_white));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(2).setIcon(R.drawable.notification_white));
+        mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account_white));
 
         replaceFragment(new HomeFragment(), "Home");
         initListener();
@@ -94,7 +88,6 @@ public class DashboardActivity extends AppCompatActivity {
 
             @Override
             public void onTabUnselected(TabLayout.Tab tab) {
-                tab.setIcon(aryUnSelect.get((Integer) tab.getTag()));
             }
 
             @Override

@@ -382,4 +382,6 @@
     <color name="colorWhite26">#26FFFFFF</color>
     <color name="colorWhite1A">#1AFFFFFF</color>
     <color name="colorWhite33">#33FFFFFF</color>
+    <color name="colorPink88">#883AD9</color>
+    <color name="colorRed">#FF0000</color>
 </resources>

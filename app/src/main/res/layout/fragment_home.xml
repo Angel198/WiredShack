@@ -27,8 +27,10 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:clipToPadding="false"
             android:fillViewport="true"
             android:overScrollMode="never"
+            android:paddingBottom="@dimen/_65sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -51,36 +53,38 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="@dimen/_12sdp">
+
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvEventOrganiser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_marginEnd="@dimen/_2sdp"
-                            tools:ignore="RtlCompat"
+                            android:layout_weight="1"
+                            android:background="@drawable/back_round_white"
+                            android:includeFontPadding="false"
+                            android:padding="@dimen/_3sdp"
                             android:text="@string/event_organiser"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorBlackText"
                             android:textSize="@dimen/_10ssp"
                             app:fontFamily="@font/poppins_medium"
-                            android:includeFontPadding="false"
-                            android:textColor="@color/colorBlackText"
-                            android:textAlignment="center"
-                            android:padding="@dimen/_3sdp"
-                            android:background="@drawable/back_round_white"/>
+                            tools:ignore="RtlCompat" />
+
                         <androidx.appcompat.widget.AppCompatTextView
                             android:id="@+id/tvDJOrganiser"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:layout_weight="1"
                             android:layout_marginStart="@dimen/_2sdp"
-                            tools:ignore="RtlCompat"
+                            android:layout_weight="1"
+                            android:background="@drawable/back_border_white"
+                            android:includeFontPadding="false"
+                            android:padding="@dimen/_3sdp"
                             android:text="@string/dj_organiser"
+                            android:textAlignment="center"
+                            android:textColor="@color/white"
                             android:textSize="@dimen/_10ssp"
                             app:fontFamily="@font/poppins_medium"
-                            android:includeFontPadding="false"
-                            android:textColor="@color/white"
-                            android:textAlignment="center"
-                            android:padding="@dimen/_3sdp"
-                            android:background="@drawable/back_border_white"/>
+                            tools:ignore="RtlCompat" />
                     </LinearLayout>
 
                     <!--<androidx.appcompat.widget.AppCompatTextView
@@ -186,6 +190,7 @@
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/ic_date"
                             android:drawablePadding="@dimen/_3sdp"
+                            android:gravity="center_vertical"
                             android:includeFontPadding="false"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_12ssp"
@@ -193,8 +198,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
-                            tools:text="Event Name"
-                            android:gravity="center_vertical"/>
+                            tools:text="Event Name" />
 
                         <View
                             android:layout_width="0dp"
@@ -207,12 +211,12 @@
                             android:layout_height="wrap_content"
                             android:drawableStart="@drawable/ic_time"
                             android:drawablePadding="@dimen/_3sdp"
+                            android:gravity="center_vertical"
                             android:includeFontPadding="false"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_12ssp"
                             app:fontFamily="@font/poppins_medium"
-                            tools:text="Event Name"
-                            android:gravity="center_vertical"/>
+                            tools:text="Event Name" />
 
                         <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/imgUpcomingEventVideo"

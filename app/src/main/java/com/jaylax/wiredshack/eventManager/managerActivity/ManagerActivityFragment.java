@@ -11,6 +11,10 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerActivityBinding;
@@ -53,6 +57,12 @@ public class ManagerActivityFragment extends Fragment {
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
 
+
+        userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+
+        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+        Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+
         getIncomingRequest();
         setTabLayout();
 
@@ -82,19 +92,15 @@ public class ManagerActivityFragment extends Fragment {
 
     private void setTabLayout() {
         if (isRequest) {
-            mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvIncomingRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_round_black);
         }
 
         if (isEvents) {
-            mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvEventActivities.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_round_black);
         }
     }
 
@@ -182,11 +188,11 @@ public class ManagerActivityFragment extends Fragment {
     }
 
     private void setEventActivity(ArrayList<ManagerActivityMainModel.ManagerActivityData> list) {
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             mBinding.recyclerActivity.setVisibility(View.GONE);
-        }else {
+        } else {
             mBinding.recyclerActivity.setVisibility(View.VISIBLE);
-            mBinding.recyclerActivity.setAdapter(new ManagerEventActivitiesAdapter(mContext,list));
+            mBinding.recyclerActivity.setAdapter(new ManagerEventActivitiesAdapter(mContext, list));
         }
     }
 

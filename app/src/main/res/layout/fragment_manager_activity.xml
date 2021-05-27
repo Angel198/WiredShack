@@ -8,57 +8,63 @@
         android:layout_height="match_parent"
         android:background="@color/colorBackHome"
         android:orientation="vertical">
+
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgAccountProfile"
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_40sdp"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/_18sdp"
+            android:layout_marginEnd="@dimen/_18sdp"
+            android:src="@drawable/place_holder" />
+
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvNotificationHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_12sdp"
+            android:layout_marginStart="@dimen/_18sdp"
             android:includeFontPadding="false"
             android:text="@string/txt_activity"
             android:textColor="@color/white"
-            android:textSize="@dimen/_16ssp"
-            app:fontFamily="@font/poppins_bold" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/white" />
+            android:textSize="@dimen/_28ssp"
+            app:fontFamily="@font/roboto_medium" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/_12sdp">
+            android:layout_margin="@dimen/_18sdp"
+            android:background="@drawable/back_round_black"
+            android:orientation="horizontal">
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvIncomingRequest"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginEnd="@dimen/_2sdp"
-                tools:ignore="RtlCompat"
-                android:text="@string/incoming_request"
-                android:textSize="@dimen/_10ssp"
-                app:fontFamily="@font/poppins_medium"
+                android:background="@drawable/back_pink_select"
                 android:includeFontPadding="false"
-                android:textColor="@color/colorBlackText"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/incoming_request"
                 android:textAlignment="center"
-                android:padding="@dimen/_3sdp"
-                android:background="@drawable/back_round_white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                app:fontFamily="@font/roboto_medium" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tvEventActivities"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:layout_marginStart="@dimen/_2sdp"
-                tools:ignore="RtlCompat"
-                android:text="@string/event_activities"
-                android:textSize="@dimen/_10ssp"
-                app:fontFamily="@font/poppins_medium"
+                android:layout_weight="1"
+                android:background="@drawable/back_round_black"
                 android:includeFontPadding="false"
-                android:textColor="@color/white"
+                android:padding="@dimen/_10sdp"
+                android:text="@string/event_activities"
                 android:textAlignment="center"
-                android:padding="@dimen/_3sdp"
-                android:background="@drawable/back_border_white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/_10ssp"
+                app:fontFamily="@font/roboto_medium" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
@@ -66,8 +72,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:overScrollMode="never"
             android:clipToPadding="false"
-            android:padding="@dimen/_12sdp"/>
+            android:overScrollMode="never"
+            android:paddingStart="@dimen/_18sdp"
+            android:paddingEnd="@dimen/_18sdp"
+            android:paddingBottom="@dimen/_100sdp" />
     </LinearLayout>
 </layout>

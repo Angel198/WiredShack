@@ -26,21 +26,18 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
     Context context;
     ArrayList<RecentEventMainModel.RecentEventData> list;
     ManagerEventClick listener;
-    boolean isFromHome = false;
     String listType = "";
 
-    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list,ManagerEventClick listener, boolean isFromHome) {
+    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list,ManagerEventClick listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
-        this.isFromHome = isFromHome;
     }
 
-    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, ManagerEventClick listener, boolean isFromHome, String listType) {
+    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, ManagerEventClick listener, String listType) {
         this.context = context;
         this.list = list;
         this.listener = listener;
-        this.isFromHome = isFromHome;
         this.listType = listType;
     }
 
@@ -57,14 +54,7 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
 
     @Override
     public int getItemCount() {
-        int size;
-        if (isFromHome) {
-            size = Math.min(list.size(), 6);
-        } else {
-            size = list.size();
-        }
-
-        return size;
+        return list.size();
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {

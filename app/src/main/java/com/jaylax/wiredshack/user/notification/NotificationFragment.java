@@ -13,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentNotificationBinding;
@@ -66,6 +70,9 @@ public class NotificationFragment extends Fragment {
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
 
+        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+        Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+
         getAcceptedEventData();
         setTabLayout();
 
@@ -98,19 +105,15 @@ public class NotificationFragment extends Fragment {
 
     private void setTabLayout() {
         if (isAccept) {
-            mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvAcceptedRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvAcceptedRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_round_black);
         }
 
         if (isViewRequest) {
-            mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_round_white);
-            mBinding.tvViewSentRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorBlackText));
+            mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_border_white);
-            mBinding.tvViewSentRequest.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+            mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_round_black);
         }
     }
 

@@ -216,7 +216,7 @@ public class ManagerAccountFragment extends Fragment {
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
             mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
                 DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
-            },false,type));
+            },type));
         }
     }
 
