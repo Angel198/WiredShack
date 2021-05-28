@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -20,14 +22,16 @@ import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 
 import java.util.ArrayList;
 
-public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdapter.MyViewHolder> {
+public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdapter.MyViewHolder> implements Filterable {
     Context context;
     ArrayList<UserFollowingMainModel.UserFollowingData> list;
+    ArrayList<UserFollowingMainModel.UserFollowingData> filteredFollowingList;
     FollowingManageClick listener;
 
     public UserFollowingAdapter(Context context, ArrayList<UserFollowingMainModel.UserFollowingData> list, FollowingManageClick listener) {
         this.context = context;
         this.list = list;
+        this.filteredFollowingList = list;
         this.listener = listener;
     }
 
@@ -39,13 +43,14 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(position, list.get(position));
+        holder.bind(position, filteredFollowingList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        return list.size();
+        return filteredFollowingList.size();
     }
+
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ItemUserFollowingBinding mBinding;
@@ -74,5 +79,36 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
 
     public interface FollowingManageClick {
         void onFollowClick(int pos, UserFollowingMainModel.UserFollowingData data);
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    filteredFollowingList = list;
+                } else {
+                    ArrayList<UserFollowingMainModel.UserFollowingData> filteredList = new ArrayList<>();
+                    for (UserFollowingMainModel.UserFollowingData movie : list) {
+                        if (movie.getManagerName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(movie);
+                        }
+                    }
+                    filteredFollowingList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredFollowingList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredFollowingList = (ArrayList<UserFollowingMainModel.UserFollowingData>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 }

@@ -174,4 +174,11 @@
     <string name="txt_forgot_password">Forgot\nPassword</string>
     <string name="send_code">Send Code</string>
     <string name="txt_yes">Yes</string>
+    <string name="txt_edit">Edit</string>
+    <string name="txt_done">Done</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_phone">Phone</string>
+    <string name="people_club">People &amp; Club</string>
+    <string name="people">People</string>
 </resources>

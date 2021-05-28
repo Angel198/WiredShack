@@ -3,6 +3,8 @@ package com.jaylax.wiredshack.eventManager.followed;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -14,16 +16,19 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemUserFollowingBinding;
+import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
 
 import java.util.ArrayList;
 
-public class ManagerFollowedAdapter extends RecyclerView.Adapter<ManagerFollowedAdapter.MyViewHolder> {
+public class ManagerFollowedAdapter extends RecyclerView.Adapter<ManagerFollowedAdapter.MyViewHolder> implements Filterable {
     Context context;
     ArrayList<ManagerFollowedMainModel.ManagerFollowedData> list;
+    ArrayList<ManagerFollowedMainModel.ManagerFollowedData> filteredFollowedList;
 
     public ManagerFollowedAdapter(Context context, ArrayList<ManagerFollowedMainModel.ManagerFollowedData> list) {
         this.context = context;
         this.list = list;
+        this.filteredFollowedList = list;
     }
 
     @NonNull
@@ -34,11 +39,11 @@ public class ManagerFollowedAdapter extends RecyclerView.Adapter<ManagerFollowed
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(position, list.get(position));
+        holder.bind(position, filteredFollowedList.get(position));
     }
 
     public int getItemCount() {
-        return list.size();
+        return filteredFollowedList.size();
     }
 
 
@@ -56,5 +61,36 @@ public class ManagerFollowedAdapter extends RecyclerView.Adapter<ManagerFollowed
             mBinding.tvUserName.setText(data.getUserName() == null ? "N/A" : data.getUserName());
             mBinding.tvFollow.setText(context.getResources().getString(R.string.following));
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence charSequence) {
+                String charString = charSequence.toString();
+                if (charString.isEmpty()) {
+                    filteredFollowedList = list;
+                } else {
+                    ArrayList<ManagerFollowedMainModel.ManagerFollowedData> filteredList = new ArrayList<>();
+                    for (ManagerFollowedMainModel.ManagerFollowedData movie : list) {
+                        if (movie.getUserName().toLowerCase().contains(charString.toLowerCase())) {
+                            filteredList.add(movie);
+                        }
+                    }
+                    filteredFollowedList = filteredList;
+                }
+
+                FilterResults filterResults = new FilterResults();
+                filterResults.values = filteredFollowedList;
+                return filterResults;
+            }
+
+            @Override
+            protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+                filteredFollowedList = (ArrayList<ManagerFollowedMainModel.ManagerFollowedData>) filterResults.values;
+                notifyDataSetChanged();
+            }
+        };
     }
 }

@@ -94,13 +94,13 @@ public class ManagerActivityFragment extends Fragment {
         if (isRequest) {
             mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvIncomingRequest.setBackgroundResource(R.drawable.back_round_black);
+            mBinding.tvIncomingRequest.setBackgroundResource(0);
         }
 
         if (isEvents) {
             mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvEventActivities.setBackgroundResource(R.drawable.back_round_black);
+            mBinding.tvEventActivities.setBackgroundResource(0);
         }
     }
 

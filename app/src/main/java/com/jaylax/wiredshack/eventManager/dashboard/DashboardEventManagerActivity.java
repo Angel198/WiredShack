@@ -12,9 +12,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
-import com.jaylax.wiredshack.eventManager.eventdetails.ManagerEventDetailsFragment;
 import com.jaylax.wiredshack.eventManager.home.ManagerHomeFragment;
-import com.jaylax.wiredshack.eventManager.managerAccount.ManagerAccountFragment;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityFragment;
 
 import java.util.ArrayList;

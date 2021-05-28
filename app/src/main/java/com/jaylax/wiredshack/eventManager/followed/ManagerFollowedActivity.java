@@ -2,21 +2,30 @@ package com.jaylax.wiredshack.eventManager.followed;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerFollowedBinding;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -29,6 +38,8 @@ public class ManagerFollowedActivity extends AppCompatActivity {
     Context mContext;
     ProgressDialog progressDialog;
     UserDetailsModel userDetailsModel;
+    ManagerFollowedAdapter adapter = null;
+    ArrayList<ManagerFollowedMainModel.ManagerFollowedData> followedList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,10 +48,37 @@ public class ManagerFollowedActivity extends AppCompatActivity {
         mContext = this;
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+        Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
 
         getFollowedList();
         mBinding.imgBack.setOnClickListener(view -> onBackPressed());
+        mBinding.edtSearchManager.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mBinding.imgUserFollowingSort.setOnClickListener(view -> {
+            if (!followedList.isEmpty() && adapter != null) {
+                Collections.sort(followedList, (userFollowingData, t1) -> userFollowingData.getUserName().compareToIgnoreCase(t1.getUserName()));
+
+                adapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void getFollowedList() {
@@ -80,10 +118,12 @@ public class ManagerFollowedActivity extends AppCompatActivity {
         if (list.isEmpty()) {
             mBinding.recyclerManagerFollowed.setVisibility(View.GONE);
         } else {
+            followedList = list;
             mBinding.tvUserFollowingCount.setText(getResources().getString(R.string.followed_count, String.valueOf(list.size())));
             mBinding.recyclerManagerFollowed.setVisibility(View.VISIBLE);
+            adapter = new ManagerFollowedAdapter(mContext, followedList);
             mBinding.recyclerManagerFollowed.setLayoutManager(new LinearLayoutManager(this));
-            mBinding.recyclerManagerFollowed.setAdapter(new ManagerFollowedAdapter(mContext, list));
+            mBinding.recyclerManagerFollowed.setAdapter(adapter);
         }
     }
 

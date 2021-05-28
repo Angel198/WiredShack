@@ -379,9 +379,12 @@
     <color name="colorBlack20">#202136</color>
     <color name="colorBlack26">#26202136</color>
     <color name="colorBlack32">#32324A</color>
+    <color name="colorBlack66">#66000000</color>
     <color name="colorWhite26">#26FFFFFF</color>
     <color name="colorWhite1A">#1AFFFFFF</color>
     <color name="colorWhite33">#33FFFFFF</color>
+    <color name="colorWhite4D">#4DFFFFFF</color>
     <color name="colorPink88">#883AD9</color>
+    <color name="colorPink4D">#4D883AD9</color>
     <color name="colorRed">#FF0000</color>
 </resources>

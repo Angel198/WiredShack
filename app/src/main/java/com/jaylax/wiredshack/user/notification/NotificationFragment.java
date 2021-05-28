@@ -52,7 +52,6 @@ public class NotificationFragment extends Fragment {
     ViewSentRequestAdapter requestAdapter = null;
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -107,13 +106,13 @@ public class NotificationFragment extends Fragment {
         if (isAccept) {
             mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvAcceptedRequest.setBackgroundResource(R.drawable.back_round_black);
+            mBinding.tvAcceptedRequest.setBackgroundResource(0);
         }
 
         if (isViewRequest) {
             mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_pink_select);
         } else {
-            mBinding.tvViewSentRequest.setBackgroundResource(R.drawable.back_round_black);
+            mBinding.tvViewSentRequest.setBackgroundResource(0);
         }
     }
 
@@ -154,16 +153,16 @@ public class NotificationFragment extends Fragment {
     }
 
     private void setAcceptedEvent(ArrayList<AcceptedEventMainModel.AcceptedData> list) {
-        if (list.isEmpty()){
+        if (list.isEmpty()) {
             mBinding.recyclerActivity.setVisibility(View.GONE);
-        }else {
+        } else {
             acceptedList = new ArrayList<>();
             acceptedList = list;
-            for (AcceptedEventMainModel.AcceptedData data : acceptedList){
+            for (AcceptedEventMainModel.AcceptedData data : acceptedList) {
                 data.setDayName("");
             }
             mBinding.recyclerActivity.setVisibility(View.VISIBLE);
-            mBinding.recyclerActivity.setAdapter(new AcceptedRequestAdapter(mContext,acceptedList,(pos, data) -> {
+            mBinding.recyclerActivity.setAdapter(new AcceptedRequestAdapter(mContext, acceptedList, (pos, data) -> {
                 Intent intent = new Intent(mContext, EventDetailsActivity.class);
                 intent.putExtra("eventId", data.getEventId());
                 mContext.startActivity(intent);

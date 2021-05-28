@@ -6,8 +6,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityUserFollowingBinding;
@@ -16,12 +22,17 @@ import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.search.SearchFragment;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -44,9 +55,39 @@ public class UserFollowingActivity extends AppCompatActivity {
         mContext = this;
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+        Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+
         getFollowingList();
         mBinding.imgBack.setOnClickListener(view -> {
             onBackPressed();
+        });
+
+        mBinding.edtSearchManager.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (adapter != null) {
+                    adapter.getFilter().filter(charSequence.toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+        mBinding.imgUserFollowingSort.setOnClickListener(view -> {
+            if (!followingList.isEmpty() && adapter != null) {
+                Collections.sort(followingList, (userFollowingData, t1) -> userFollowingData.getManagerName().compareToIgnoreCase(t1.getManagerName()));
+
+                adapter.notifyDataSetChanged();
+            }
         });
     }
 
@@ -122,7 +163,7 @@ public class UserFollowingActivity extends AppCompatActivity {
                                     followingList.get(pos).setIsFollow("1");
                                     followingCount = followingCount + 1;
                                 }
-                                if (adapter != null){
+                                if (adapter != null) {
                                     adapter.notifyDataSetChanged();
                                 }
                                 mBinding.tvUserFollowingCount.setText(getResources().getString(R.string.followed_count, String.valueOf(followingCount)));
