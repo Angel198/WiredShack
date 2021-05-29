@@ -21,13 +21,20 @@
         android:supportsRtl="true"
         android:theme="@style/BaseTheme.one"
         android:usesCleartextTraffic="true">
-        <activity android:name=".LoginSignupActivity"
+        <activity
+            android:name=".LoginSignupActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one"
             android:windowSoftInputMode="adjustResize" />
 
         <service android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster" />
+
+        <activity
+            android:name=".eventManager.assignEvent.AssignEventActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one" />
 
         <activity
             android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
@@ -65,8 +72,15 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
-        <activity
+        <!--
+<activity
             android:name=".eventManager.editEvent.ManagerEditEventActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
+            android:theme="@style/BaseTheme.one" />
+        -->
+        <activity
+            android:name=".eventManager.editEvent.ManagerEditEventNewActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
@@ -114,7 +128,7 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".LoginActivity"
             android:configChanges="orientation"

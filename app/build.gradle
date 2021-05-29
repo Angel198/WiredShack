@@ -98,4 +98,8 @@ dependencies {
 
     implementation "de.mrmaffen:vlc-android-sdk:2.0.6"
 
+    //DatePicker
+    implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
+
+
 }

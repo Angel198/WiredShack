@@ -181,4 +181,17 @@
     <string name="hint_phone">Phone</string>
     <string name="people_club">People &amp; Club</string>
     <string name="people">People</string>
+    <string name="txt_time">Time</string>
+    <string name="txt_date">Date</string>
+    <string name="txt_description">Description</string>
+    <string name="txt_event_name">Event Name</string>
+    <string name="change_cover_image">Change cover image</string>
+    <string name="txt_event_details">Event Details</string>
+    <string name="hint_select_club">Select Club</string>
+    <string name="hint_location">Location</string>
+    <string name="hint_select_dj">Select DJ</string>
+    <string name="list_of_organiser">List of Organiser</string>
+    <string name="assign">Assign</string>
+    <string name="list_of_club">List of Club</string>
+    <string name="list_of_dj">List of DJ</string>
 </resources>

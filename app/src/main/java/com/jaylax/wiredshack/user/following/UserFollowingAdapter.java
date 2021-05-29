@@ -22,7 +22,7 @@ import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
 
 import java.util.ArrayList;
 
-public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdapter.MyViewHolder> implements Filterable {
+public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdapter.MyViewHolder>/* implements Filterable */{
     Context context;
     ArrayList<UserFollowingMainModel.UserFollowingData> list;
     ArrayList<UserFollowingMainModel.UserFollowingData> filteredFollowingList;
@@ -66,10 +66,10 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
             mBinding.tvUserName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
 
             if (data.getIsFollow().equals("1")) {
-                mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_border_white));
+//                mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_border_white));
                 mBinding.tvFollow.setText(context.getResources().getString(R.string.following));
             } else {
-                mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_follow));
+//                mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_follow));
                 mBinding.tvFollow.setText(context.getResources().getString(R.string.follow));
             }
 
@@ -81,7 +81,7 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
         void onFollowClick(int pos, UserFollowingMainModel.UserFollowingData data);
     }
 
-    @Override
+   /* @Override
     public Filter getFilter() {
         return new Filter() {
             @Override
@@ -110,5 +110,5 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
                 notifyDataSetChanged();
             }
         };
-    }
+    }*/
 }

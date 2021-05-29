@@ -21,7 +21,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <!--<androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -29,7 +29,13 @@
                 android:includeFontPadding="false"
                 android:text="@string/welcome"
                 android:textColor="@color/white"
-                android:textSize="@dimen/_46ssp"/>
+                android:textSize="@dimen/_46ssp"/>-->
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="@dimen/_100sdp"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/toplogo"/>
         </RelativeLayout>
 
         <View

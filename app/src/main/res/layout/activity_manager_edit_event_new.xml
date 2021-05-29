@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorBlack20">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollEvent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:paddingBottom="@dimen/_75sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgCoverPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_250sdp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/place_holder"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="@drawable/back_gradient"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="vertical"
+                        android:padding="@dimen/_18sdp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <androidx.appcompat.widget.AppCompatEditText
+                                    android:id="@+id/editEventName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="@color/transparent"
+                                    android:editable="false"
+                                    android:fontFamily="@font/roboto_medium"
+                                    android:hint="@string/txt_event_name"
+                                    android:includeFontPadding="false"
+                                    android:textColor="@color/white"
+                                    android:textColorHint="@color/colorWhite4D"
+                                    android:textSize="@dimen/_25ssp"
+                                    tools:ignore="RtlCompat" />
+
+                                <androidx.appcompat.widget.AppCompatTextView
+                                    android:id="@+id/tvManagerName"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="@dimen/_2sdp"
+                                    android:includeFontPadding="false"
+                                    android:text="User Name"
+                                    android:textColor="@color/white"
+                                    android:textSize="@dimen/_18ssp"
+                                    app:fontFamily="@font/roboto_regular"
+                                    tools:ignore="RtlCompat" />
+                            </LinearLayout>
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imgEventDataEdit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="bottom"
+                                android:src="@drawable/ic_edit_event" />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/_15sdp"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:src="@drawable/ic_date" />
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/editEventDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:background="@color/transparent"
+                                android:editable="false"
+                                android:hint="@string/txt_date"
+                                android:includeFontPadding="false"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/colorWhite4D"
+                                android:textSize="@dimen/_12ssp"
+                                app:fontFamily="@font/roboto_regular" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_15sdp"
+                                android:src="@drawable/ic_time" />
+
+                            <androidx.appcompat.widget.AppCompatEditText
+                                android:id="@+id/editEventTime"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/_8sdp"
+                                android:background="@color/transparent"
+                                android:editable="false"
+                                android:hint="@string/txt_time"
+                                android:includeFontPadding="false"
+                                android:textColor="@color/white"
+                                android:textColorHint="@color/colorWhite4D"
+                                android:textSize="@dimen/_12ssp"
+                                app:fontFamily="@font/roboto_regular" />
+
+                            <androidx.appcompat.widget.AppCompatImageView
+                                android:layout_width="@dimen/_24sdp"
+                                android:layout_height="@dimen/_24sdp"
+                                android:layout_gravity="bottom"
+                                android:layout_marginStart="@dimen/_10sdp"
+                                android:src="@drawable/ic_edit_event" />
+                        </LinearLayout>
+                    </LinearLayout>
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:padding="@dimen/_18sdp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:includeFontPadding="false"
+                        android:text="@string/txt_description"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_14ssp"
+                        app:fontFamily="@font/roboto_bold" />
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/editEventDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        android:background="@color/transparent"
+                        android:editable="false"
+                        android:gravity="top|left"
+                        android:hint="@string/enter_event_description"
+                        android:includeFontPadding="false"
+                        android:lines="5"
+                        android:minLines="5"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/colorWhite4D"
+                        android:textSize="@dimen/_12ssp"
+                        app:fontFamily="@font/roboto_regular" />
+
+                    <FrameLayout
+                        android:id="@+id/frameMap"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_150sdp"
+                        android:layout_marginTop="@dimen/_25sdp">
+
+                        <fragment
+                            android:id="@+id/map"
+                            android:name="com.jaylax.wiredshack.utils.AppMapView"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/imageCurrentLocation"
+                            android:layout_width="@dimen/_30sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="end|bottom"
+                            android:layout_margin="@dimen/_15sdp"
+                            android:src="@drawable/ic_current_location_add"
+                            android:visibility="gone" />
+
+                    </FrameLayout>
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/editEventLocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:background="@color/transparent"
+                        android:editable="false"
+                        android:gravity="top|left"
+                        android:hint="@string/event_location"
+                        android:includeFontPadding="false"
+                        android:lines="5"
+                        android:minLines="5"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/colorWhite4D"
+                        android:textSize="@dimen/_12ssp"
+                        app:fontFamily="@font/roboto_regular" />
+
+                </LinearLayout>
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+
+        <LinearLayout
+            android:id="@+id/linearAddEditEventHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/transparent"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/_18sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back_white" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgEventCoverEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_edit_event" />
+        </LinearLayout>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgShareEvent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:src="@drawable/btn_share_event"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

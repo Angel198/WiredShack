@@ -44,7 +44,8 @@ public class UserFollowingActivity extends AppCompatActivity {
     Context mContext;
     ProgressDialog progressDialog;
     UserDetailsModel userDetailsModel;
-    ArrayList<UserFollowingMainModel.UserFollowingData> followingList = new ArrayList<>();
+    ArrayList<UserFollowingMainModel.UserFollowingData> mainList = new ArrayList<>();
+    ArrayList<UserFollowingMainModel.UserFollowingData> filteredList = new ArrayList<>();
     UserFollowingAdapter adapter = null;
     int followingCount = 0;
 
@@ -59,6 +60,11 @@ public class UserFollowingActivity extends AppCompatActivity {
         Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
 
         getFollowingList();
+        if (userDetailsModel.getFollowing() != null) {
+            if (!userDetailsModel.getFollowing().isEmpty()) {
+                followingCount = Integer.parseInt(userDetailsModel.getFollowing());
+            }
+        }
         mBinding.imgBack.setOnClickListener(view -> {
             onBackPressed();
         });
@@ -71,8 +77,22 @@ public class UserFollowingActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                if (adapter != null) {
+                /*if (adapter != null) {
                     adapter.getFilter().filter(charSequence.toString());
+                }*/
+
+                String searchTxt = mBinding.edtSearchManager.getText().toString().toLowerCase();
+                if (searchTxt.isEmpty()) {
+                    setFollowedData(mainList);
+                } else {
+                    ArrayList<UserFollowingMainModel.UserFollowingData> listFilter = new ArrayList<>();
+                    for (UserFollowingMainModel.UserFollowingData data : mainList) {
+                        if (data.getManagerName().toLowerCase().contains(searchTxt)) {
+                            listFilter.add(data);
+                        }
+                    }
+
+                    setFollowedData(listFilter);
                 }
             }
 
@@ -83,8 +103,8 @@ public class UserFollowingActivity extends AppCompatActivity {
         });
 
         mBinding.imgUserFollowingSort.setOnClickListener(view -> {
-            if (!followingList.isEmpty() && adapter != null) {
-                Collections.sort(followingList, (userFollowingData, t1) -> userFollowingData.getManagerName().compareToIgnoreCase(t1.getManagerName()));
+            if (!filteredList.isEmpty() && adapter != null) {
+                Collections.sort(filteredList, (userFollowingData, t1) -> userFollowingData.getManagerName().compareToIgnoreCase(t1.getManagerName()));
 
                 adapter.notifyDataSetChanged();
             }
@@ -101,7 +121,12 @@ public class UserFollowingActivity extends AppCompatActivity {
                     progressDialog.dismiss();
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
-                            setFollowedData(response.body().getData());
+//                            setFollowedData(response.body().getData());
+                            mainList = response.body().getData();
+                            for (UserFollowingMainModel.UserFollowingData data : mainList) {
+                                data.setIsFollow("1");
+                            }
+                            setFollowedData(mainList);
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
@@ -128,14 +153,15 @@ public class UserFollowingActivity extends AppCompatActivity {
         if (list.isEmpty()) {
             mBinding.recyclerUserFollowing.setVisibility(View.GONE);
         } else {
-            followingList = list;
-            for (UserFollowingMainModel.UserFollowingData data : followingList) {
+            filteredList = new ArrayList<>();
+            filteredList = list;
+            /*for (UserFollowingMainModel.UserFollowingData data : filteredList) {
                 data.setIsFollow("1");
-            }
+            }*/
 
-            adapter = new UserFollowingAdapter(mContext, followingList, this::followUnfollowManager);
-            followingCount = followingList.size();
-            mBinding.tvUserFollowingCount.setText(getResources().getString(R.string.followed_count, String.valueOf(followingCount)));
+            adapter = new UserFollowingAdapter(mContext, filteredList, this::followUnfollowManager);
+//            followingCount = mainList.size();
+            mBinding.tvUserFollowingCount.setText(String.valueOf(followingCount));
             mBinding.recyclerUserFollowing.setVisibility(View.VISIBLE);
             mBinding.recyclerUserFollowing.setLayoutManager(new LinearLayoutManager(this));
             mBinding.recyclerUserFollowing.setAdapter(adapter);
@@ -156,17 +182,18 @@ public class UserFollowingActivity extends AppCompatActivity {
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (response.body().getStatus().equals("200")) {
-                                if (followingList.get(pos).getIsFollow().equals("1")) {
-                                    followingList.get(pos).setIsFollow("0");
+                                if (filteredList.get(pos).getIsFollow().equals("1")) {
+                                    filteredList.get(pos).setIsFollow("0");
                                     followingCount = followingCount - 1;
                                 } else {
-                                    followingList.get(pos).setIsFollow("1");
+                                    filteredList.get(pos).setIsFollow("1");
                                     followingCount = followingCount + 1;
                                 }
                                 if (adapter != null) {
                                     adapter.notifyDataSetChanged();
                                 }
-                                mBinding.tvUserFollowingCount.setText(getResources().getString(R.string.followed_count, String.valueOf(followingCount)));
+                                updateMainList(filteredList.get(pos));
+                                mBinding.tvUserFollowingCount.setText(String.valueOf(followingCount));
                             } else {
                                 String msg = "";
                                 if (response.body().getMessage().isEmpty()) {
@@ -190,6 +217,14 @@ public class UserFollowingActivity extends AppCompatActivity {
             });
         } else {
             Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void updateMainList(UserFollowingMainModel.UserFollowingData userFollowingData) {
+        for (UserFollowingMainModel.UserFollowingData data : mainList) {
+            if (data.getId().equals(userFollowingData.getId())) {
+                data.setIsFollow(userFollowingData.getIsFollow());
+            }
         }
     }
 }

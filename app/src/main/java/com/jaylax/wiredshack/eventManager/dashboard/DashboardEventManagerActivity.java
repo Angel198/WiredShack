@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack.eventManager.dashboard;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
@@ -12,6 +13,8 @@ import androidx.fragment.app.FragmentTransaction;
 import com.google.android.material.tabs.TabLayout;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
+import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
+import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventNewActivity;
 import com.jaylax.wiredshack.eventManager.home.ManagerHomeFragment;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityFragment;
 
@@ -76,6 +79,11 @@ public class DashboardEventManagerActivity extends AppCompatActivity {
             public void onTabReselected(TabLayout.Tab tab) {
 
             }
+        });
+
+        mBinding.imgDashboardAdd.setOnClickListener(view -> {
+            Intent intent = new Intent(this, ManagerEditEventNewActivity.class);
+            startActivity(intent);
         });
     }
 
