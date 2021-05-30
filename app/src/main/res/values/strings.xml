@@ -194,4 +194,6 @@
     <string name="assign">Assign</string>
     <string name="list_of_club">List of Club</string>
     <string name="list_of_dj">List of DJ</string>
+    <string name="txt_event">Event</string>
+    <string name="events_near_you">Events near you</string>
 </resources>

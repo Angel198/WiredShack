@@ -153,6 +153,7 @@
                                 app:fontFamily="@font/roboto_regular" />
 
                             <androidx.appcompat.widget.AppCompatImageView
+                                android:id="@+id/imgEventDateTimeEdit"
                                 android:layout_width="@dimen/_24sdp"
                                 android:layout_height="@dimen/_24sdp"
                                 android:layout_gravity="bottom"

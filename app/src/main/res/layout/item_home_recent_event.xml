@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imgEventProfile"
+                android:id="@+id/imgEventProfile"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_centerInParent="true"

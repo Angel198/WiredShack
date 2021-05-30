@@ -2,13 +2,19 @@ package com.jaylax.wiredshack.utils;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.Patterns;
 import android.widget.Toast;
 
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
+
 import com.google.gson.Gson;
 import com.jaylax.wiredshack.LoginSignupActivity;
+import com.jaylax.wiredshack.R;
 
 public class Commons {
     public static String RTMP_URL = "rtmp://estandardcodex.in/LiveApp/";
@@ -45,5 +51,12 @@ public class Commons {
     public static void openLoginScree (Context context){
         Intent intent = new Intent(context, LoginSignupActivity.class);
         context.startActivity(intent);
+    }
+
+    public static RoundedBitmapDrawable generateRoundCornerPlaceholder(Context context){
+        Bitmap placeholder = BitmapFactory.decodeResource(context.getResources(), R.drawable.place_holder);
+        RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(),placeholder);
+        roundedBitmapDrawable.setCornerRadius(50f);
+        return roundedBitmapDrawable;
     }
 }

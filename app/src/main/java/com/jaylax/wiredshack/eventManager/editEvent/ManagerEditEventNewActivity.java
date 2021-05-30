@@ -4,14 +4,15 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
@@ -61,7 +62,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
-import java.util.concurrent.atomic.AtomicReference;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -89,7 +89,8 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     String tempLatitude = "", tempLongitude = "";
     String selectedManagerID = "";
     String temSelectedManagerID = "";
-
+    String tempImageUriPath = "";
+    Uri temImageUri = null;
     ArrayList<SelectManagerListModel.SelectManagerListData> listData = new ArrayList<>();
 
     Dialog dialogEventData = null;
@@ -242,6 +243,20 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
                 }
             }
 
+            String createdByID = eventDetailsData.getCreatedBy() == null ? "" : eventDetailsData.getCreatedBy();
+
+            if (userDetailsModel.getId().equals(createdByID)) {
+                mBinding.imgEventCoverEdit.setVisibility(View.VISIBLE);
+                mBinding.imgEventDataEdit.setVisibility(View.VISIBLE);
+                mBinding.imgEventDateTimeEdit.setVisibility(View.VISIBLE);
+                mBinding.imgShareEvent.setVisibility(View.VISIBLE);
+            } else {
+                mBinding.tvManagerName.setText(eventDetailsData.getName());
+                mBinding.imgEventCoverEdit.setVisibility(View.GONE);
+                mBinding.imgEventDataEdit.setVisibility(View.GONE);
+                mBinding.imgEventDateTimeEdit.setVisibility(View.GONE);
+                mBinding.imgShareEvent.setVisibility(View.GONE);
+            }
             setEventDetailsData();
         }
     }
@@ -252,7 +267,16 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         mBinding.editEventLocation.setText(eventLocation);
         mBinding.editEventDate.setText(eventDate);
         mBinding.editEventTime.setText(eventTime);
-        setImageInView();
+//        setImageInView();
+        if (!imageList.isEmpty()) {
+            if (imageList.get(0) != null) {
+                if (imageList.get(0).getImageURL().isEmpty()) {
+                    Glide.with(this).load(imageList.get(0).getUri()).apply(options).into(mBinding.imgCoverPhoto);
+                } else {
+                    Glide.with(this).load(imageList.get(0).getImageURL()).apply(options).into(mBinding.imgCoverPhoto);
+                }
+            }
+        }
         setEventMarker();
     }
 
@@ -280,8 +304,6 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         mBinding.imgShareEvent.setOnClickListener(view -> {
             boolean isValid = false;
-            Log.e("OnEditLatLng : ", latitude + ", " + longitude);
-
             if (imageList.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.upload_cover_photo));
             } else if (eventName.isEmpty()) {
@@ -334,6 +356,68 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         mBinding.imgEventDataEdit.setOnClickListener(view -> {
             showDialogEventData();
         });
+
+        mBinding.imgEventDateTimeEdit.setOnClickListener(view -> {
+
+            DatePickerDialog dialog = new DatePickerDialog(this, (datePicker, year, monthOfYear, dayOfMonth) -> {
+                selectedCalendar.set(Calendar.YEAR, year);
+                selectedCalendar.set(Calendar.MONTH, monthOfYear);
+                selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+                String myFormat = "dd-MM-yyyy"; //In which you need put here
+                SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                eventDate = sdf.format(selectedCalendar.getTime());
+
+                showStartTimeDialog();
+            }, selectedCalendar.get(Calendar.YEAR), selectedCalendar.get(Calendar.MONTH),
+                    selectedCalendar.get(Calendar.DAY_OF_MONTH));
+
+            Calendar currentCal = Calendar.getInstance();
+            currentCal.add(Calendar.DAY_OF_MONTH, 1);
+            dialog.getDatePicker().setMinDate(currentCal.getTime().getTime());
+            dialog.show();
+
+        });
+    }
+
+    private void showStartTimeDialog() {
+        int startHours = selectedStartTimeCal == null ? 12 : selectedStartTimeCal.get(Calendar.HOUR_OF_DAY);
+        int startMins = selectedStartTimeCal == null ? 0 : selectedStartTimeCal.get(Calendar.MINUTE);
+        TimePickerDialog mStartTimePicker = new TimePickerDialog(context, (timePicker, selectedHour, selectedMinute) -> {
+            selectedStartTimeCal = Calendar.getInstance();
+            selectedStartTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
+            //instead of c.set(Calendar.HOUR, hour);
+            selectedStartTimeCal.set(Calendar.MINUTE, selectedMinute);
+            String myFormat = "hh:mm a"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+            eventTime = "";
+            eventTime = sdf.format(selectedStartTimeCal.getTime());
+            showEndTimeDialog();
+
+//                mBinding.editEventStartTime.setText(sdf.format(selectedStartTimeCal.getTime()));
+        }, startHours, startMins, false);//Yes 24 hour time
+        mStartTimePicker.setTitle("Select Start Time");
+        mStartTimePicker.show();
+    }
+
+    private void showEndTimeDialog() {
+        int endHours = selectedEndTimeCal == null ? 12 : selectedEndTimeCal.get(Calendar.HOUR_OF_DAY);
+        int endMins = selectedEndTimeCal == null ? 0 : selectedEndTimeCal.get(Calendar.MINUTE);
+        TimePickerDialog mEndTimePicker = new TimePickerDialog(context, (timePicker, selectedHour, selectedMinute) -> {
+            selectedEndTimeCal = Calendar.getInstance();
+            selectedEndTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
+            selectedEndTimeCal.set(Calendar.MINUTE, selectedMinute);
+            String myFormat = "hh:mm a"; //In which you need put here
+            SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+
+            eventTime = eventTime + " - " + sdf.format(selectedEndTimeCal.getTime());
+
+            setEventDetailsData();
+//                mBinding.editEventEndTime.setText(sdf.format(selectedEndTimeCal.getTime()));
+        }, endHours, endMins, false);//Yes 24 hour time
+        mEndTimePicker.setTitle("Select End Time");
+        mEndTimePicker.show();
     }
 
     private void showDialogUploadCoverImage() {
@@ -352,6 +436,8 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         setImageInView();
         dialogEventData.findViewById(R.id.imgCoverDialogClose).setOnClickListener(view -> {
+            temImageUri = null;
+            tempImageUriPath = "";
             dialogEventData.dismiss();
         });
 
@@ -360,33 +446,42 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         });
 
         dialogEventData.findViewById(R.id.tvCoverDialogDone).setOnClickListener(view -> {
-            if (imageList != null && !imageList.isEmpty()) {
-                if (imageList.get(0) != null) {
-                    if (imageList.get(0).getImageURL().isEmpty()) {
-                        Glide.with(this).load(imageList.get(0).getUri()).apply(options).into(mBinding.imgCoverPhoto);
-                    } else {
-                        Glide.with(this).load(imageList.get(0).getImageURL()).apply(options).into(mBinding.imgCoverPhoto);
+            if (temImageUri != null && !tempImageUriPath.isEmpty()) {
+                for (EventImageModel imageData : imageList) {
+                    if (!imageData.getImageId().isEmpty()) {
+                        deleteImages.add(Integer.parseInt(imageData.getImageId()));
                     }
                 }
+                imageList = new ArrayList<>();
+                imageList.add(new EventImageModel("", "", tempImageUriPath, temImageUri));
+                setEventDetailsData();
+                dialogEventData.dismiss();
+            } else {
+                Commons.showToast(context, getResources().getString(R.string.upload_cover_photo));
             }
-            dialogEventData.dismiss();
         });
-        dialogEventData.setCancelable(true);
+        dialogEventData.setCanceledOnTouchOutside(false);
         dialogEventData.show();
     }
 
     private void setImageInView() {
         AppCompatImageView ivEditProfile = dialogEventData.findViewById(R.id.imgCoverDialogImage);
         if (ivEditProfile != null) {
-            if (!imageList.isEmpty()) {
-                RequestOptions roundOptions = new RequestOptions().centerCrop().placeholder(0).transform(new CenterCrop(), new RoundedCorners(30)).error(0).priority(Priority.HIGH);
-                if (imageList.get(0) != null) {
-                    if (imageList.get(0).getImageURL().isEmpty()) {
-                        Glide.with(context).load(imageList.get(0).getUri()).apply(roundOptions).into(ivEditProfile);
-                    } else {
-                        Glide.with(context).load(imageList.get(0).getImageURL()).apply(roundOptions).into(ivEditProfile);
+            RequestOptions roundOptions = new RequestOptions().centerCrop().placeholder(0).transform(new CenterCrop(), new RoundedCorners(30)).error(0).priority(Priority.HIGH);
+            if (temImageUri == null) {
+                if (!imageList.isEmpty()) {
+                    if (imageList.get(0) != null) {
+                        if (imageList.get(0).getImageURL().isEmpty()) {
+                            temImageUri = imageList.get(0).getUri();
+                            tempImageUriPath = imageList.get(0).getImagePath();
+                            Glide.with(context).load(imageList.get(0).getUri()).apply(roundOptions).into(ivEditProfile);
+                        } else {
+                            Glide.with(context).load(imageList.get(0).getImageURL()).apply(roundOptions).into(ivEditProfile);
+                        }
                     }
                 }
+            } else {
+                Glide.with(context).load(temImageUri).apply(roundOptions).into(ivEditProfile);
             }
         }
     }
@@ -429,12 +524,12 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         AppCompatEditText etLocation = (AppCompatEditText) dialogEventData.findViewById(R.id.etEventDataLocation);
 
         if (userDetailsModel.getUserType() == null) {
-            etSelectOrganiser.setText(getResources().getString(R.string.hint_select_club));
+            etSelectOrganiser.setHint(getResources().getString(R.string.hint_select_club));
         } else {
             if (userDetailsModel.getUserType().equals("2")) {
-                etSelectOrganiser.setText(getResources().getString(R.string.hint_select_dj));
+                etSelectOrganiser.setHint(getResources().getString(R.string.hint_select_dj));
             } else {
-                etSelectOrganiser.setText(getResources().getString(R.string.hint_select_club));
+                etSelectOrganiser.setHint(getResources().getString(R.string.hint_select_club));
             }
         }
         etName.setText(eventName);
@@ -494,7 +589,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             }
         });
 
-        dialogEventData.setCancelable(true);
+        dialogEventData.setCanceledOnTouchOutside(false);
         dialogEventData.show();
     }
 
@@ -503,13 +598,16 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 101) {
             if (resultCode == Activity.RESULT_OK) {
-                for (EventImageModel imageData : imageList) {
+                /*for (EventImageModel imageData : imageList) {
                     if (!imageData.getImageId().isEmpty()) {
                         deleteImages.add(Integer.parseInt(imageData.getImageId()));
                     }
                 }
                 imageList = new ArrayList<>();
-                imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
+                imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));*/
+
+                temImageUri = Uri.parse(data.getData().toString());
+                tempImageUriPath = ImagePicker.Companion.getFilePath(data);
                 setImageInView();
             }
         } else if (requestCode == 102) {

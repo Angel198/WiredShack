@@ -19,6 +19,7 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityDashboardBinding;
 import com.jaylax.wiredshack.user.account.AccountFragment;
 import com.jaylax.wiredshack.user.home.HomeFragment;
+import com.jaylax.wiredshack.user.home.HomeNewFragment;
 import com.jaylax.wiredshack.user.notification.NotificationFragment;
 import com.jaylax.wiredshack.user.search.SearchFragment;
 import com.jaylax.wiredshack.utils.Commons;
@@ -51,7 +52,8 @@ public class DashboardActivity extends AppCompatActivity {
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(2).setIcon(R.drawable.notification_white));
         mBinding.tabDashboard.addTab(mBinding.tabDashboard.newTab().setTag(3).setIcon(R.drawable.account_white));
 
-        replaceFragment(new HomeFragment(), "Home");
+//        replaceFragment(new HomeFragment(), "Home");
+        replaceFragment(new HomeNewFragment(), "Home");
         initListener();
 //        checkLocationPermission();
     }
@@ -68,7 +70,8 @@ public class DashboardActivity extends AppCompatActivity {
             public void onTabSelected(TabLayout.Tab tab) {
                 tab.setIcon(arySelect.get((Integer) tab.getTag()));
                 if (tab.getPosition() == 0) {
-                    replaceFragment(new HomeFragment(), "Home");
+//                    replaceFragment(new HomeFragment(), "Home");
+                    replaceFragment(new HomeNewFragment(), "Home");
                 } else if (tab.getPosition() == 1) {
                     replaceFragment(new SearchFragment(), "Search");
                 } else if (tab.getPosition() == 2) {
