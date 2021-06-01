@@ -25,14 +25,14 @@
     <string name="incoming_request">Incoming Request</string>
     <string name="event_activities">Event Activities</string>
     <string name="txt_cancel">Cancel</string>
-    <string name="request_for_live_streaming">Request for\nLive Streaming</string>
-    <string name="cancel_request_for_live_streaming">Cancel Request of\nLive Streaming</string>
-    <string name="request_accepted">Request\nAccepted</string>
+    <string name="request_for_live_streaming">Request for Live Streaming</string>
+    <string name="cancel_request_for_live_streaming">Cancel Request of Live Streaming</string>
+    <string name="request_accepted">Request Accepted</string>
     <string name="dummy_event_description">As conscious traveling Paupers we must always be concerned about our dear Mother Earth.</string>
     <string name="dummy_event_date">Event Date : 31 Jan 2021</string>
-    <string name="event_date">Event Date : %1s</string>
+    <string name="event_date">%1s</string>
     <string name="dummy_event_time">Event Time : 10:00 PM to 12:00 AM</string>
-    <string name="event_time">Event Time : %1s to %2s</string>
+    <string name="event_time">%1s to %2s</string>
     <string name="dummy_event_location">Event Location : Karnavati Club</string>
     <string name="event_location">Event Location : %1s</string>
     <string name="write_comment">Write Comment ...</string>
@@ -196,4 +196,5 @@
     <string name="list_of_dj">List of DJ</string>
     <string name="txt_event">Event</string>
     <string name="events_near_you">Events near you</string>
+    <string name="txt_suggested">Suggested</string>
 </resources>

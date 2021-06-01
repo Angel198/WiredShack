@@ -1,22 +1,35 @@
 package com.jaylax.wiredshack.user.search;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.birjuvachhani.locus.Locus;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.Priority;
+import com.bumptech.glide.load.resource.bitmap.CenterCrop;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,6 +44,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.jaylax.wiredshack.MainActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentSearchBinding;
@@ -38,16 +52,19 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.utils.AppMapView;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -82,6 +99,15 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
 
+        if (userDetailsModel == null) {
+            mBinding.imgProfileLogout.setVisibility(View.INVISIBLE);
+            mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.toplogo));
+        } else {
+            mBinding.imgProfileLogout.setVisibility(View.VISIBLE);
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+            Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+        }
+
         AppMapView mapFragment = (AppMapView) getChildFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -103,14 +129,14 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
     }
 
     private void setViewClickListener() {
-        mBinding.linearSearchByLocation.setOnClickListener(view -> {
+        /*mBinding.linearSearchByLocation.setOnClickListener(view -> {
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)).build(mContext);
             startActivityForResult(intent, 102);
         });
 
         mBinding.edtSearchByLocation.setOnClickListener(view -> {
             mBinding.linearSearchByLocation.performClick();
-        });
+        });*/
 
         mBinding.edtSearchManager.addTextChangedListener(new TextWatcher() {
             Timer timer = new Timer();
@@ -138,6 +164,8 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 }, delay);
             }
         });
+
+        mBinding.imgProfileLogout.setOnClickListener(view -> showLogoutDialog());
     }
 
     private void getRecentEvent(boolean isCallManagerList) {
@@ -150,7 +178,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
                     progressDialog.dismiss();
-                    if (isCallManagerList){
+                    if (isCallManagerList) {
                         searchManager();
                     }
                     if (response.code() == 200 && response.isSuccessful()) {
@@ -167,7 +195,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 @Override
                 public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
                     progressDialog.dismiss();
-                    if (isCallManagerList){
+                    if (isCallManagerList) {
                         searchManager();
                     }
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
@@ -293,6 +321,22 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                     startActivityForResult(intent, 101);
                 }
             });
+            /*SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                    new SpannedGridLayoutManager.GridSpanLookup() {
+                        @Override
+                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                            // Conditions for 2x2 items
+                            if (position % 6 == 0 || position % 6 == 4) {
+                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                            } else {
+                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                            }
+                        }
+                    },
+                    3, // number of columns
+                    1f // how big is default item
+            );*/
+
             mBinding.recyclerSearchSuggestion.setLayoutManager(new GridLayoutManager(getActivity(), 3));
             mBinding.recyclerSearchSuggestion.setAdapter(searchAdapter);
         }
@@ -390,4 +434,40 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         }
     }
+
+    private void showLogoutDialog() {
+        Dialog dialog = new Dialog(mContext);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_log_out);
+
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(window.getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+
+        AppCompatTextView tvLogoutYes = (AppCompatTextView) dialog.findViewById(R.id.tvLogoutYes);
+        AppCompatTextView tvLogoutNo = (AppCompatTextView) dialog.findViewById(R.id.tvLogoutNo);
+
+        tvLogoutYes.setOnClickListener(view -> {
+            dialog.dismiss();
+            SharePref.getInstance(getActivity()).clearAll();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            intent.putExtra("isLogout", true);
+            Objects.requireNonNull(getActivity()).startActivity(intent);
+            Objects.requireNonNull(getActivity()).finishAffinity();
+        });
+
+        tvLogoutNo.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
+
 }

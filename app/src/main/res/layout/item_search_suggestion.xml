@@ -6,8 +6,8 @@
         android:id="@+id/linearMainSearchData"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/_7sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_3sdp"
+        android:layout_marginBottom="@dimen/_5sdp"
         android:orientation="vertical">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -19,8 +19,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatImageView
-                android:id="@+id/imageManager"
+            <androidx.cardview.widget.CardView
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_centerInParent="true"
@@ -30,10 +29,21 @@
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                android:clipToPadding="false"
+                app:cardElevation="0dp"
+                android:elevation="0dp"
+                app:cardCornerRadius="@dimen/_15sdp">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageManager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:scaleType="centerCrop"
                 app:srcCompat="@drawable/dummy" />
+            </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <androidx.appcompat.widget.AppCompatTextView
+        <!--<androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvManagerName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -47,7 +57,7 @@
             app:fontFamily="@font/poppins_medium" />
 
 
-        <!--<androidx.appcompat.widget.AppCompatTextView
+        &lt;!&ndash;<androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvManagerType"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -57,7 +67,7 @@
             android:textColor="@color/white"
             android:text="User Name"
             android:singleLine="true"
-            android:lines="1"/>-->
+            android:lines="1"/>&ndash;&gt;
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvFollow"
@@ -73,6 +83,6 @@
             android:paddingBottom="@dimen/_2sdp"
             android:text="@string/follow"
             android:textColor="@color/white"
-            app:fontFamily="@font/poppins_medium" />
+            app:fontFamily="@font/poppins_medium" />-->
     </LinearLayout>
 </layout>

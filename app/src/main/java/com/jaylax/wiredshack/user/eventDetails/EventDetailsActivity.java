@@ -19,14 +19,23 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityEventDetailsBinding;
+import com.jaylax.wiredshack.databinding.ActivityEventDetailsNewBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.eventManager.eventdetails.EventImagesAdapter;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.utils.AppMapView;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -42,7 +51,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 @SuppressWarnings("All")
-public class EventDetailsActivity extends AppCompatActivity {
+public class EventDetailsActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     ActivityEventDetailsBinding mBinding;
     Context mContext;
@@ -58,6 +67,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     EventCommentAdapter commentAdapter = null;
 
     UserDetailsModel userDetailsModel = null;
+    private GoogleMap mMap = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,6 +79,20 @@ public class EventDetailsActivity extends AppCompatActivity {
         if (!SharePref.getInstance(mContext).get(SharePref.PREF_USER, "").toString().isEmpty()) {
             userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
         }
+
+        if (userDetailsModel == null) {
+            mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.toplogo));
+        } else {
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+            Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+        }
+
+        AppMapView mapFragment = (AppMapView) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+        mapFragment.setListener(() -> {
+            mBinding.nestedScrollEvent.requestDisallowInterceptTouchEvent(true);
+        });
 
         if (getIntent().hasExtra("eventId")) {
             eventId = getIntent().getStringExtra("eventId");
@@ -130,7 +154,6 @@ public class EventDetailsActivity extends AppCompatActivity {
         getCommentList(false);
         if (eventDetailsData != null) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
-            Glide.with(this).load(eventDetailsData.getImage() == null ? "" : eventDetailsData.getImage()).apply(options).into(mBinding.imgEventProfile);
 
             /*if (eventDetailsData.getUserType() ==null){
                 mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
@@ -151,7 +174,7 @@ public class EventDetailsActivity extends AppCompatActivity {
                 coverImage = eventDetailsData.getImages().get(0).getImages() == null ? "" : eventDetailsData.getImages().get(0).getImages();
             }
 
-            Glide.with(this).load(coverImage).apply(options).into(mBinding.imgEventCover);
+            Glide.with(this).load(coverImage).apply(options).into(mBinding.imgCoverPhoto);
 
             mBinding.tvEventManagerName.setText(eventDetailsData.getName());
 
@@ -184,7 +207,7 @@ public class EventDetailsActivity extends AppCompatActivity {
 
 //            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
             mBinding.tvEventName.setText(eventDetailsData.getEventName());
-            if (eventDetailsData.getImages().isEmpty()) {
+            /*if (eventDetailsData.getImages().isEmpty()) {
                 mBinding.recyclerEventImages.setVisibility(View.GONE);
             } else {
                 ArrayList<EventImageModel> imageList = new ArrayList<>();
@@ -195,10 +218,10 @@ public class EventDetailsActivity extends AppCompatActivity {
                 mBinding.recyclerEventImages.setVisibility(View.VISIBLE);
                 mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(this, 4));
                 mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext, false, imageList));
-            }
+            }*/
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
 
-            if (eventDetailsData.getSelectedManager() == null) {
+            /*if (eventDetailsData.getSelectedManager() == null) {
                 mBinding.linearSelectManager.setVisibility(View.GONE);
             } else {
                 mBinding.linearSelectManager.setVisibility(View.VISIBLE);
@@ -215,12 +238,21 @@ public class EventDetailsActivity extends AppCompatActivity {
                 Glide.with(mContext).load(imageURL).apply(options).into(mBinding.imgSelectManagerProfile);
 
                 mBinding.tvSelectManagerName.setText(eventDetailsData.getSelectedManager().getName() == null ? "" : eventDetailsData.getSelectedManager().getName());
-            }
+            }*/
 
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
             mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
 
+            if (mMap != null) {
+                LatLng latLng = new LatLng(Double.parseDouble(eventDetailsData.getLatitude()), Double.parseDouble(eventDetailsData.getLongitude()));
+                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                        .position(latLng));
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(17f).build();
+                if (mMap != null) {
+                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
         }
     }
 
@@ -693,5 +725,11 @@ public class EventDetailsActivity extends AppCompatActivity {
                 this.getCurrentFocus().getWindowToken(),
                 0
         );
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        mMap.getUiSettings().setMapToolbarEnabled(false);
     }
 }

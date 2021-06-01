@@ -58,10 +58,10 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
 
         public void bind(int position, ManagerListMainModel.ManagerListData data) {
 
-            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(),new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imageManager);
 
-            mBinding.tvManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
+            /*mBinding.tvManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
 
             if (data.getFollowing() == null){
                 mBinding.tvFollow.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_follow));
@@ -78,7 +78,7 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
 
             mBinding.tvFollow.setOnClickListener(view -> {
                 listener.onManagerClick(position,data,"follow");
-            });
+            });*/
 
             mBinding.constraintManager.setOnClickListener(view -> {
                 listener.onManagerClick(position,data,"");

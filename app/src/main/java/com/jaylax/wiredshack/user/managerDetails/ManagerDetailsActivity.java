@@ -19,6 +19,7 @@ import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerDetailsBinding;
 import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
@@ -40,6 +41,7 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     boolean isFollow = false;
     int followCount = 0;
     int searchDataPos = -1;
+    UserDetailsModel userDetailsModel = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +49,21 @@ public class ManagerDetailsActivity extends AppCompatActivity {
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_manager_details);
         mContext = this;
         progressDialog = new ProgressDialog(mContext);
+        userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+        if (userDetailsModel == null) {
+            mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.toplogo));
+        } else {
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
+            Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
+        }
+
 
         if (getIntent().hasExtra("managerId")) {
             mangerId = getIntent().getStringExtra("managerId");
             getManagerDetails();
         }
 
-        if (getIntent().hasExtra("listPos")){
+        if (getIntent().hasExtra("listPos")) {
             searchDataPos = Integer.parseInt(getIntent().getStringExtra("listPos"));
         }
         setClickListener();
@@ -106,8 +116,7 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     private void setRecentEventData(ManagerDetailsMainModel.ManagerDetailsData managerDetailsData) {
         RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
         String image = managerDetailsData.getManagerImage() == null ? "" : managerDetailsData.getManagerImage();
-        Glide.with(this).load(image).apply(options).into(mBinding.imgAccountProfile);
-        Glide.with(this).load(managerDetailsData.getManagerCoverImage() == null ? "" : managerDetailsData.getManagerCoverImage()).apply(options).into(mBinding.imgAccountCover);
+        Glide.with(this).load(image).apply(options).into(mBinding.imgManagerProfile);
 
         /*if (managerDetailsData.getUserType() ==null){
             mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
@@ -142,9 +151,9 @@ public class ManagerDetailsActivity extends AppCompatActivity {
         setFollowUI();
 
         if (managerDetailsData.getRecentEvent().isEmpty()) {
-            mBinding.linearRecentEvent.setVisibility(View.GONE);
+            mBinding.recyclerRecentEvent.setVisibility(View.GONE);
         } else {
-            mBinding.linearRecentEvent.setVisibility(View.VISIBLE);
+            mBinding.recyclerRecentEvent.setVisibility(View.VISIBLE);
             mBinding.recyclerRecentEvent.setLayoutManager(new GridLayoutManager(mContext, 3));
             mBinding.recyclerRecentEvent.setAdapter(new HomeRecentEventAdapter(mContext, managerDetailsData.getRecentEvent(), data -> {
                 Intent intent = new Intent(mContext, EventDetailsActivity.class);
@@ -155,7 +164,7 @@ public class ManagerDetailsActivity extends AppCompatActivity {
     }
 
     private void setClickListener() {
-        mBinding.imgBack.setOnClickListener(view ->{
+        mBinding.imgBack.setOnClickListener(view -> {
             onBackPressed();
         });
 
@@ -230,12 +239,12 @@ public class ManagerDetailsActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (searchDataPos != (-1)){
-            String followFlag = isFollow ? "1": "0";
+        if (searchDataPos != (-1)) {
+            String followFlag = isFollow ? "1" : "0";
             Intent intent = new Intent();
-            intent.putExtra("listPos",String.valueOf(searchDataPos));
-            intent.putExtra("followFlag",followFlag);
-            setResult(Activity.RESULT_OK,intent);
+            intent.putExtra("listPos", String.valueOf(searchDataPos));
+            intent.putExtra("followFlag", followFlag);
+            setResult(Activity.RESULT_OK, intent);
         }
         super.onBackPressed();
     }

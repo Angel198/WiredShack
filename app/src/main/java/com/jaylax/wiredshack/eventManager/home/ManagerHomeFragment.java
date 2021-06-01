@@ -301,6 +301,7 @@ public class ManagerHomeFragment extends Fragment {
         dialogEditProfile.findViewById(R.id.tvEditProfileDone).setOnClickListener(view -> {
             String userName = Objects.requireNonNull(etEditProfileName.getText()).toString().trim();
             String phoneNumber = Objects.requireNonNull(etEditProfilePhone.getText()).toString().trim();
+            String aboutMe = Objects.requireNonNull(etEditProfileAboutMe.getText()).toString().trim();
             String gender;
             if (isMale) {
                 gender = mContext.getResources().getString(R.string.male);
@@ -317,7 +318,7 @@ public class ManagerHomeFragment extends Fragment {
             } /*else if (dob.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_dob));
             } */ else {
-                updateProfile(userName, phoneNumber, gender, dob);
+                updateProfile(userName, phoneNumber, gender, dob, aboutMe);
             }
         });
 
@@ -366,7 +367,7 @@ public class ManagerHomeFragment extends Fragment {
         }
     }
 
-    private void updateProfile(String userName, String phoneNumber, String gender, String dob) {
+    private void updateProfile(String userName, String phoneNumber, String gender, String dob, String aboutMe) {
         if (Commons.isOnline(mContext)) {
             File profileFile = new File(profileImagePath);
             MultipartBody.Part profileBody = null;
@@ -388,6 +389,7 @@ public class ManagerHomeFragment extends Fragment {
             params.put("phone", RequestBody.create(MultipartBody.FORM, phoneNumber));
             params.put("gender", RequestBody.create(MultipartBody.FORM, gender));
             params.put("birth_date", RequestBody.create(MultipartBody.FORM, dob));
+            params.put("about_me", RequestBody.create(MultipartBody.FORM, aboutMe));
 
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
 
