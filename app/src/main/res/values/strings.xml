@@ -197,4 +197,6 @@
     <string name="txt_event">Event</string>
     <string name="events_near_you">Events near you</string>
     <string name="txt_suggested">Suggested</string>
+    <string name="daily">Daily</string>
+    <string name="email_send_success_fully">Email sedn success fully</string>
 </resources>

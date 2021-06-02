@@ -265,9 +265,11 @@ public class HomeNewFragment extends Fragment {
 
     private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
         if (list.isEmpty()) {
+            mBinding.tvHomeFollowingSubTitle.setVisibility(View.GONE);
             mBinding.tvHomeFollowingTitle.setVisibility(View.GONE);
             mBinding.recyclerHomeManager.setVisibility(View.GONE);
         } else {
+            mBinding.tvHomeFollowingSubTitle.setVisibility(View.VISIBLE);
             mBinding.tvHomeFollowingTitle.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
 

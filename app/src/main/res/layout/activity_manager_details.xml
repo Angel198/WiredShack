@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/clMainManagerDetails"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorBlack20">
@@ -43,7 +44,7 @@
                         android:layout_height="@dimen/_90sdp"
                         android:layout_marginStart="@dimen/_40sdp"
                         android:layout_marginTop="@dimen/_75sdp"
-                        android:src="@drawable/dummy"
+                        android:src="@drawable/place_holder"
                         app:layout_constraintStart_toStartOf="@id/imgProfileBack"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -128,6 +129,7 @@
                             app:fontFamily="@font/roboto_bold" />
 
                         <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/tvManagerAboutMe"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"

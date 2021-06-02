@@ -162,4 +162,7 @@ public interface Api {
 
     @POST("api/auth/stream_check")
     Call<CommonResponseModel> streamCheck(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
+
+    @POST("api/auth/forgot_pass")
+    Call<CommonResponseModel> forgotPassword(@Body HashMap<String,String> params);
 }

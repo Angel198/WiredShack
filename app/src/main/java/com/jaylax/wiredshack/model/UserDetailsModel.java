@@ -46,6 +46,9 @@ public class UserDetailsModel {
     @SerializedName("followed")
     @Expose
     private String followed;
+    @SerializedName("about_me")
+    @Expose
+    private String aboutMe;
 
     public String getId() {
         return id;
@@ -157,5 +160,13 @@ public class UserDetailsModel {
 
     public void setFollowed(String followed) {
         this.followed = followed;
+    }
+
+    public String getAboutMe() {
+        return aboutMe;
+    }
+
+    public void setAboutMe(String aboutMe) {
+        this.aboutMe = aboutMe;
     }
 }

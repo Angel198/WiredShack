@@ -118,17 +118,30 @@ public class ManagerDetailsActivity extends AppCompatActivity {
         String image = managerDetailsData.getManagerImage() == null ? "" : managerDetailsData.getManagerImage();
         Glide.with(this).load(image).apply(options).into(mBinding.imgManagerProfile);
 
-        /*if (managerDetailsData.getUserType() ==null){
-            mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+
+        if (managerDetailsData.getUserType() ==null){
+            mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
         }else {
             if (managerDetailsData.getUserType().equals("2")){
-                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+                mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
             }else if (managerDetailsData.getUserType().equals("3")){
-                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_profile));
+                mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_details));
             }else {
-                mBinding.imgAccountProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
+                mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
             }
-        }*/
+        }
+
+        if (managerDetailsData.getAboutMe() == null){
+            mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+        }else {
+            if (managerDetailsData.getAboutMe().isEmpty()){
+                mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+            }else {
+                mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
+                mBinding.tvManagerAboutMe.setText(managerDetailsData.getAboutMe());
+            }
+        }
+
 
         mBinding.tvEventManagerName.setText(managerDetailsData.getManagerName());
 

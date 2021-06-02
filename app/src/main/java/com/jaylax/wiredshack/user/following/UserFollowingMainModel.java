@@ -43,6 +43,9 @@ public class UserFollowingMainModel {
         @SerializedName("managerCoverImage")
         @Expose
         private String managerCoverImage;
+        @SerializedName("user_type")
+        @Expose
+        private String userType;
 
         private String isFollow;
 
@@ -84,6 +87,14 @@ public class UserFollowingMainModel {
 
         public void setIsFollow(String isFollow) {
             this.isFollow = isFollow;
+        }
+
+        public String getUserType() {
+            return userType;
+        }
+
+        public void setUserType(String userType) {
+            this.userType = userType;
         }
     }
 }

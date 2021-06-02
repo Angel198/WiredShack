@@ -113,12 +113,23 @@
                     android:paddingStart="@dimen/_18sdp"
                     android:paddingEnd="@dimen/_13sdp" />
 
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeFollowingSubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/club"
+                    android:textColor="@color/colorPink88"
+                    android:textSize="@dimen/_12ssp"
+                    app:fontFamily="@font/roboto_medium" />
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeFollowingTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_18sdp"
-                    android:layout_marginTop="@dimen/_18sdp"
                     android:includeFontPadding="false"
                     android:text="@string/following"
                     android:textColor="@color/white"

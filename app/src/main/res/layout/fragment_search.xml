@@ -121,7 +121,7 @@
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_170sdp"
-                    android:layout_marginEnd="@dimen/_11sdp"
+                    android:layout_marginEnd="@dimen/_3sdp"
                     android:layout_marginBottom="@dimen/_8sdp"
                     android:elevation="0dp"
                     app:cardCornerRadius="@dimen/_15sdp"

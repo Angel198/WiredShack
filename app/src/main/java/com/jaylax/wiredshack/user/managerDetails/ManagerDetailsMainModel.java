@@ -52,6 +52,9 @@ public class ManagerDetailsMainModel {
         @SerializedName("follow")
         @Expose
         private String follow;
+        @SerializedName("about_me")
+        @Expose
+        private String aboutMe;
         @SerializedName("recent_event")
         @Expose
         private ArrayList<RecentEventMainModel.RecentEventData> recentEvent = new ArrayList<>();
@@ -118,6 +121,14 @@ public class ManagerDetailsMainModel {
 
         public void setUserType(String userType) {
             this.userType = userType;
+        }
+
+        public String getAboutMe() {
+            return aboutMe;
+        }
+
+        public void setAboutMe(String aboutMe) {
+            this.aboutMe = aboutMe;
         }
     }
 }

@@ -73,6 +73,17 @@ public class UserFollowingAdapter extends RecyclerView.Adapter<UserFollowingAdap
                 mBinding.tvFollow.setText(context.getResources().getString(R.string.follow));
             }
 
+            if (data.getUserType() ==null){
+                mBinding.tvUserdata.setText(context.getResources().getString(R.string.club));
+            }else {
+                if (data.getUserType().equals("2")){
+                    mBinding.tvUserdata.setText(context.getResources().getString(R.string.club));
+                }else if (data.getUserType().equals("3")){
+                    mBinding.tvUserdata.setText(context.getResources().getString(R.string.dj));
+                }else {
+                    mBinding.tvUserdata.setText(context.getResources().getString(R.string.club));
+                }
+            }
             mBinding.tvFollow.setOnClickListener(view -> listener.onFollowClick(pos, data));
         }
     }

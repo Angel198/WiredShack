@@ -179,6 +179,18 @@ public class AccountFragment extends Fragment {
             isMale = true;
             isFemale = false;
         }
+
+        if (userDetailsModel.getAboutMe() == null){
+            mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+        }else {
+            if (userDetailsModel.getAboutMe().isEmpty()){
+                mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+            }else {
+                mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
+                mBinding.tvProfileAboutMe.setText(userDetailsModel.getAboutMe());
+            }
+        }
+
         if (!isRefresh) {
             getFollowingEvents();
         }

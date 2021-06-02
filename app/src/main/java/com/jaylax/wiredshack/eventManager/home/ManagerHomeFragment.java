@@ -120,6 +120,17 @@ public class ManagerHomeFragment extends Fragment {
         }
         mBinding.tvFollowedCount.setText(followedCount);
 
+        if (userDetailsModel.getAboutMe() == null){
+            mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+        }else {
+            if (userDetailsModel.getAboutMe().isEmpty()){
+                mBinding.linearProfileAboutMe.setVisibility(View.GONE);
+            }else {
+                mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
+                mBinding.tvManagerAboutMe.setText(userDetailsModel.getAboutMe());
+            }
+        }
+
     }
 
     private void setClickListener() {

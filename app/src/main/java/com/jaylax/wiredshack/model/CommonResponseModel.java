@@ -29,4 +29,12 @@ public class CommonResponseModel {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public String getStData() {
+        return stData;
+    }
+
+    public void setStData(String stData) {
+        this.stData = stData;
+    }
 }
