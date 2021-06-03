@@ -8,6 +8,7 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.LoginResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
+import com.jaylax.wiredshack.user.account.UploadImageModel;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
@@ -165,4 +166,11 @@ public interface Api {
 
     @POST("api/auth/forgot_pass")
     Call<CommonResponseModel> forgotPassword(@Body HashMap<String,String> params);
+
+    @POST("api/auth/get_post_image")
+    Call<UploadImageModel> getUserPostImages(@Header("Authorization") String authHeader);
+
+    @Multipart
+    @POST("api/auth/post_image")
+    Call<CommonResponseModel> uploadUserImage(@Header("Authorization") String authHeader,@Part MultipartBody.Part profile);
 }

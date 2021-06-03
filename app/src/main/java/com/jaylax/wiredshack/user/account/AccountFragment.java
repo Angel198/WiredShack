@@ -16,17 +16,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.GridLayoutManager;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -34,8 +31,6 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
-import com.github.florent37.singledateandtimepicker.SingleDateAndTimePicker;
-import com.jaylax.wiredshack.EditProfileActivity;
 import com.jaylax.wiredshack.MainActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
@@ -47,6 +42,7 @@ import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,7 +68,12 @@ public class AccountFragment extends Fragment {
     String profileImagePath = "";
     UserDetailsModel userDetailsModel;
 
+
+    String tempImageUriPath = "";
+    Uri temImageUri = null;
+
     final static int REQUEST_IMAGE_PICKER = 101;
+    final static int REQUEST_IMAGE_POST_PICKER = 102;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -87,6 +88,7 @@ public class AccountFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.fragment_account, container, false);
         mContext = getActivity();
         progressDialog = new ProgressDialog(mContext);
+        dialogEditProfile = new Dialog(mContext);
 
         /*mBinding.tvAccountWishList.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), UserWishListActivity.class);
@@ -106,6 +108,10 @@ public class AccountFragment extends Fragment {
 
         mBinding.imgProfileEdit.setOnClickListener(view -> {
             showEditDialog();
+        });
+
+        mBinding.imgUploadImage.setOnClickListener(view -> {
+            showDialogUploadCoverImage();
         });
 
         return mBinding.getRoot();
@@ -180,36 +186,33 @@ public class AccountFragment extends Fragment {
             isFemale = false;
         }
 
-        if (userDetailsModel.getAboutMe() == null){
+        if (userDetailsModel.getAboutMe() == null) {
             mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-        }else {
-            if (userDetailsModel.getAboutMe().isEmpty()){
+        } else {
+            if (userDetailsModel.getAboutMe().isEmpty()) {
                 mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-            }else {
+            } else {
                 mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
                 mBinding.tvProfileAboutMe.setText(userDetailsModel.getAboutMe());
             }
         }
 
         if (!isRefresh) {
-            getFollowingEvents();
+            getImageList();
         }
     }
 
-    private void getFollowingEvents() {
+    private void getImageList() {
         if (Commons.isOnline(mContext)) {
             progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getUserFollowingEvents(header).enqueue(new Callback<FollowingEventMainModel>() {
+            ApiClient.create().getUserPostImages(header).enqueue(new Callback<UploadImageModel>() {
                 @Override
-                public void onResponse(Call<FollowingEventMainModel> call, Response<FollowingEventMainModel> response) {
+                public void onResponse(Call<UploadImageModel> call, Response<UploadImageModel> response) {
                     progressDialog.dismiss();
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
-                            setFollowingEventData(response.body().getData());
-                            if (!response.body().getStatus().equals("200")) {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                            }
+                            setUploadImageData(response.body().getData());
                         } else {
                             Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
@@ -219,7 +222,7 @@ public class AccountFragment extends Fragment {
                 }
 
                 @Override
-                public void onFailure(Call<FollowingEventMainModel> call, Throwable t) {
+                public void onFailure(Call<UploadImageModel> call, Throwable t) {
                     progressDialog.dismiss();
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                 }
@@ -229,13 +232,29 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void setFollowingEventData(ArrayList<FollowingEventMainModel.FollowingEventData> list) {
+    private void setUploadImageData(ArrayList<UploadImageModel.UploadImageData> list) {
         if (list.isEmpty()) {
-            mBinding.recyclerAccountFollowingEvents.setVisibility(View.GONE);
+            mBinding.recyclerAccountImages.setVisibility(View.GONE);
         } else {
-            mBinding.recyclerAccountFollowingEvents.setVisibility(View.VISIBLE);
-            mBinding.recyclerAccountFollowingEvents.setLayoutManager(new GridLayoutManager(getActivity(), 3));
-            mBinding.recyclerAccountFollowingEvents.setAdapter(new AccountFollowingEventAdapter(mContext, list, data -> {
+            mBinding.recyclerAccountImages.setVisibility(View.VISIBLE);
+            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                    new SpannedGridLayoutManager.GridSpanLookup() {
+                        @Override
+                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                            // Conditions for 2x2 items
+                            if (position % 6 == 0 || position % 6 == 4) {
+                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                            } else {
+                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                            }
+                        }
+                    },
+                    3, // number of columns
+                    1f // how big is default item
+            );
+            mBinding.recyclerAccountImages.setHasFixedSize(true);
+            mBinding.recyclerAccountImages.setLayoutManager(manager);
+            mBinding.recyclerAccountImages.setAdapter(new AccountUploadImageAdapter(mContext, list, data -> {
                 Intent intent = new Intent(mContext, EventDetailsActivity.class);
                 intent.putExtra("eventId", data.getId());
                 mContext.startActivity(intent);
@@ -279,7 +298,6 @@ public class AccountFragment extends Fragment {
     }
 
     private void showEditDialog() {
-        dialogEditProfile = new Dialog(mContext);
         dialogEditProfile.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogEditProfile.setCancelable(true);
         dialogEditProfile.setContentView(R.layout.dialog_user_edit_profile);
@@ -315,7 +333,7 @@ public class AccountFragment extends Fragment {
         });
 
         ivEditProfile.setOnClickListener(view -> {
-            showImagePickerAlert();
+            showImagePickerAlert(REQUEST_IMAGE_PICKER);
         });
 
         dialogEditProfile.findViewById(R.id.tvEditProfileMale).setOnClickListener(view -> {
@@ -354,7 +372,7 @@ public class AccountFragment extends Fragment {
             } /*else if (dob.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_dob));
             } */ else {
-                updateProfile(userName, phoneNumber, gender, dob,aboutMe);
+                updateProfile(userName, phoneNumber, gender, dob, aboutMe);
             }
         });
 
@@ -362,15 +380,52 @@ public class AccountFragment extends Fragment {
         dialogEditProfile.show();
     }
 
-    private void showImagePickerAlert() {
+    private void showDialogUploadCoverImage() {
+        dialogEditProfile.setContentView(R.layout.dialog_event_cover_image);
+
+        Window window = dialogEditProfile.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(window.getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+
+        dialogEditProfile.findViewById(R.id.imgCoverDialogClose).setOnClickListener(view -> {
+            temImageUri = null;
+            tempImageUriPath = "";
+            dialogEditProfile.dismiss();
+        });
+
+        dialogEditProfile.findViewById(R.id.imgCoverDialogImage).setOnClickListener(view -> {
+            showImagePickerAlert(REQUEST_IMAGE_POST_PICKER);
+        });
+
+        dialogEditProfile.findViewById(R.id.tvCoverDialogDone).setOnClickListener(view -> {
+            if (!tempImageUriPath.isEmpty()) {
+                uploadImage();
+                dialogEditProfile.dismiss();
+            } else {
+                Commons.showToast(mContext, getResources().getString(R.string.upload_cover_photo));
+            }
+        });
+        dialogEditProfile.setCanceledOnTouchOutside(false);
+        dialogEditProfile.show();
+    }
+
+
+    private void showImagePickerAlert(int requestCode) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setMessage(getResources().getString(R.string.choose_image_from));
         builder.setCancelable(false);
         builder.setPositiveButton(getResources().getString(R.string.camera), (dialogInterface, i) -> {
-            new ImagePicker.Builder(this).crop().cameraOnly().compress(1024).start(REQUEST_IMAGE_PICKER);
+            new ImagePicker.Builder(this).crop().cameraOnly().compress(1024).start(requestCode);
         });
         builder.setNegativeButton(getResources().getString(R.string.gallery), (dialogInterface, i) -> {
-            new ImagePicker.Builder(this).crop().galleryOnly().compress(1024).start(REQUEST_IMAGE_PICKER);
+            new ImagePicker.Builder(this).crop().galleryOnly().compress(1024).start(requestCode);
         });
 
         AlertDialog dialog = builder.create();
@@ -479,16 +534,80 @@ public class AccountFragment extends Fragment {
         }
     }
 
+
+    private void uploadImage() {
+        if (Commons.isOnline(mContext)) {
+            File imageFile = new File(tempImageUriPath);
+            MultipartBody.Part imageBody = null;
+            if (!tempImageUriPath.isEmpty()) {
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                imageBody = MultipartBody.Part.createFormData("image", imageFile.getName(), requestBody);
+            }
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            Call<CommonResponseModel> retrofitCall = ApiClient.create().uploadUserImage(header, imageBody);
+
+            if (retrofitCall != null) {
+                progressDialog.show();
+                retrofitCall.enqueue(new Callback<CommonResponseModel>() {
+                    @Override
+                    public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                if (response.body().getStatus().equals("200")) {
+                                    if (dialogEditProfile != null) {
+                                        dialogEditProfile.dismiss();
+                                    }
+                                    new Handler().postDelayed(() -> {
+                                        getImageList();
+                                    }, 500);
+                                } else {
+                                    String msg = "";
+                                    if (response.body().getMessage().isEmpty()) {
+                                        msg = mContext.getResources().getString(R.string.please_try_after_some_time);
+                                    } else {
+                                        msg = response.body().getMessage();
+                                    }
+                                    Commons.showToast(mContext, msg);
+                                }
+                            }
+                        } else {
+                            Commons.showToast(mContext, mContext.getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Commons.showToast(mContext, mContext.getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            }
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 101) {
+        if (requestCode == REQUEST_IMAGE_PICKER) {
             if (resultCode == Activity.RESULT_OK) {
                 if (dialogEditProfile != null) {
                     AppCompatImageView ivEditProfile = (AppCompatImageView) dialogEditProfile.findViewById(R.id.imgEditProfile);
                     RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.ic_upload_photo).transform(new CenterCrop(), new RoundedCorners(30)).error(R.drawable.ic_upload_photo).priority(Priority.HIGH);
                     Glide.with(this).load(Uri.parse(data.getData().toString())).apply(options).into(ivEditProfile);
                     profileImagePath = ImagePicker.Companion.getFilePath(data);
+                }
+            }
+        } else if (requestCode == REQUEST_IMAGE_POST_PICKER) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (dialogEditProfile != null) {
+                    AppCompatImageView ivEditProfile = (AppCompatImageView) dialogEditProfile.findViewById(R.id.imgCoverDialogImage);
+                    RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.ic_upload_photo).transform(new CenterCrop(), new RoundedCorners(30)).error(R.drawable.ic_upload_photo).priority(Priority.HIGH);
+                    Glide.with(this).load(Uri.parse(data.getData().toString())).apply(options).into(ivEditProfile);
+                    tempImageUriPath = ImagePicker.Companion.getFilePath(data);
                 }
             }
         }

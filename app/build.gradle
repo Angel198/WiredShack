@@ -101,5 +101,9 @@ dependencies {
     //DatePicker
     implementation 'com.github.florent37:singledateandtimepicker:2.2.7'
 
+    implementation 'com.arasthel:spannedgridlayoutmanager:3.0.2'
+
+    implementation 'me.relex:circleindicator:2.1.6'
+
 
 }

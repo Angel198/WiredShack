@@ -80,7 +80,7 @@ public class SearchSuggestionAdapter extends RecyclerView.Adapter<SearchSuggesti
                 listener.onManagerClick(position,data,"follow");
             });*/
 
-            mBinding.constraintManager.setOnClickListener(view -> {
+            mBinding.linearMainSearchData.setOnClickListener(view -> {
                 listener.onManagerClick(position,data,"");
             });
         }

@@ -217,7 +217,7 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 if (response.body().getStatus().equals("200") && response.body().getData() != null) {
-                                    setUpcomingEventDat(response.body().getData(), response.body().getFollowingEventCount() == null ? "" : response.body().getFollowingEventCount());
+//                                    setUpcomingEventDat(response.body().getData(), response.body().getFollowingEventCount() == null ? "" : response.body().getFollowingEventCount());
                                 } else {
                                     hideUpcomingEventData();
                                 }

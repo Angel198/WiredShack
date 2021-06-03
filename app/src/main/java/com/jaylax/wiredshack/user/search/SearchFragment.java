@@ -321,7 +321,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                     startActivityForResult(intent, 101);
                 }
             });
-            /*SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
                     new SpannedGridLayoutManager.GridSpanLookup() {
                         @Override
                         public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
@@ -335,9 +335,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                     },
                     3, // number of columns
                     1f // how big is default item
-            );*/
-
-            mBinding.recyclerSearchSuggestion.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            );
+            mBinding.recyclerSearchSuggestion.setHasFixedSize(true);
+            mBinding.recyclerSearchSuggestion.setLayoutManager(manager);
             mBinding.recyclerSearchSuggestion.setAdapter(searchAdapter);
         }
     }

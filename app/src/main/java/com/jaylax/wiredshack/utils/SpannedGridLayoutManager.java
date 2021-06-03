@@ -136,7 +136,7 @@ public class SpannedGridLayoutManager extends RecyclerView.LayoutManager {
         int row = firstVisibleRow;
         int availableSpace = getHeight() - scrollOffset;
         int lastItemPosition = state.getItemCount() - 1;
-        while (availableSpace > 0 && lastVisiblePosition < lastItemPosition) {
+        while (lastVisiblePosition < lastItemPosition) {
             availableSpace -= layoutRow(row, startTop, recycler, state);
             row = getNextSpannedRow(row);
         }

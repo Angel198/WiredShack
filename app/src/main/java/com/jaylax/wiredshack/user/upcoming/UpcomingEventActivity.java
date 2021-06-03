@@ -21,7 +21,7 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityUpcomingEventBinding;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.account.AccountFollowingEventAdapter;
+import com.jaylax.wiredshack.user.account.AccountUploadImageAdapter;
 import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
@@ -213,7 +213,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
         } else {
             mBinding.linearUpcomingFollowingEvent.setVisibility(View.VISIBLE);
             mBinding.recyclerUpcomingFollowingEvents.setLayoutManager(new GridLayoutManager(this, 3));
-            mBinding.recyclerUpcomingFollowingEvents.setAdapter(new AccountFollowingEventAdapter(mContext, list, data -> {
+            mBinding.recyclerUpcomingFollowingEvents.setAdapter(new AccountUploadImageAdapter(mContext, new ArrayList<>(), data -> {
                 Intent intent = new Intent(mContext, EventDetailsActivity.class);
                 intent.putExtra("eventId", data.getId());
                 mContext.startActivity(intent);

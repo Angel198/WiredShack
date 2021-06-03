@@ -162,7 +162,7 @@
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/_18sdp"
-                    android:paddingEnd="@dimen/_11sdp" />
+                    android:paddingEnd="@dimen/_15sdp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

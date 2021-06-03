@@ -16,6 +16,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
+import com.jaylax.wiredshack.databinding.ItemManageRecentEventBinding;
 import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 
@@ -44,7 +45,7 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new MyViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_home_recent_event, parent, false));
+        return new MyViewHolder(DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), R.layout.item_manage_recent_event, parent, false));
     }
 
     @Override
@@ -58,15 +59,16 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        ItemHomeRecentEventBinding mBinding;
+//        ItemHomeRecentEventBinding mBinding;
+        ItemManageRecentEventBinding mBinding;
 
-        public MyViewHolder(ItemHomeRecentEventBinding itemView) {
+        public MyViewHolder(ItemManageRecentEventBinding itemView) {
             super(itemView.getRoot());
             this.mBinding = itemView;
         }
 
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
-            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             String imageUrl = "";
             if (data.getImages().isEmpty()) {
                 imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
@@ -75,14 +77,6 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
             }
 
             Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);
-
-            mBinding.tvEventManagerName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
-
-            if (listType.isEmpty()){
-                mBinding.imgEventVideo.setVisibility(View.VISIBLE);
-            }else {
-                mBinding.imgEventVideo.setVisibility(View.GONE);
-            }
             mBinding.constraintEvent.setOnClickListener(view -> {
                 listener.onEventClick(data,listType);
             });

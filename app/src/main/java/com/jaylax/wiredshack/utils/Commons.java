@@ -16,6 +16,11 @@ import com.google.gson.Gson;
 import com.jaylax.wiredshack.LoginSignupActivity;
 import com.jaylax.wiredshack.R;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 public class Commons {
     public static String RTMP_URL = "rtmp://estandardcodex.in/LiveApp/";
 
@@ -58,5 +63,50 @@ public class Commons {
         RoundedBitmapDrawable roundedBitmapDrawable = RoundedBitmapDrawableFactory.create(context.getResources(),placeholder);
         roundedBitmapDrawable.setCornerRadius(50f);
         return roundedBitmapDrawable;
+    }
+
+    public static String getEventDate(String dateEvent) {
+        String eventDate = "N/A";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        if (dateEvent != null) {
+            try {
+                Date date = format.parse(dateEvent);
+                format = new SimpleDateFormat("dd", Locale.US);
+                eventDate = format.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return eventDate;
+    }
+
+    public static String getEventDateDay(String dateEvent) {
+        String eventDate = "N/A";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        if (dateEvent != null) {
+            try {
+                Date date = format.parse(dateEvent);
+                format = new SimpleDateFormat("MMM", Locale.US);
+                eventDate = format.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return eventDate;
+    }
+
+    public String getEventTime(String time) {
+        String eventTime = "N/A";
+        SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss", Locale.US);
+        if (time != null) {
+            try {
+                Date date = format.parse(time);
+                format = new SimpleDateFormat("hh:mm a", Locale.US);
+                eventTime = format.format(date);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return eventTime;
     }
 }

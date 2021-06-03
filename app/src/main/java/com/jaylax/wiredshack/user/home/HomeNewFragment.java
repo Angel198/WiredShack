@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.PagerSnapHelper;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -37,6 +38,7 @@ import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
+import com.jaylax.wiredshack.utils.DotsIndicatorDecoration;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import java.text.ParseException;
@@ -47,6 +49,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 
+import me.relex.circleindicator.CircleIndicator2;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -148,37 +151,31 @@ public class HomeNewFragment extends Fragment {
         }
     }
 
-    private void setUpcomingEventDat(UpcomingEventMainModel.UpcomingEventData eventData, String followCount) {
-        mBinding.tvHomeUpcomingEventTitle.setVisibility(View.VISIBLE);
-        mBinding.relativeUpcomingEvent.setVisibility(View.VISIBLE);
-        RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(50)).error(R.drawable.place_holder).priority(Priority.HIGH);
-        String coverImage = "";
-        if (eventData.getImages().isEmpty()) {
-            coverImage = eventData.getCoverImage() == null ? "" : eventData.getCoverImage();
-        } else {
-            coverImage = eventData.getImages().get(0).getImages() == null ? "" : eventData.getImages().get(0).getImages();
+    private void setUpcomingEventDat(ArrayList<UpcomingEventMainModel.UpcomingEventData> eventData, String followCount) {
+        if (eventData.isEmpty()){
+            hideUpcomingEventData();
+        }else {
+            mBinding.tvHomeUpcomingEventTitle.setVisibility(View.VISIBLE);
+            mBinding.recyclerHomeUpcomingEvent.setVisibility(View.VISIBLE);
+            mBinding.recyclerHomeUpcomingEvent.setLayoutManager(new LinearLayoutManager(context,LinearLayoutManager.HORIZONTAL,false));
+            mBinding.recyclerHomeUpcomingEvent.setAdapter(new HomeUpcomingEventAdapter(context,eventData,data -> {
+                if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                    Intent intent = new Intent(context, EventDetailsActivity.class);
+                    intent.putExtra("eventId", data.getId());
+                    context.startActivity(intent);
+                } else {
+                    //TODO : OpenUpcomingEventScreen
+                    Intent intent = new Intent(context, UpcomingEventActivity.class);
+                    intent.putExtra("eventId", data.getId());
+                    context.startActivity(intent);
+                }
+            }));
         }
-        Glide.with(getContext()).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
-        mBinding.tvUpcomingEventDateDay.setText(getEventDateDay(eventData.getDate()));
-        mBinding.tvUpcomingEventDate.setText(getEventDate(eventData.getDate()));
-
-        mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
-            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra("eventId", eventData.getId());
-                context.startActivity(intent);
-            } else {
-                //TODO : OpenUpcomingEventScreen
-                Intent intent = new Intent(context, UpcomingEventActivity.class);
-                intent.putExtra("eventId", eventData.getId());
-                context.startActivity(intent);
-            }
-        });
     }
 
     private void hideUpcomingEventData() {
         mBinding.tvHomeUpcomingEventTitle.setVisibility(View.GONE);
-        mBinding.relativeUpcomingEvent.setVisibility(View.GONE);
+        mBinding.recyclerHomeUpcomingEvent.setVisibility(View.GONE);
     }
 
 
@@ -218,11 +215,19 @@ public class HomeNewFragment extends Fragment {
             mBinding.tvHomeRecentEventTitle.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEvent.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEvent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            mBinding.recyclerHomeRecentEvent.setAdapter(new HomeRecentEventNewAdapter(context, list, data -> {
+            HomeRecentEventNewAdapter adapter = new HomeRecentEventNewAdapter(context, list, data -> {
                 Intent intent = new Intent(context, EventDetailsActivity.class);
                 intent.putExtra("eventId", data.getId());
                 context.startActivity(intent);
-            }));
+            });
+            mBinding.recyclerHomeRecentEvent.setAdapter(adapter);
+            PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
+            pagerSnapHelper.attachToRecyclerView(mBinding.recyclerHomeRecentEvent);
+
+            mBinding.indicator.attachToRecyclerView(mBinding.recyclerHomeRecentEvent, pagerSnapHelper);
+
+// optional
+            adapter.registerAdapterDataObserver(mBinding.indicator.getAdapterDataObserver());
         }
     }
 

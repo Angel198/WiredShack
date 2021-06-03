@@ -15,7 +15,7 @@ public class UpcomingEventMainModel {
     private String followingEventCount;
     @SerializedName("data")
     @Expose
-    private UpcomingEventData data;
+    private ArrayList<UpcomingEventData> data = new ArrayList<>();
 
     public String getStatus() {
         return status;
@@ -25,11 +25,11 @@ public class UpcomingEventMainModel {
         this.status = status;
     }
 
-    public UpcomingEventData getData() {
+    public ArrayList<UpcomingEventData> getData() {
         return data;
     }
 
-    public void setData(UpcomingEventData data) {
+    public void setData(ArrayList<UpcomingEventData> data) {
         this.data = data;
     }
 

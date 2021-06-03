@@ -48,6 +48,7 @@ import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -240,7 +241,23 @@ public class ManagerHomeFragment extends Fragment {
         if (list.isEmpty()) {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.GONE);
         } else {
-            mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                    new SpannedGridLayoutManager.GridSpanLookup() {
+                        @Override
+                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                            // Conditions for 2x2 items
+                            if (position % 6 == 0 || position % 6 == 4) {
+                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                            } else {
+                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                            }
+                        }
+                    },
+                    3, // number of columns
+                    1f // how big is default item
+            );
+            mBinding.recyclerHomeRecentEventEvents.setHasFixedSize(true);
+            mBinding.recyclerHomeRecentEventEvents.setLayoutManager(manager);
             mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
                 /*if (lisType.isEmpty()) {
                     DashboardEventManagerActivity.redirectToEditEvent(data.getId(), getActivity());

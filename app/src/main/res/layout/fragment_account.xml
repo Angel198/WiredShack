@@ -114,8 +114,8 @@
                         android:background="@drawable/back_about_me"
                         android:orientation="vertical"
                         android:padding="@dimen/_15sdp"
-                        android:visibility="visible"
-                        app:layout_constraintBottom_toTopOf="@id/imgGoLive"
+                        android:visibility="invisible"
+                        app:layout_constraintBottom_toTopOf="@id/imgUploadImage"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/linearProfileName">
@@ -142,7 +142,7 @@
                     </LinearLayout>
 
                     <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgGoLive"
+                        android:id="@+id/imgUploadImage"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/_13sdp"
@@ -156,7 +156,7 @@
 
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerAccountFollowingEvents"
+                    android:id="@+id/recyclerAccountImages"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_15sdp"
@@ -164,7 +164,7 @@
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/_18sdp"
-                    android:paddingEnd="@dimen/_11sdp" />
+                    android:paddingEnd="@dimen/_15sdp" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>

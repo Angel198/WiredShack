@@ -25,8 +25,7 @@
             android:name=".LoginSignupActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/BaseTheme.one"
-            android:windowSoftInputMode="adjustResize" />
+            android:theme="@style/BaseTheme.one"/>
 
         <service android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster" />
 
