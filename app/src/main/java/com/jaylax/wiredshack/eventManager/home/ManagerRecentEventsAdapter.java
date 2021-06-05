@@ -2,7 +2,6 @@ package com.jaylax.wiredshack.eventManager.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -12,12 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
-import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
 import com.jaylax.wiredshack.databinding.ItemManageRecentEventBinding;
-import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 
 import java.util.ArrayList;

@@ -6,13 +6,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ItemHomeRecentEventBinding;
@@ -24,19 +24,11 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
     Context context;
     ArrayList<RecentEventMainModel.RecentEventData> list;
     RecentEventClick listener;
-    boolean isUserHome = false;
 
     public HomeRecentEventAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, RecentEventClick listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
-    }
-
-    public HomeRecentEventAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, RecentEventClick listener, boolean isUserHome) {
-        this.context = context;
-        this.list = list;
-        this.listener = listener;
-        this.isUserHome = isUserHome;
     }
 
     @NonNull
@@ -55,37 +47,61 @@ public class HomeRecentEventAdapter extends RecyclerView.Adapter<HomeRecentEvent
         return list.size();
     }
 
+
     public class MyViewHolder extends RecyclerView.ViewHolder {
         ItemHomeRecentEventBinding mBinding;
 
-        public MyViewHolder(ItemHomeRecentEventBinding itemView) {
+        public MyViewHolder(@NonNull ItemHomeRecentEventBinding itemView) {
             super(itemView.getRoot());
-            this.mBinding = itemView;
+            mBinding = itemView;
         }
 
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
-            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
+            RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             String imageUrl = "";
-            if (data.getImages().isEmpty()){
+            if (data.getImages().isEmpty()) {
                 imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
-            }else {
-                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
+            } else {
+                imageUrl = data.getImages().get(0).getImages() == null ? "" : data.getImages().get(0).getImages();
             }
 
             Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);
+            Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgAccountProfile);
 
             mBinding.tvEventManagerName.setText(data.getEventName() == null ? "N/A" : data.getEventName());
-            mBinding.constraintEvent.setOnClickListener(view -> {
+            mBinding.tvEventDateDay.setText(HomeFragment.getEventDateDay(data.getDate()));
+            mBinding.tvEventDate.setText(HomeFragment.getEventDate(data.getDate()));
+
+            String requestFlag = data.getIsRequest() == null ? "" : data.getIsRequest();
+            if (requestFlag.equals("1")) {
+                mBinding.tvEventRequest.setText(context.getResources().getString(R.string.cancel_request));
+                mBinding.tvEventRequest.setTextColor(ContextCompat.getColor(context, R.color.colorRed));
+            } else if (requestFlag.equals("2")) {
+                mBinding.tvEventRequest.setText(context.getResources().getString(R.string.accepted));
+                mBinding.tvEventRequest.setTextColor(ContextCompat.getColor(context, R.color.colorGoogleGreen));
+            } else {
+                mBinding.tvEventRequest.setText(context.getResources().getString(R.string.request));
+                mBinding.tvEventRequest.setTextColor(ContextCompat.getColor(context, R.color.colorPink88));
+            }
+
+            mBinding.tvEventRequest.setOnClickListener(view -> {
+                if (!requestFlag.equals("2")){
+                    if (requestFlag.equals("1")){
+                        listener.onEventRequestCancel(data);
+                    }else {
+                        listener.onEventRequest(data);
+                    }
+                }
+            });
+            mBinding.linearEventMain.setOnClickListener(view -> {
                 listener.onEventClick(data);
             });
-
-            if (isUserHome){
-                mBinding.imgEventVideo.setVisibility(View.GONE);
-            }
         }
     }
 
     public interface RecentEventClick {
         void onEventClick(RecentEventMainModel.RecentEventData data);
+        void onEventRequest(RecentEventMainModel.RecentEventData data);
+        void onEventRequestCancel(RecentEventMainModel.RecentEventData data);
     }
 }

@@ -44,7 +44,7 @@ public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingE
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        holder.bind(position,list.get(position));
+        holder.bind(position, list.get(position));
     }
 
     @Override
@@ -60,7 +60,7 @@ public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingE
             mBinding = itemView;
         }
 
-        void bind (int pos , UpcomingEventMainModel.UpcomingEventData eventData){
+        void bind(int pos, UpcomingEventMainModel.UpcomingEventData eventData) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(50)).error(R.drawable.place_holder).priority(Priority.HIGH);
             String coverImage = "";
             if (eventData.getImages().isEmpty()) {
@@ -71,6 +71,19 @@ public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingE
             Glide.with(context).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
             mBinding.tvUpcomingEventDateDay.setText(Commons.getEventDateDay(eventData.getDate()));
             mBinding.tvUpcomingEventDate.setText(Commons.getEventDate(eventData.getDate()));
+
+            if (eventData.getIsActive() == null) {
+                mBinding.imgEventLive.setVisibility(View.GONE);
+                mBinding.imgEventPlay.setVisibility(View.GONE);
+            } else {
+                if (eventData.getIsActive().equals("1")) {
+                    mBinding.imgEventLive.setVisibility(View.VISIBLE);
+                    mBinding.imgEventPlay.setVisibility(View.VISIBLE);
+                } else {
+                    mBinding.imgEventLive.setVisibility(View.GONE);
+                    mBinding.imgEventPlay.setVisibility(View.GONE);
+                }
+            }
 
             mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
                 listener.onEventClick(eventData);

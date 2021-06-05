@@ -134,7 +134,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="@dimen/_15sdp"
                             android:includeFontPadding="false"
-                            android:text="@string/dummy_about_me"
+                            tools:text="@string/dummy_about_me"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_12ssp"
                             app:fontFamily="@font/roboto_regular" />

@@ -29,12 +29,15 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityEventDetailsBinding;
+import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
+import com.jaylax.wiredshack.eventManager.editEvent.EventImagesAdapter;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.utils.AppMapView;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -152,18 +155,6 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         if (eventDetailsData != null) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
 
-            /*if (eventDetailsData.getUserType() ==null){
-                mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
-            }else {
-                if (eventDetailsData.getUserType().equals("2")){
-                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
-                }else if (eventDetailsData.getUserType().equals("3")){
-                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_profile));
-                }else {
-                    mBinding.imgEventProfile.setBackground(ContextCompat.getDrawable(this, R.drawable.back_manager_profile));
-                }
-            }*/
-
             String coverImage = "";
             if (eventDetailsData.getImages().isEmpty()) {
                 coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
@@ -202,9 +193,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
             requestFlag = eventDetailsData.getIsRequest() == null ? "" : eventDetailsData.getIsRequest();
             setRequestUI();
 
-//            String eventName = eventDetailsData.getDate() == null ? "N/A" : getEventDate() + " " + eventDetailsData.getEventName();
             mBinding.tvEventName.setText(eventDetailsData.getEventName());
-            /*if (eventDetailsData.getImages().isEmpty()) {
+            if (eventDetailsData.getImages().isEmpty()) {
                 mBinding.recyclerEventImages.setVisibility(View.GONE);
             } else {
                 ArrayList<EventImageModel> imageList = new ArrayList<>();
@@ -212,34 +202,31 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                 for (EventDetailsMainModel.EventDetailsData.EventImage image : eventDetailsData.getImages()) {
                     imageList.add(new EventImageModel(image.getImages() == null ? "" : image.getImages(), image.getId() == null ? "" : image.getId(), "", null));
                 }
-                mBinding.recyclerEventImages.setVisibility(View.VISIBLE);
-                mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(this, 4));
-                mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext, false, imageList));
-            }*/
+                SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                        new SpannedGridLayoutManager.GridSpanLookup() {
+                            @Override
+                            public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                                // Conditions for 2x2 items
+                                if (position % 6 == 0 || position % 6 == 4) {
+                                    return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                                } else {
+                                    return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                                }
+                            }
+                        },
+                        3, // number of columns
+                        1f // how big is default item
+                );
+                mBinding.recyclerEventImages.setHasFixedSize(true);
+                mBinding.recyclerEventImages.setLayoutManager(manager);
+                mBinding.recyclerEventImages.setAdapter(new EventDetailsImageAdapter(mContext, imageList));
+            }
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
-
-            /*if (eventDetailsData.getSelectedManager() == null) {
-                mBinding.linearSelectManager.setVisibility(View.GONE);
-            } else {
-                mBinding.linearSelectManager.setVisibility(View.VISIBLE);
-                if (eventDetailsData.getSelectedManager().getUserType() == null) {
-                    mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.organiser));
-                } else {
-                    if (eventDetailsData.getSelectedManager().getUserType().equals("2")) {
-                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.event_organiser));
-                    } else {
-                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.dj_organiser));
-                    }
-                }
-                String imageURL = eventDetailsData.getSelectedManager().getImage() == null ? "" : eventDetailsData.getSelectedManager().getImage();
-                Glide.with(mContext).load(imageURL).apply(options).into(mBinding.imgSelectManagerProfile);
-
-                mBinding.tvSelectManagerName.setText(eventDetailsData.getSelectedManager().getName() == null ? "" : eventDetailsData.getSelectedManager().getName());
-            }*/
 
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));
             mBinding.tvEventTime.setText(mContext.getResources().getString(R.string.event_time, getEventTime(eventDetailsData.getStime()), getEventTime(eventDetailsData.getEtime())));
-            mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
+//            mBinding.tvEventLocation.setText(mContext.getResources().getString(R.string.event_location, eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation()));
+            mBinding.tvEventLocation.setText(eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation());
 
             if (mMap != null) {
                 LatLng latLng = new LatLng(Double.parseDouble(eventDetailsData.getLatitude()), Double.parseDouble(eventDetailsData.getLongitude()));

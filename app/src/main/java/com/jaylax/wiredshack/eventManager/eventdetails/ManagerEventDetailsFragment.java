@@ -244,7 +244,7 @@ public class ManagerEventDetailsFragment extends Fragment {
                 }
                 mBinding.recyclerEventImages.setVisibility(View.VISIBLE);
                 mBinding.recyclerEventImages.setLayoutManager(new GridLayoutManager(mContext, 4));
-                mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext, false, imageList));
+//                mBinding.recyclerEventImages.setAdapter(new EventImagesAdapter(mContext, false, imageList));
             }
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));

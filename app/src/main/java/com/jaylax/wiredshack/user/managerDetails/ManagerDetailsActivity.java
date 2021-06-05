@@ -22,9 +22,9 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
-import com.jaylax.wiredshack.user.home.HomeRecentEventAdapter;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.util.HashMap;
 
@@ -167,8 +167,24 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             mBinding.recyclerRecentEvent.setVisibility(View.GONE);
         } else {
             mBinding.recyclerRecentEvent.setVisibility(View.VISIBLE);
-            mBinding.recyclerRecentEvent.setLayoutManager(new GridLayoutManager(mContext, 3));
-            mBinding.recyclerRecentEvent.setAdapter(new HomeRecentEventAdapter(mContext, managerDetailsData.getRecentEvent(), data -> {
+            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
+                    new SpannedGridLayoutManager.GridSpanLookup() {
+                        @Override
+                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                            // Conditions for 2x2 items
+                            if (position % 6 == 0 || position % 6 == 4) {
+                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                            } else {
+                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                            }
+                        }
+                    },
+                    3, // number of columns
+                    1f // how big is default item
+            );
+            mBinding.recyclerRecentEvent.setHasFixedSize(true);
+            mBinding.recyclerRecentEvent.setLayoutManager(manager);
+            mBinding.recyclerRecentEvent.setAdapter(new ManagerEventAdapter(mContext, managerDetailsData.getRecentEvent(), data -> {
                 Intent intent = new Intent(mContext, EventDetailsActivity.class);
                 intent.putExtra("eventId", data.getId());
                 mContext.startActivity(intent);

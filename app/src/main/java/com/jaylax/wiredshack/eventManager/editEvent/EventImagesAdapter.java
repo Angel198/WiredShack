@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.eventManager.eventdetails;
+package com.jaylax.wiredshack.eventManager.editEvent;
 
 import android.content.Context;
 import android.content.Intent;

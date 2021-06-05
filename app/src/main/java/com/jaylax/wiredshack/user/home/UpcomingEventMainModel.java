@@ -111,6 +111,12 @@ public class UpcomingEventMainModel {
         @SerializedName("commnets")
         @Expose
         private String commnets;
+        @SerializedName("freestream")
+        @Expose
+        private String freestream;
+        @SerializedName("is_request")
+        @Expose
+        private String isRequest;
 
         public String getId() {
             return id;
@@ -294,6 +300,22 @@ public class UpcomingEventMainModel {
 
         public void setCommnets(String commnets) {
             this.commnets = commnets;
+        }
+
+        public String getFreestream() {
+            return freestream;
+        }
+
+        public void setFreestream(String freestream) {
+            this.freestream = freestream;
+        }
+
+        public String getIsRequest() {
+            return isRequest;
+        }
+
+        public void setIsRequest(String isRequest) {
+            this.isRequest = isRequest;
         }
     }
 }

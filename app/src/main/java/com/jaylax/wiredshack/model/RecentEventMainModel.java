@@ -79,6 +79,9 @@ public class RecentEventMainModel {
         @SerializedName("created_by")
         @Expose
         private String createdBy;
+        @SerializedName("is_request")
+        @Expose
+        private String isRequest;
         @SerializedName("images")
         @Expose
         private ArrayList<EventImage> images = new ArrayList<>();
@@ -209,6 +212,14 @@ public class RecentEventMainModel {
 
         public void setCreatedBy(String createdBy) {
             this.createdBy = createdBy;
+        }
+
+        public String getIsRequest() {
+            return isRequest;
+        }
+
+        public void setIsRequest(String isRequest) {
+            this.isRequest = isRequest;
         }
 
         public static class EventImage {

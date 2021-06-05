@@ -18,7 +18,6 @@ import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
 import com.jaylax.wiredshack.user.notification.AcceptedEventMainModel;
 import com.jaylax.wiredshack.user.notification.PendingRequestMainModel;
-import com.jaylax.wiredshack.user.wishlist.UserWishListMainModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -80,6 +79,9 @@ public interface Api {
     @GET("api/auth/recenteventlist")
     Call<RecentEventMainModel> getRecentEventsUser();
 
+    @POST("api/auth/recenteventlist_token")
+    Call<RecentEventMainModel> getRecentEventsUser(@Header("Authorization") String authHeader);
+
     @POST("api/auth/recentevent")
     Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
 
@@ -134,9 +136,6 @@ public interface Api {
     @POST("api/auth/incoming-request")
     Call<IncomingRequestMainModel> incomingRequest(@Header("Authorization") String authHeader);
 
-    @POST("api/auth/wishlist")
-    Call<UserWishListMainModel> getWishList(@Header("Authorization") String authHeader);
-
     @POST("api/auth/approve_cancel-request")
     Call<CommonResponseModel> approveCancelRequest(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
@@ -169,6 +168,9 @@ public interface Api {
 
     @POST("api/auth/get_post_image")
     Call<UploadImageModel> getUserPostImages(@Header("Authorization") String authHeader);
+
+    @POST("api/auth/del_img")
+    Call<CommonResponseModel> deleteUserImage(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
 
     @Multipart
     @POST("api/auth/post_image")

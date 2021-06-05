@@ -191,12 +191,17 @@
                         android:gravity="top|left"
                         android:hint="@string/enter_event_description"
                         android:includeFontPadding="false"
-                        android:lines="5"
-                        android:minLines="5"
                         android:textColor="@color/white"
                         android:textColorHint="@color/colorWhite4D"
                         android:textSize="@dimen/_12ssp"
                         app:fontFamily="@font/roboto_regular" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerEventImages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clipToPadding="false"
+                        android:layout_marginTop="@dimen/_18sdp"/>
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"

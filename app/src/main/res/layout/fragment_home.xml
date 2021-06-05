@@ -6,11 +6,120 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorBackHome"
-        tools:context=".user.home.HomeFragment">
+        android:background="@drawable/back_home">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            android:paddingTop="@dimen/_70sdp"
+            android:paddingBottom="@dimen/_65sdp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeUpcomingEventTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/txt_live"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_28ssp"
+                    app:fontFamily="@font/roboto_medium" />
+
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeUpcomingEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    android:overScrollMode="never"
+                    android:nestedScrollingEnabled="false"/>
+
+                <me.relex.circleindicator.CircleIndicator2
+                    android:id="@+id/indicatorUpcoming"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_horizontal"
+                    app:ci_drawable="@drawable/ic_indicator_select"
+                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeRecentEventTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/events_near_you"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_12ssp"
+                    app:fontFamily="@font/roboto_medium" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeRecentEvent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/_18sdp"
+                    android:paddingEnd="@dimen/_13sdp" />
+
+                <me.relex.circleindicator.CircleIndicator2
+                    android:id="@+id/indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:gravity="center_horizontal"
+                    app:ci_drawable="@drawable/ic_indicator_select"
+                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect"/>
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeFollowingSubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/club"
+                    android:textColor="@color/colorPink88"
+                    android:textSize="@dimen/_12ssp"
+                    app:fontFamily="@font/roboto_medium" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeFollowingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/following"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_28ssp"
+                    app:fontFamily="@font/roboto_medium" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeManager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/_18sdp"
+                    android:paddingEnd="@dimen/_13sdp" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
 
         <RelativeLayout
-            android:id="@+id/rlTop"
+            android:id="@+id/rlHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintEnd_toEndOf="parent"
@@ -18,253 +127,27 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imgProfileLogout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_10sdp"
-                android:src="@drawable/toplogo" />
+                android:layout_margin="@dimen/_15sdp"
+                android:padding="@dimen/_10sdp"
+                android:src="@drawable/ic_profile_logout"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/imgAccountProfile"
+                android:layout_width="@dimen/_40sdp"
+                android:layout_height="@dimen/_40sdp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/_18sdp"
+                android:layout_marginEnd="@dimen/_18sdp"
+                android:layout_marginBottom="@dimen/_18sdp"
+                android:src="@drawable/place_holder" />
         </RelativeLayout>
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:clipToPadding="false"
-            android:fillViewport="true"
-            android:overScrollMode="never"
-            android:paddingBottom="@dimen/_65sdp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/rlTop">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-
-                <LinearLayout
-                    android:id="@+id/linearHomeManager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/_12sdp">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvEventOrganiser"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="@dimen/_2sdp"
-                            android:layout_weight="1"
-                            android:background="@drawable/back_round_white"
-                            android:includeFontPadding="false"
-                            android:padding="@dimen/_3sdp"
-                            android:text="@string/event_organiser"
-                            android:textAlignment="center"
-                            android:textColor="@color/colorBlackText"
-                            android:textSize="@dimen/_10ssp"
-                            app:fontFamily="@font/poppins_medium"
-                            tools:ignore="RtlCompat" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvDJOrganiser"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/_2sdp"
-                            android:layout_weight="1"
-                            android:background="@drawable/back_border_white"
-                            android:includeFontPadding="false"
-                            android:padding="@dimen/_3sdp"
-                            android:text="@string/dj_organiser"
-                            android:textAlignment="center"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_10ssp"
-                            app:fontFamily="@font/poppins_medium"
-                            tools:ignore="RtlCompat" />
-                    </LinearLayout>
-
-                    <!--<androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:includeFontPadding="false"
-                        android:text="@string/event_organiser"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
-                        app:fontFamily="@font/poppins_medium" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@color/white" />-->
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerHomeManager"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:padding="@dimen/_5sdp" />
-                </LinearLayout>
-
-                <androidx.constraintlayout.widget.ConstraintLayout
-                    android:id="@+id/relativeUpcomingEvent"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_200sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginTop="@dimen/_5sdp"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginBottom="@dimen/_10sdp">
-
-                    <androidx.appcompat.widget.AppCompatImageView
-                        android:id="@+id/imgUpcomingEvent"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/white37"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:background="@color/colorBlackTrans"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvUpcomingEventName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10sdp"
-                        android:includeFontPadding="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_16ssp"
-                        app:fontFamily="@font/poppins_medium"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="Event Name" />
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:id="@+id/tvUpcomingEvent"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerInParent="true"
-                        android:layout_margin="@dimen/_10sdp"
-                        android:gravity="center_horizontal"
-                        android:includeFontPadding="false"
-                        android:text="@string/upcoming_live_stream"
-                        android:textColor="@color/colorWhiteTrans"
-                        android:textSize="@dimen/_20ssp"
-                        app:fontFamily="@font/poppins_medium"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/_10sdp"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent">
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvUpcomingEventDate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_date"
-                            android:drawablePadding="@dimen/_3sdp"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_12ssp"
-                            app:fontFamily="@font/poppins_medium"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toTopOf="parent"
-                            tools:text="Event Name" />
-
-                        <View
-                            android:layout_width="0dp"
-                            android:layout_height="1dp"
-                            android:layout_weight="1" />
-
-                        <androidx.appcompat.widget.AppCompatTextView
-                            android:id="@+id/tvUpcomingEventTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:drawableStart="@drawable/ic_time"
-                            android:drawablePadding="@dimen/_3sdp"
-                            android:gravity="center_vertical"
-                            android:includeFontPadding="false"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_12ssp"
-                            app:fontFamily="@font/poppins_medium"
-                            tools:text="Event Name" />
-
-                        <androidx.appcompat.widget.AppCompatImageView
-                            android:id="@+id/imgUpcomingEventVideo"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/video_camera_green" />
-                    </LinearLayout>
-                </androidx.constraintlayout.widget.ConstraintLayout>
-
-                <LinearLayout
-                    android:id="@+id/linearHomeRecentEvent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <androidx.appcompat.widget.AppCompatTextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/_10sdp"
-                        android:layout_marginLeft="@dimen/_10sdp"
-                        android:includeFontPadding="false"
-                        android:text="@string/recent_event"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_10ssp"
-                        app:fontFamily="@font/poppins_medium" />
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:background="@color/white" />
-
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/recyclerHomeRecentEvent"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:clipToPadding="false"
-                        android:nestedScrollingEnabled="false"
-                        android:overScrollMode="never"
-                        android:paddingStart="@dimen/_10sdp"
-                        android:paddingLeft="@dimen/_10sdp"
-                        android:paddingTop="@dimen/_10sdp"
-                        android:paddingEnd="@dimen/_3sdp"
-                        android:paddingRight="@dimen/_3sdp"
-                        android:paddingBottom="@dimen/_10sdp" />
-                </LinearLayout>
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

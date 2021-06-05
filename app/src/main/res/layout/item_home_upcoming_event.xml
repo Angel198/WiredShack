@@ -6,7 +6,9 @@
         android:id="@+id/relativeUpcomingEvent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_18sdp">
+        android:layout_marginTop="@dimen/_18sdp"
+        android:layout_marginStart="@dimen/_18sdp"
+        android:layout_marginEnd="@dimen/_18sdp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgUpcomingEvent"
@@ -54,5 +56,27 @@
                 android:textSize="@dimen/_15ssp"
                 app:fontFamily="@font/roboto_medium" />
         </LinearLayout>
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgEventPlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/play_button"/>
+
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imgEventLive"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:src="@drawable/live_stream_text"
+            android:layout_margin="@dimen/_15sdp"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

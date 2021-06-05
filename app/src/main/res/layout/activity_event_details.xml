@@ -15,7 +15,7 @@
             android:clipToPadding="false"
             android:fillViewport="true"
             android:overScrollMode="never"
-            android:paddingBottom="@dimen/_75sdp"
+            android:paddingBottom="@dimen/_80sdp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -64,10 +64,10 @@
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_gravity="end"
                             android:orientation="horizontal"
                             app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            android:layout_gravity="end">
+                            app:layout_constraintEnd_toEndOf="parent">
 
                             <androidx.appcompat.widget.AppCompatTextView
                                 android:id="@+id/tvEventLike"
@@ -226,6 +226,13 @@
                             app:fontFamily="@font/roboto_regular"
                             tools:text="@string/enter_event_description" />
                     </LinearLayout>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerEventImages"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:clipToPadding="false" />
 
                     <androidx.cardview.widget.CardView
                         android:layout_width="match_parent"

@@ -31,10 +31,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.bumptech.glide.request.RequestOptions;
 import com.github.dhaval2404.imagepicker.ImagePicker;
+import com.google.gson.Gson;
 import com.jaylax.wiredshack.MainActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentAccountBinding;
+import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
+import com.jaylax.wiredshack.eventimage.EventImagesActivity;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
@@ -255,9 +258,12 @@ public class AccountFragment extends Fragment {
             mBinding.recyclerAccountImages.setHasFixedSize(true);
             mBinding.recyclerAccountImages.setLayoutManager(manager);
             mBinding.recyclerAccountImages.setAdapter(new AccountUploadImageAdapter(mContext, list, data -> {
-                Intent intent = new Intent(mContext, EventDetailsActivity.class);
-                intent.putExtra("eventId", data.getId());
-                mContext.startActivity(intent);
+                ArrayList<EventImageModel> imageList = new ArrayList<>();
+                imageList.add(new EventImageModel(data.getPostImg(),data.getId(),"",null));
+                Intent intent = new Intent(mContext, EventImagesActivity.class);
+                intent.putExtra("eventImages", new Gson().toJson(imageList));
+                intent.putExtra("fromProfile", true);
+                startActivity(intent);
             }));
         }
     }
