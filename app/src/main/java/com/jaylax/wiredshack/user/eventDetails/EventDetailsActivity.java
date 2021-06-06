@@ -14,6 +14,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -155,13 +156,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         if (eventDetailsData != null) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
 
-            String coverImage = "";
-            if (eventDetailsData.getImages().isEmpty()) {
-                coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
-            } else {
-                coverImage = eventDetailsData.getImages().get(0).getImages() == null ? "" : eventDetailsData.getImages().get(0).getImages();
-            }
-
+            String coverImage = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
             Glide.with(this).load(coverImage).apply(options).into(mBinding.imgCoverPhoto);
 
             mBinding.tvEventManagerName.setText(eventDetailsData.getName());
@@ -202,21 +197,23 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                 for (EventDetailsMainModel.EventDetailsData.EventImage image : eventDetailsData.getImages()) {
                     imageList.add(new EventImageModel(image.getImages() == null ? "" : image.getImages(), image.getId() == null ? "" : image.getId(), "", null));
                 }
-                SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
-                        new SpannedGridLayoutManager.GridSpanLookup() {
-                            @Override
-                            public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+                RecyclerView.LayoutManager manager ;
+                if (imageList.size() > 1){
+                    manager = new SpannedGridLayoutManager(
+                            position -> {
                                 // Conditions for 2x2 items
                                 if (position % 6 == 0 || position % 6 == 4) {
                                     return new SpannedGridLayoutManager.SpanInfo(2, 2);
                                 } else {
                                     return new SpannedGridLayoutManager.SpanInfo(1, 1);
                                 }
-                            }
-                        },
-                        3, // number of columns
-                        1f // how big is default item
-                );
+                            },
+                            3, // number of columns
+                            1f // how big is default item
+                    );
+                }else {
+                    manager = new GridLayoutManager(mContext,2);
+                }
                 mBinding.recyclerEventImages.setHasFixedSize(true);
                 mBinding.recyclerEventImages.setLayoutManager(manager);
                 mBinding.recyclerEventImages.setAdapter(new EventDetailsImageAdapter(mContext, imageList));
@@ -229,12 +226,14 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
             mBinding.tvEventLocation.setText(eventDetailsData.getLocation() == null ? "N/A" : eventDetailsData.getLocation());
 
             if (mMap != null) {
-                LatLng latLng = new LatLng(Double.parseDouble(eventDetailsData.getLatitude()), Double.parseDouble(eventDetailsData.getLongitude()));
-                mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                        .position(latLng));
-                CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(17f).build();
-                if (mMap != null) {
-                    mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                if (eventDetailsData.getLatitude() != null && eventDetailsData.getLongitude() != null) {
+                    LatLng latLng = new LatLng(Double.parseDouble(eventDetailsData.getLatitude()), Double.parseDouble(eventDetailsData.getLongitude()));
+                    mMap.addMarker(new MarkerOptions().icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                            .position(latLng));
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(17f).build();
+                    if (mMap != null) {
+                        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    }
                 }
             }
         }

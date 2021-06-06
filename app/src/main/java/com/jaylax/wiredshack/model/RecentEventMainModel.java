@@ -82,6 +82,9 @@ public class RecentEventMainModel {
         @SerializedName("is_request")
         @Expose
         private String isRequest;
+        @SerializedName("cover_image")
+        @Expose
+        private String coverImage;
         @SerializedName("images")
         @Expose
         private ArrayList<EventImage> images = new ArrayList<>();
@@ -220,6 +223,14 @@ public class RecentEventMainModel {
 
         public void setIsRequest(String isRequest) {
             this.isRequest = isRequest;
+        }
+
+        public String getCoverImage() {
+            return coverImage;
+        }
+
+        public void setCoverImage(String coverImage) {
+            this.coverImage = coverImage;
         }
 
         public static class EventImage {

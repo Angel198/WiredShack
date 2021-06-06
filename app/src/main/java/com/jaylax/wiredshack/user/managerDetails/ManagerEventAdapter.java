@@ -58,13 +58,7 @@ public class ManagerEventAdapter extends RecyclerView.Adapter<ManagerEventAdapte
 
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(10)).error(R.drawable.place_holder).priority(Priority.HIGH);
-            String imageUrl = "";
-            if (data.getImages().isEmpty()){
-                imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
-            }else {
-                imageUrl = data.getImages().get(0).getImages() == null? "": data.getImages().get(0).getImages();
-            }
-
+            String imageUrl = data.getCoverImage() == null ? "" : data.getCoverImage();
             Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventImage);
 
             mBinding.constraintImage.setOnClickListener(view -> {

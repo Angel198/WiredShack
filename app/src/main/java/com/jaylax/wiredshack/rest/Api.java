@@ -62,7 +62,7 @@ public interface Api {
 
     @Multipart
     @POST("api/auth/addUpdateEvent")
-    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images, @Part("delete_images[]") ArrayList<Integer> deleteImage);
+    Call<CommonResponseModel> addEditEvent(@Header("Authorization") String authHeader, @PartMap HashMap<String, RequestBody> params, @Part ArrayList<MultipartBody.Part> images, @Part MultipartBody.Part coverImages, @Part("delete_images[]") ArrayList<Integer> deleteImage);
 
     @POST("api/auth/comment")
     Call<CommonResponseModel> sendComment(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
@@ -86,7 +86,7 @@ public interface Api {
     Call<RecentEventMainModel> getRecentEventsManager(@Header("Authorization") String authHeader);
 
     @POST("api/auth/neareventlist")
-    Call<RecentEventMainModel> getNearByEvent(@Body HashMap<String,String> params);
+    Call<RecentEventMainModel> getNearByEvent(@Body HashMap<String, String> params);
 
     @POST("api/auth/pastevent")
     Call<RecentEventMainModel> getPastEventsManager(@Header("Authorization") String authHeader);
@@ -158,21 +158,21 @@ public interface Api {
     Call<SelectManagerListModel> managerListForSelect(@Header("Authorization") String authHeader);
 
     @POST("api/auth/send-mail")
-    Call<CommonResponseModel> sendEmail(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
+    Call<CommonResponseModel> sendEmail(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/auth/stream_check")
-    Call<CommonResponseModel> streamCheck(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
+    Call<CommonResponseModel> streamCheck(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/auth/forgot_pass")
-    Call<CommonResponseModel> forgotPassword(@Body HashMap<String,String> params);
+    Call<CommonResponseModel> forgotPassword(@Body HashMap<String, String> params);
 
     @POST("api/auth/get_post_image")
     Call<UploadImageModel> getUserPostImages(@Header("Authorization") String authHeader);
 
     @POST("api/auth/del_img")
-    Call<CommonResponseModel> deleteUserImage(@Header("Authorization") String authHeader, @Body HashMap<String,String> params);
+    Call<CommonResponseModel> deleteUserImage(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @Multipart
     @POST("api/auth/post_image")
-    Call<CommonResponseModel> uploadUserImage(@Header("Authorization") String authHeader,@Part MultipartBody.Part profile);
+    Call<CommonResponseModel> uploadUserImage(@Header("Authorization") String authHeader, @Part MultipartBody.Part profile);
 }

@@ -76,6 +76,9 @@ public class EventDetailsMainModel {
         @SerializedName("cover_image")
         @Expose
         private String coverImage;
+        @SerializedName("cover_image_id")
+        @Expose
+        private String coverImageId;
         @SerializedName("user_type")
         @Expose
         private String userType;
@@ -323,6 +326,14 @@ public class EventDetailsMainModel {
 
         public SelectedManagerData getSelectedManager() {
             return selectedManager;
+        }
+
+        public String getCoverImageId() {
+            return coverImageId;
+        }
+
+        public void setCoverImageId(String coverImageId) {
+            this.coverImageId = coverImageId;
         }
 
         public void setSelectedManager(SelectedManagerData selectedManager) {

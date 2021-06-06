@@ -24,6 +24,8 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -67,7 +69,7 @@ public class AccountFragment extends Fragment {
     String followingCount = "0";
     Boolean isMale, isFemale;
 
-    Dialog dialogEditProfile;
+    Dialog dialogEditProfile = null;
     String profileImagePath = "";
     UserDetailsModel userDetailsModel;
 
@@ -91,7 +93,6 @@ public class AccountFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.fragment_account, container, false);
         mContext = getActivity();
         progressDialog = new ProgressDialog(mContext);
-        dialogEditProfile = new Dialog(mContext);
 
         /*mBinding.tvAccountWishList.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), UserWishListActivity.class);
@@ -240,21 +241,23 @@ public class AccountFragment extends Fragment {
             mBinding.recyclerAccountImages.setVisibility(View.GONE);
         } else {
             mBinding.recyclerAccountImages.setVisibility(View.VISIBLE);
-            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
-                    new SpannedGridLayoutManager.GridSpanLookup() {
-                        @Override
-                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+            RecyclerView.LayoutManager manager ;
+            if (list.size() > 1){
+                manager = new SpannedGridLayoutManager(
+                        position -> {
                             // Conditions for 2x2 items
                             if (position % 6 == 0 || position % 6 == 4) {
                                 return new SpannedGridLayoutManager.SpanInfo(2, 2);
                             } else {
                                 return new SpannedGridLayoutManager.SpanInfo(1, 1);
                             }
-                        }
-                    },
-                    3, // number of columns
-                    1f // how big is default item
-            );
+                        },
+                        3, // number of columns
+                        1f // how big is default item
+                );
+            }else {
+                manager = new GridLayoutManager(mContext,2);
+            }
             mBinding.recyclerAccountImages.setHasFixedSize(true);
             mBinding.recyclerAccountImages.setLayoutManager(manager);
             mBinding.recyclerAccountImages.setAdapter(new AccountUploadImageAdapter(mContext, list, data -> {
@@ -304,6 +307,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void showEditDialog() {
+        dialogEditProfile = new Dialog(mContext);
         dialogEditProfile.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialogEditProfile.setCancelable(true);
         dialogEditProfile.setContentView(R.layout.dialog_user_edit_profile);
@@ -331,6 +335,7 @@ public class AccountFragment extends Fragment {
         etEditProfileName.setText(userDetailsModel.getName());
         etEditProfileEmail.setText(userDetailsModel.getEmail());
         etEditProfilePhone.setText(userDetailsModel.getPhone());
+        etEditProfileAboutMe.setText(userDetailsModel.getAboutMe() == null? "" : userDetailsModel.getAboutMe());
 
         setMaleFemaleUI();
 
@@ -387,6 +392,7 @@ public class AccountFragment extends Fragment {
     }
 
     private void showDialogUploadCoverImage() {
+        dialogEditProfile = new Dialog(mContext);
         dialogEditProfile.setContentView(R.layout.dialog_event_cover_image);
 
         Window window = dialogEditProfile.getWindow();

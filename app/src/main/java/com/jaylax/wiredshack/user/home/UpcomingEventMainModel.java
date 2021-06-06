@@ -93,6 +93,9 @@ public class UpcomingEventMainModel {
         @SerializedName("cover_image")
         @Expose
         private String coverImage;
+        @SerializedName("coverimage")
+        @Expose
+        private String eventCoverImage;
         @SerializedName("user_type")
         @Expose
         private String userType;
@@ -260,6 +263,14 @@ public class UpcomingEventMainModel {
 
         public void setCoverImage(String coverImage) {
             this.coverImage = coverImage;
+        }
+
+        public String getEventCoverImage() {
+            return eventCoverImage;
+        }
+
+        public void setEventCoverImage(String eventCoverImage) {
+            this.eventCoverImage = eventCoverImage;
         }
 
         public String getIsActive() {

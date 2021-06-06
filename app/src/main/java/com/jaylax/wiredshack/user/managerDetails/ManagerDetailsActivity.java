@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -167,21 +168,23 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             mBinding.recyclerRecentEvent.setVisibility(View.GONE);
         } else {
             mBinding.recyclerRecentEvent.setVisibility(View.VISIBLE);
-            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
-                    new SpannedGridLayoutManager.GridSpanLookup() {
-                        @Override
-                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+            RecyclerView.LayoutManager manager ;
+            if (managerDetailsData.getRecentEvent().size() > 1){
+                manager = new SpannedGridLayoutManager(
+                        position -> {
                             // Conditions for 2x2 items
                             if (position % 6 == 0 || position % 6 == 4) {
                                 return new SpannedGridLayoutManager.SpanInfo(2, 2);
                             } else {
                                 return new SpannedGridLayoutManager.SpanInfo(1, 1);
                             }
-                        }
-                    },
-                    3, // number of columns
-                    1f // how big is default item
-            );
+                        },
+                        3, // number of columns
+                        1f // how big is default item
+                );
+            }else {
+                manager = new GridLayoutManager(mContext,2);
+            }
             mBinding.recyclerRecentEvent.setHasFixedSize(true);
             mBinding.recyclerRecentEvent.setLayoutManager(manager);
             mBinding.recyclerRecentEvent.setAdapter(new ManagerEventAdapter(mContext, managerDetailsData.getRecentEvent(), data -> {

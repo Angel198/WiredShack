@@ -31,12 +31,6 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
         this.listener = listener;
     }
 
-    public ManagerRecentEventsAdapter(Context context, ArrayList<RecentEventMainModel.RecentEventData> list, ManagerEventClick listener, String listType) {
-        this.context = context;
-        this.list = list;
-        this.listener = listener;
-        this.listType = listType;
-    }
 
     @NonNull
     @Override
@@ -55,7 +49,6 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-//        ItemHomeRecentEventBinding mBinding;
         ItemManageRecentEventBinding mBinding;
 
         public MyViewHolder(ItemManageRecentEventBinding itemView) {
@@ -66,13 +59,17 @@ public class ManagerRecentEventsAdapter extends RecyclerView.Adapter<ManagerRece
         public void bind(int pos, RecentEventMainModel.RecentEventData data) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             String imageUrl = "";
-            if (data.getImages().isEmpty()) {
-                imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
-            } else {
-                imageUrl = data.getImages().get(0).getImages() == null ? "" : data.getImages().get(0).getImages();
+            if (data.getCoverImage() == null){
+                if (data.getCoverImage().isEmpty()) {
+                    imageUrl = data.getManagerImage() == null ? "" : data.getManagerImage();
+                } else {
+                    imageUrl = data.getImages().get(0).getImages() == null ? "" : data.getImages().get(0).getImages();
+                }
+            }else {
+                imageUrl = data.getCoverImage() == null ? "" : data.getCoverImage();
             }
 
-            Glide.with(context).load(imageUrl).apply(options).into(mBinding.imgEventProfile);
+            Glide.with(context).load(imageUrl).apply(options).into(mBinding.imageEvent);
             mBinding.constraintEvent.setOnClickListener(view -> {
                 listener.onEventClick(data,listType);
             });

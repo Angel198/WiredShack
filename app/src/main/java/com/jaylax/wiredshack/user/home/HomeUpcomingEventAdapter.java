@@ -62,12 +62,7 @@ public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingE
 
         void bind(int pos, UpcomingEventMainModel.UpcomingEventData eventData) {
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop(), new RoundedCorners(50)).error(R.drawable.place_holder).priority(Priority.HIGH);
-            String coverImage = "";
-            if (eventData.getImages().isEmpty()) {
-                coverImage = eventData.getCoverImage() == null ? "" : eventData.getCoverImage();
-            } else {
-                coverImage = eventData.getImages().get(0).getImages() == null ? "" : eventData.getImages().get(0).getImages();
-            }
+            String coverImage = eventData.getEventCoverImage() == null ? "" : eventData.getEventCoverImage();
             Glide.with(context).load(coverImage).apply(options).into(mBinding.imgUpcomingEvent);
             mBinding.tvUpcomingEventDateDay.setText(Commons.getEventDateDay(eventData.getDate()));
             mBinding.tvUpcomingEventDate.setText(Commons.getEventDate(eventData.getDate()));

@@ -408,11 +408,11 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         });
 
         mBinding.editEventOrganiserSelection.setOnClickListener(view -> {
-            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, mBinding.editEventName.getText().toString().trim(),listData, new SelectManagerBottomSheet.BottomSheetListener() {
+            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, mBinding.editEventName.getText().toString().trim(), listData, new SelectManagerBottomSheet.BottomSheetListener() {
                 @Override
                 public void onManagerSelect(int pos, SelectManagerListModel.SelectManagerListData model) {
-                        selectedManagerID = model.getId();
-                        mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
+                    selectedManagerID = model.getId();
+                    mBinding.editEventOrganiserSelection.setText(model.getManagerName() == null ? "" : model.getManagerName());
                 }
 
                 @Override
@@ -494,7 +494,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
             progressDialog.show();
-            ApiClient.create().addEditEvent(header, params, imagesMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart, null, deleteImages).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
@@ -529,17 +529,17 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         }
     }
 
-    private void senEmail(String stEmail){
+    private void senEmail(String stEmail) {
         if (Commons.isOnline(context)) {
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
-            HashMap<String,String> params = new HashMap<>();
+            HashMap<String, String> params = new HashMap<>();
             params.put("event_name", mBinding.editEventName.getText().toString().trim());
             params.put("email", stEmail);
             params.put("manager_name", userDetailsModel.getName() == null ? "Event Organiser" : userDetailsModel.getName());
 
             progressDialog.show();
-            ApiClient.create().sendEmail(header,params).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().sendEmail(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
@@ -549,7 +549,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                                 mBinding.editEventOrganiserSelection.performClick();
                             }
                             Commons.showToast(context, response.body().getMessage() == null ? "" : response.body().getMessage());
-                        }else {
+                        } else {
                             Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                             mBinding.editEventOrganiserSelection.performClick();
                         }

@@ -314,9 +314,11 @@ public class HomeFragment extends Fragment {
         if (list.isEmpty()) {
             mBinding.tvHomeRecentEventTitle.setVisibility(View.GONE);
             mBinding.recyclerHomeRecentEvent.setVisibility(View.GONE);
+            mBinding.indicator.setVisibility(View.GONE);
         } else {
             mBinding.tvHomeRecentEventTitle.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEvent.setVisibility(View.VISIBLE);
+            mBinding.indicator.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEvent.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
             HomeRecentEventAdapter adapter = new HomeRecentEventAdapter(context, list, new HomeRecentEventAdapter.RecentEventClick() {
                 @Override

@@ -24,6 +24,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.birjuvachhani.locus.Locus;
 import com.bumptech.glide.Glide;
@@ -321,21 +322,23 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                     startActivityForResult(intent, 101);
                 }
             });
-            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
-                    new SpannedGridLayoutManager.GridSpanLookup() {
-                        @Override
-                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
+            RecyclerView.LayoutManager manager ;
+            if (managerList.size() > 1){
+                manager = new SpannedGridLayoutManager(
+                        position -> {
                             // Conditions for 2x2 items
                             if (position % 6 == 0 || position % 6 == 4) {
                                 return new SpannedGridLayoutManager.SpanInfo(2, 2);
                             } else {
                                 return new SpannedGridLayoutManager.SpanInfo(1, 1);
                             }
-                        }
-                    },
-                    3, // number of columns
-                    1f // how big is default item
-            );
+                        },
+                        3, // number of columns
+                        1f // how big is default item
+                );
+            }else {
+                manager = new GridLayoutManager(mContext,2);
+            }
             mBinding.recyclerSearchSuggestion.setHasFixedSize(true);
             mBinding.recyclerSearchSuggestion.setLayoutManager(manager);
             mBinding.recyclerSearchSuggestion.setAdapter(searchAdapter);

@@ -25,6 +25,7 @@ import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -194,7 +195,6 @@ public class ManagerHomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        getRecentEvents();
         if (dialogEditProfile == null) {
             getRecentEvents();
         } else {
@@ -241,21 +241,24 @@ public class ManagerHomeFragment extends Fragment {
         if (list.isEmpty()) {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.GONE);
         } else {
-            SpannedGridLayoutManager manager = new SpannedGridLayoutManager(
-                    new SpannedGridLayoutManager.GridSpanLookup() {
-                        @Override
-                        public SpannedGridLayoutManager.SpanInfo getSpanInfo(int position) {
-                            // Conditions for 2x2 items
-                            if (position % 6 == 0 || position % 6 == 4) {
-                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
-                            } else {
-                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
-                            }
+            mBinding.recyclerHomeRecentEventEvents.setVisibility(View.VISIBLE);
+            RecyclerView.LayoutManager manager ;
+            if (list.size() > 1){
+            manager = new SpannedGridLayoutManager(
+                    position -> {
+                        // Conditions for 2x2 items
+                        if (position % 6 == 0 || position % 6 == 4) {
+                            return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                        } else {
+                            return new SpannedGridLayoutManager.SpanInfo(1, 1);
                         }
                     },
                     3, // number of columns
                     1f // how big is default item
             );
+            }else {
+                manager = new GridLayoutManager(mContext,2);
+            }
             mBinding.recyclerHomeRecentEventEvents.setHasFixedSize(true);
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(manager);
             mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
@@ -299,6 +302,7 @@ public class ManagerHomeFragment extends Fragment {
         etEditProfileName.setText(userDetailsModel.getName());
         etEditProfileEmail.setText(userDetailsModel.getEmail());
         etEditProfilePhone.setText(userDetailsModel.getPhone());
+        etEditProfileAboutMe.setText(userDetailsModel.getAboutMe() == null? "" : userDetailsModel.getAboutMe());
 
         setMaleFemaleUI();
 

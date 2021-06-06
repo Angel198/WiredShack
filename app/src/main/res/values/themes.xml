@@ -59,7 +59,7 @@
     </style>
 
     <style name="Dialog.Theme" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorPrimary">@color/black_5</item>
+        <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/black_5</item>
         <item name="colorAccent">@color/black_5</item>
     </style>

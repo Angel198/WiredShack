@@ -214,9 +214,9 @@ public class ManagerAccountFragment extends Fragment {
         }else {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.VISIBLE);
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(new GridLayoutManager(getActivity(),3));
-            mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
+           /* mBinding.recyclerHomeRecentEventEvents.setAdapter(new ManagerRecentEventsAdapter(mContext, list, (data, lisType) -> {
                 DashboardEventManagerActivity.redirectToEditEvent(data.getId(),getActivity());
-            },type));
+            },type));*/
         }
     }
 

@@ -241,17 +241,12 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             eventTime = eventStartTime + " - " + eventEndTime;
             deleteImages = new ArrayList<>();
             imageList = new ArrayList<>();
-            /*for (EventDetailsMainModel.EventDetailsData.EventImage data : eventDetailsData.getImages()) {
+            for (EventDetailsMainModel.EventDetailsData.EventImage data : eventDetailsData.getImages()) {
                 imageList.add(new EventImageModel(data.getImages(), data.getId(), "", null));
-            }*/
-            for (int i = 0; i < eventDetailsData.getImages().size(); i++) {
-                if (i == 0) {
-                    coverImageID = eventDetailsData.getImages().get(i).getId();
-                    coverImageURL = eventDetailsData.getImages().get(i).getImages();
-                } else {
-                    imageList.add(new EventImageModel(eventDetailsData.getImages().get(i).getImages(), eventDetailsData.getImages().get(i).getId(), "", null));
-                }
             }
+
+            coverImageURL = eventDetailsData.getCoverImage() == null ? "" : eventDetailsData.getCoverImage();
+            coverImageID = eventDetailsData.getCoverImageId();
 
             latitude = eventDetailsData.getLatitude();
             longitude = eventDetailsData.getLongitude();
@@ -432,7 +427,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         mBinding.imgEventDateTimeEdit.setOnClickListener(view -> {
 
-            DatePickerDialog dialog = new DatePickerDialog(this, (datePicker, year, monthOfYear, dayOfMonth) -> {
+            DatePickerDialog dialog = new DatePickerDialog(this, R.style.Dialog_Theme,(datePicker, year, monthOfYear, dayOfMonth) -> {
                 selectedCalendar.set(Calendar.YEAR, year);
                 selectedCalendar.set(Calendar.MONTH, monthOfYear);
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -456,7 +451,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     private void showStartTimeDialog() {
         int startHours = selectedStartTimeCal == null ? 12 : selectedStartTimeCal.get(Calendar.HOUR_OF_DAY);
         int startMins = selectedStartTimeCal == null ? 0 : selectedStartTimeCal.get(Calendar.MINUTE);
-        TimePickerDialog mStartTimePicker = new TimePickerDialog(context, (timePicker, selectedHour, selectedMinute) -> {
+        TimePickerDialog mStartTimePicker = new TimePickerDialog(context,R.style.Dialog_Theme, (timePicker, selectedHour, selectedMinute) -> {
             selectedStartTimeCal = Calendar.getInstance();
             selectedStartTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
             //instead of c.set(Calendar.HOUR, hour);
@@ -477,7 +472,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     private void showEndTimeDialog() {
         int endHours = selectedEndTimeCal == null ? 12 : selectedEndTimeCal.get(Calendar.HOUR_OF_DAY);
         int endMins = selectedEndTimeCal == null ? 0 : selectedEndTimeCal.get(Calendar.MINUTE);
-        TimePickerDialog mEndTimePicker = new TimePickerDialog(context, (timePicker, selectedHour, selectedMinute) -> {
+        TimePickerDialog mEndTimePicker = new TimePickerDialog(context, R.style.Dialog_Theme,(timePicker, selectedHour, selectedMinute) -> {
             selectedEndTimeCal = Calendar.getInstance();
             selectedEndTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
             selectedEndTimeCal.set(Calendar.MINUTE, selectedMinute);
@@ -538,10 +533,8 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
                     }
                     imageList.set(0, new EventImageModel("", "", tempImageUriPath, temImageUri));
                 }*/
-                if (!coverImageID.isEmpty()) {
-                    deleteImages.add(Integer.parseInt(coverImageID));
+                if (!coverImageURL.isEmpty()) {
                     coverImageURL = "";
-                    coverImageID = "";
                 }
 //                imageList = new ArrayList<>();
 //                imageList.set(0,new EventImageModel("", "", tempImageUriPath, temImageUri));
@@ -746,20 +739,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
     private void addEditEvent(String eventName, String eventDescription, String eventLocation, String eventDate, String startTime, String endTime) {
         if (Commons.isOnline(context)) {
-            ArrayList<MultipartBody.Part> imagesMultiPart = new ArrayList<>();
-            ArrayList<EventImageModel> finalImageList = new ArrayList<>();
-            finalImageList.addAll(imageList);
-            if (temImageUri != null && !tempImageUriPath.isEmpty()) {
-                finalImageList.add(0, new EventImageModel("", "", tempImageUriPath, temImageUri));
-            }
 
-            for (EventImageModel data : finalImageList) {
-                if (data.getImageURL().isEmpty() && !data.getImagePath().isEmpty()) {
-                    File imageFile = new File(data.getImagePath());
-                    RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
-                    imagesMultiPart.add(MultipartBody.Part.createFormData("image[]", imageFile.getName(), requestBody));
-                }
-            }
 
             HashMap<String, RequestBody> params = new HashMap<>();
             params.put("name", RequestBody.create(MultipartBody.FORM, userDetailsModel.getName()));
@@ -775,11 +755,35 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             params.put("uid", RequestBody.create(MultipartBody.FORM, selectedManagerID));
 //            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getUserType()));
             params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getId()));
+            if (temImageUri != null && !tempImageUriPath.isEmpty()) {
+                if (coverImageID.isEmpty()){
+                    params.put("cover_id", RequestBody.create(MultipartBody.FORM, ""));
+                }else {
+                    params.put("cover_id", RequestBody.create(MultipartBody.FORM, coverImageID));
+                }
+            }else {
+                params.put("cover_id", RequestBody.create(MultipartBody.FORM, ""));
+            }
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
 
+            ArrayList<MultipartBody.Part> imagesMultiPart = new ArrayList<>();
+            for (EventImageModel data : imageList) {
+                if (data.getImageURL().isEmpty() && !data.getImagePath().isEmpty()) {
+                    File imageFile = new File(data.getImagePath());
+                    RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                    imagesMultiPart.add(MultipartBody.Part.createFormData("image[]", imageFile.getName(), requestBody));
+                }
+            }
+            MultipartBody.Part coverImageMultiPart = null;
+            if (temImageUri != null && !tempImageUriPath.isEmpty()) {
+                File coverFile = new File(tempImageUriPath);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),coverFile);
+                coverImageMultiPart = MultipartBody.Part.createFormData("cover_image",coverFile.getName(),requestBody);
+            }
+
             progressDialog.show();
-            ApiClient.create().addEditEvent(header, params, imagesMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart,coverImageMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
