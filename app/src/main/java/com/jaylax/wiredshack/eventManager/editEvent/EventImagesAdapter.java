@@ -107,6 +107,7 @@ public class EventImagesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHo
                 if (!isEdit) {
                     Intent intent = new Intent(context, EventImagesActivity.class);
                     intent.putExtra("eventImages", new Gson().toJson(list));
+                    intent.putExtra("pos", position);
                     context.startActivity(intent);
                 }
             });

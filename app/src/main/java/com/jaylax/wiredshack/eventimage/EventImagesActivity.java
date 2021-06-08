@@ -48,6 +48,8 @@ public class EventImagesActivity extends AppCompatActivity {
     EventImagePagerAdapter adapter = null;
     ProgressDialog progressDialog;
 
+    int position = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,10 @@ public class EventImagesActivity extends AppCompatActivity {
                 imageArrayList = new Gson().fromJson(jsonString, new TypeToken<ArrayList<EventImageModel>>() {
                 }.getType());
             }
+        }
+
+        if (getIntent().hasExtra("pos")) {
+            position = getIntent().getIntExtra("pos", 0);
         }
 
         if (getIntent().hasExtra("fromProfile")) {
@@ -87,6 +93,7 @@ public class EventImagesActivity extends AppCompatActivity {
         } else {
             adapter = new EventImagePagerAdapter(imageArrayList, this);
             mBinding.viewPagerImages.setAdapter(adapter);
+            mBinding.viewPagerImages.setCurrentItem(position);
         }
     }
 

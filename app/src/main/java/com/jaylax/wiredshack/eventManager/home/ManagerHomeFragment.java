@@ -9,7 +9,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,20 +43,30 @@ import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivit
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventActivity;
 import com.jaylax.wiredshack.eventManager.editEvent.ManagerEditEventNewActivity;
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedActivity;
+import com.jaylax.wiredshack.eventManager.liveVideoBroadcaster.LiveVideoBroadcasterActivity;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
+import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
 
 import java.io.File;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -76,6 +88,8 @@ public class ManagerHomeFragment extends Fragment {
     Boolean isMale, isFemale;
 
     final static int REQUEST_IMAGE_PICKER = 101;
+
+    RecentEventMainModel.RecentEventData nearestEvent = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,12 +136,12 @@ public class ManagerHomeFragment extends Fragment {
         }
         mBinding.tvFollowedCount.setText(followedCount);
 
-        if (userDetailsModel.getAboutMe() == null){
+        if (userDetailsModel.getAboutMe() == null) {
             mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-        }else {
-            if (userDetailsModel.getAboutMe().isEmpty()){
+        } else {
+            if (userDetailsModel.getAboutMe().isEmpty()) {
                 mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-            }else {
+            } else {
                 mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
                 mBinding.tvManagerAboutMe.setText(userDetailsModel.getAboutMe());
             }
@@ -154,6 +168,18 @@ public class ManagerHomeFragment extends Fragment {
 
         mBinding.imgProfileEdit.setOnClickListener(view -> {
             showEditDialog();
+        });
+
+        mBinding.imgGoLive.setOnClickListener(view -> {
+            if (nearestEvent != null) {
+                if (isEventLive(nearestEvent.getDate(), nearestEvent.getStime(), nearestEvent.getEtime())) {
+                    Intent intent = new Intent(getActivity(), LiveVideoBroadcasterActivity.class);
+                    intent.putExtra("eventStream", nearestEvent.getId());
+                    startActivity(intent);
+                }else {
+                    Commons.showToast(mContext,mContext.getResources().getString(R.string.event_not_started));
+                }
+            }
         });
     }
 
@@ -242,22 +268,22 @@ public class ManagerHomeFragment extends Fragment {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.GONE);
         } else {
             mBinding.recyclerHomeRecentEventEvents.setVisibility(View.VISIBLE);
-            RecyclerView.LayoutManager manager ;
-            if (list.size() > 1){
-            manager = new SpannedGridLayoutManager(
-                    position -> {
-                        // Conditions for 2x2 items
-                        if (position % 6 == 0 || position % 6 == 4) {
-                            return new SpannedGridLayoutManager.SpanInfo(2, 2);
-                        } else {
-                            return new SpannedGridLayoutManager.SpanInfo(1, 1);
-                        }
-                    },
-                    3, // number of columns
-                    1f // how big is default item
-            );
-            }else {
-                manager = new GridLayoutManager(mContext,2);
+            RecyclerView.LayoutManager manager;
+            if (list.size() > 1) {
+                manager = new SpannedGridLayoutManager(
+                        position -> {
+                            // Conditions for 2x2 items
+                            if (position % 6 == 0 || position % 6 == 4) {
+                                return new SpannedGridLayoutManager.SpanInfo(2, 2);
+                            } else {
+                                return new SpannedGridLayoutManager.SpanInfo(1, 1);
+                            }
+                        },
+                        3, // number of columns
+                        1f // how big is default item
+                );
+            } else {
+                manager = new GridLayoutManager(mContext, 2);
             }
             mBinding.recyclerHomeRecentEventEvents.setHasFixedSize(true);
             mBinding.recyclerHomeRecentEventEvents.setLayoutManager(manager);
@@ -269,6 +295,104 @@ public class ManagerHomeFragment extends Fragment {
                 intent.putExtra("eventId", data.getId());
                 startActivity(intent);
             }));
+
+            getNearestLiveEvent(list);
+        }
+    }
+
+    private void getNearestLiveEvent(ArrayList<RecentEventMainModel.RecentEventData> list) {
+        ArrayList<Date> date = new ArrayList<>();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+        try {
+            for (RecentEventMainModel.RecentEventData data : list) {
+                if (data.getCreatedBy().equals(userDetailsModel.getId())) {
+                    if (data.getDate() != null && data.getStime() != null) {
+                        date.add(format.parse(data.getDate() + " " + data.getStime()));
+                    }
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        if (date.isEmpty()) {
+            if (list.get(0).getCreatedBy().equals(userDetailsModel.getId())) {
+                nearestEvent = list.get(0);
+            }
+        } else {
+            final long now = System.currentTimeMillis();
+            Date closet = Collections.min(date, (d1, d2) -> {
+                long diff1 = Math.abs(d1.getTime() - now);
+                long diff2 = Math.abs(d2.getTime() - now);
+                return Long.compare(diff1, diff2);
+            });
+            /*SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            SimpleDateFormat timeFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+
+            String stClosetDate = dateFormat.format(closet);*/
+            Log.e("ClosetDate", closet.toString());
+
+            for (RecentEventMainModel.RecentEventData event : list) {
+                try {
+                    Date eventDate = format.parse(event.getDate() + " " + event.getStime());
+                    if (eventDate != null && eventDate.equals(closet)) {
+                        nearestEvent = event;
+                        break;
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                    break;
+                }
+            }
+        }
+
+        if (nearestEvent == null) {
+            mBinding.linearGoLiveEvent.setVisibility(View.GONE);
+        } else {
+//            mBinding.linearGoLiveEvent.setVisibility(View.VISIBLE);
+//            mBinding.tvHomeEventTitle.setText(nearestEvent.getEventName());
+            showEventLiveTime();
+        }
+    }
+
+    private void showEventLiveTime() {
+
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+        if (nearestEvent.getDate() != null && nearestEvent.getStime() != null) {
+            String eventSTime = nearestEvent.getDate() + " " + nearestEvent.getStime();
+            try {
+                Date eventSDate = format.parse(eventSTime);
+                final long[] different = {eventSDate.getTime() - currentDate.getTime()};
+                long hoursInMilli = TimeUnit.MILLISECONDS.toHours(different[0]);
+                long minutesInMilli = TimeUnit.MILLISECONDS.toHours(different[0]);
+
+                Log.e("remaining Hours", String.valueOf(TimeUnit.MILLISECONDS.toHours(different[0])));
+                Log.e("remaining Minutes", String.valueOf(TimeUnit.MILLISECONDS.toMinutes(different[0])));
+
+                if (hoursInMilli >= 1) {
+                    mBinding.linearGoLiveEvent.setVisibility(View.GONE);
+                } else {
+                    mBinding.linearGoLiveEvent.setVisibility(View.VISIBLE);
+                    mBinding.tvHomeEventTitle.setText(nearestEvent.getEventName());
+                    new CountDownTimer(different[0], 1000) {
+                        public void onTick(long millisUntilFinished) {
+                            different[0] = millisUntilFinished;
+                            String hms = String.format("%02d:%02d:%02d",
+                                    TimeUnit.MILLISECONDS.toHours(different[0]),
+                                    TimeUnit.MILLISECONDS.toMinutes(different[0]) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(different[0])), TimeUnit.MILLISECONDS.toSeconds(different[0]) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(different[0])));
+
+                            mBinding.tvHomeEventTime.setText(hms);//set text
+                        }
+
+                        public void onFinish() {
+                        }
+                    }.start();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -302,7 +426,7 @@ public class ManagerHomeFragment extends Fragment {
         etEditProfileName.setText(userDetailsModel.getName());
         etEditProfileEmail.setText(userDetailsModel.getEmail());
         etEditProfilePhone.setText(userDetailsModel.getPhone());
-        etEditProfileAboutMe.setText(userDetailsModel.getAboutMe() == null? "" : userDetailsModel.getAboutMe());
+        etEditProfileAboutMe.setText(userDetailsModel.getAboutMe() == null ? "" : userDetailsModel.getAboutMe());
 
         setMaleFemaleUI();
 
@@ -518,5 +642,27 @@ public class ManagerHomeFragment extends Fragment {
                 }
             }
         }
+    }
+
+    private boolean isEventLive(String eventDate, String startTime, String endTime) {
+        boolean isLive = false;
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+        if (eventDate != null && startTime != null && endTime != null) {
+            String eventSTime = eventDate + " " + startTime;
+
+            String eventETime = eventDate + " " + endTime;
+            try {
+                Date eventSDate = format.parse(eventSTime);
+                Date eventEDate = format.parse(eventETime);
+                if (currentDate.after(eventSDate) && currentDate.before(eventEDate)) {
+                    isLive = true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return isLive;
     }
 }

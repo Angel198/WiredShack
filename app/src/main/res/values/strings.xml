@@ -200,5 +200,6 @@
     <string name="daily">Daily</string>
     <string name="email_send_success_fully">Email sedn success fully</string>
     <string name="txt_live">Live</string>
-    <string name="delete_image_msg">Are you sure\nyou want to delete image?</string>
+    <string name="delete_image_msg">Are you sure\nyou want to delete Image?</string>
+    <string name="delete_event_msg">Are you sure\nyou want to delete Event?</string>
 </resources>

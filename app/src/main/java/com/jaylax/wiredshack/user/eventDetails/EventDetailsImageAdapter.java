@@ -64,6 +64,7 @@ public class EventDetailsImageAdapter extends RecyclerView.Adapter<EventDetailsI
             mBinding.constraintImage.setOnClickListener(view -> {
                 Intent intent = new Intent(context, EventImagesActivity.class);
                 intent.putExtra("eventImages", new Gson().toJson(list));
+                intent.putExtra("pos", pos);
                 context.startActivity(intent);
             });
         }

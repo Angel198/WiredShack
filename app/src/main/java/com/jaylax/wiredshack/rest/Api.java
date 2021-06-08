@@ -172,6 +172,9 @@ public interface Api {
     @POST("api/auth/del_img")
     Call<CommonResponseModel> deleteUserImage(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
+    @POST("api/auth/delete_event")
+    Call<CommonResponseModel> deleteEvent(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
     @Multipart
     @POST("api/auth/post_image")
     Call<CommonResponseModel> uploadUserImage(@Header("Authorization") String authHeader, @Part MultipartBody.Part profile);

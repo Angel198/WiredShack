@@ -21,6 +21,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.AppCompatImageView;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.GridLayoutManager;
 
@@ -42,6 +43,7 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.jaylax.wiredshack.MainActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityManagerEditEventNewBinding;
@@ -63,6 +65,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -154,7 +157,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             getEventDetails();
         }else {
             setEventImagesAdapter();
-
+            mBinding.imgDeleteEvent.setVisibility(View.GONE);
         }
     }
 
@@ -264,16 +267,26 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             createdByID = eventDetailsData.getCreatedBy() == null ? "" : eventDetailsData.getCreatedBy();
 
             if (userDetailsModel.getId().equals(createdByID)) {
-                mBinding.imgEventCoverEdit.setVisibility(View.VISIBLE);
-                mBinding.imgEventDataEdit.setVisibility(View.VISIBLE);
-                mBinding.imgEventDateTimeEdit.setVisibility(View.VISIBLE);
-                mBinding.imgShareEvent.setVisibility(View.VISIBLE);
+                if (isEventLive(eventDetailsData.getDate(),eventDetailsData.getStime(),eventDetailsData.getEtime())){
+                    mBinding.imgEventCoverEdit.setVisibility(View.GONE);
+                    mBinding.imgEventDataEdit.setVisibility(View.GONE);
+                    mBinding.imgEventDateTimeEdit.setVisibility(View.GONE);
+                    mBinding.imgShareEvent.setVisibility(View.GONE);
+                    mBinding.imgDeleteEvent.setVisibility(View.GONE);
+                }else {
+                    mBinding.imgEventCoverEdit.setVisibility(View.VISIBLE);
+                    mBinding.imgEventDataEdit.setVisibility(View.VISIBLE);
+                    mBinding.imgEventDateTimeEdit.setVisibility(View.VISIBLE);
+                    mBinding.imgShareEvent.setVisibility(View.VISIBLE);
+                    mBinding.imgDeleteEvent.setVisibility(View.VISIBLE);
+                }
             } else {
                 mBinding.tvManagerName.setText(eventDetailsData.getName());
                 mBinding.imgEventCoverEdit.setVisibility(View.GONE);
                 mBinding.imgEventDataEdit.setVisibility(View.GONE);
                 mBinding.imgEventDateTimeEdit.setVisibility(View.GONE);
                 mBinding.imgShareEvent.setVisibility(View.GONE);
+                mBinding.imgDeleteEvent.setVisibility(View.GONE);
             }
             setEventDetailsData();
         }
@@ -446,6 +459,86 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             dialog.show();
 
         });
+
+        mBinding.imgDeleteEvent.setOnClickListener(view -> {
+
+           showDeleteEventDialog();
+        });
+    }
+
+    private void showDeleteEventDialog() {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_log_out);
+
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(window.getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+
+        AppCompatTextView tvTitle = (AppCompatTextView) dialog.findViewById(R.id.tvLogoutTitle);
+        tvTitle.setText(context.getResources().getString(R.string.delete_event_msg));
+        AppCompatTextView tvLogoutYes = (AppCompatTextView) dialog.findViewById(R.id.tvLogoutYes);
+        AppCompatTextView tvLogoutNo = (AppCompatTextView) dialog.findViewById(R.id.tvLogoutNo);
+
+        tvLogoutYes.setOnClickListener(view -> {
+            dialog.dismiss();
+            deleteEvent();
+        });
+
+        tvLogoutNo.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
+
+    private void deleteEvent(){
+        if (Commons.isOnline(context)) {
+            progressDialog.show();
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", editEventID);
+
+            ApiClient.create().deleteEvent(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                onBackPressed();
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = context.getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(context, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(context, context.getResources().getString(R.string.no_internet_connection));
+        }
     }
 
     private void showStartTimeDialog() {
@@ -843,5 +936,27 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
                 }
             }
         }
+    }
+
+    private boolean isEventLive(String eventDate, String startTime, String endTime) {
+        boolean isLive = false;
+        Date currentDate = Calendar.getInstance().getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.US);
+
+        if (eventDate != null && startTime != null && endTime != null) {
+            String eventSTime = eventDate + " " + startTime;
+
+            String eventETime = eventDate + " " + endTime;
+            try {
+                Date eventSDate = format.parse(eventSTime);
+                Date eventEDate = format.parse(eventETime);
+                if (currentDate.after(eventSDate) && currentDate.before(eventEDate)) {
+                    isLive = true;
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return isLive;
     }
 }

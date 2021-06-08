@@ -291,7 +291,11 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 setRecentEventData(response.body().getData());
+                            }else {
+                                setRecentEventData(new ArrayList<>());
                             }
+                        }else {
+                            setRecentEventData(new ArrayList<>());
                         }
                     }
 
@@ -301,6 +305,7 @@ public class HomeFragment extends Fragment {
                             progressDialog.dismiss();
                             getEventManagerList();
                             Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                            setRecentEventData(new ArrayList<>());
                         }
                     }
                 });
