@@ -408,7 +408,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
         });
 
         mBinding.editEventOrganiserSelection.setOnClickListener(view -> {
-            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, mBinding.editEventName.getText().toString().trim(), listData, new SelectManagerBottomSheet.BottomSheetListener() {
+            /*SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(context, mBinding.editEventName.getText().toString().trim(), listData, new SelectManagerBottomSheet.BottomSheetListener() {
                 @Override
                 public void onManagerSelect(int pos, SelectManagerListModel.SelectManagerListData model) {
                     selectedManagerID = model.getId();
@@ -421,7 +421,7 @@ public class ManagerEditEventActivity extends AppCompatActivity {
                 }
             });
             bottomSheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
-            bottomSheet.show(getSupportFragmentManager(), "select");
+            bottomSheet.show(getSupportFragmentManager(), "select");*/
         });
     }
 

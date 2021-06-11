@@ -16,8 +16,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/back_bottomsheet">
 
             <androidx.appcompat.widget.AppCompatTextView
@@ -34,7 +33,8 @@
                 android:textSize="@dimen/_14ssp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="invisible"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imgSelectManagerClose"
@@ -46,21 +46,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recycleSelectManager"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:clipToPadding="false"
-                android:overScrollMode="never"
-                android:paddingStart="@dimen/_12sdp"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingEnd="@dimen/_12sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/tvSelectManagerBottom"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/tvSelectManagerTitle" />
-
 
             <LinearLayout
                 android:id="@+id/linearSelectManagerEmail"
@@ -69,8 +54,8 @@
                 android:gravity="center_horizontal"
                 android:orientation="vertical"
                 android:padding="@dimen/_12sdp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/tvSelectManagerBottom"
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/tvSelectManagerTitle">
@@ -110,27 +95,6 @@
                     android:textColor="@color/white"
                     android:textSize="@dimen/_14ssp" />
             </LinearLayout>
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tvSelectManagerBottom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/_12sdp"
-                android:background="@drawable/back_go_live"
-                android:backgroundTint="@color/login_background"
-                android:fontFamily="@font/poppins_medium"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:paddingStart="@dimen/_15sdp"
-                android:paddingTop="@dimen/_10sdp"
-                android:paddingEnd="@dimen/_15sdp"
-                android:paddingBottom="@dimen/_10sdp"
-                android:text="@string/send_email"
-                android:textColor="@color/white"
-                android:textSize="@dimen/_14ssp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </LinearLayout>
 </layout>

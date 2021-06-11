@@ -94,6 +94,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     String tempLatitude = "", tempLongitude = "";
     String selectedManagerID = "";
     String temSelectedManagerID = "";
+    String temSelectedManagerImageUrl = "";
     String tempImageUriPath = "";
     Uri temImageUri = null;
     String coverImageURL = "", coverImageID = "";
@@ -102,7 +103,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
     Dialog dialogEventData = null;
 
-    String eventName = "", eventDate = "", eventDescription = "", eventLocation = "", eventTime = "", selectedOrganiserName = "";
+    String eventName = "", eventDate = "", eventDescription = "", eventLocation = "", eventTime = "", selectedOrganiserName = "", selectedOrganiserImgUrl = "", selectedOrganiserType = "";
     private GoogleMap mMap = null;
 
     final static int REQUEST_COVER_IMAGE = 101;
@@ -155,7 +156,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     private void setEditEventUI() {
         if (!editEventID.isEmpty()) {
             getEventDetails();
-        }else {
+        } else {
             setEventImagesAdapter();
             mBinding.imgDeleteEvent.setVisibility(View.GONE);
         }
@@ -259,6 +260,8 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             if (eventDetailsData.getSelectedManager() != null) {
                 if (eventDetailsData.getSelectedManager().getName() != null && eventDetailsData.getSelectedManager().getId() != null) {
                     selectedOrganiserName = eventDetailsData.getSelectedManager().getName();
+                    selectedOrganiserImgUrl = eventDetailsData.getSelectedManager().getImage();
+                    selectedOrganiserType = eventDetailsData.getSelectedManager().getUserType();
                     selectedManagerID = eventDetailsData.getSelectedManager().getId();
                     temSelectedManagerID = eventDetailsData.getSelectedManager().getId();
                 }
@@ -267,13 +270,13 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             createdByID = eventDetailsData.getCreatedBy() == null ? "" : eventDetailsData.getCreatedBy();
 
             if (userDetailsModel.getId().equals(createdByID)) {
-                if (isEventLive(eventDetailsData.getDate(),eventDetailsData.getStime(),eventDetailsData.getEtime())){
+                if (isEventLive(eventDetailsData.getDate(), eventDetailsData.getStime(), eventDetailsData.getEtime())) {
                     mBinding.imgEventCoverEdit.setVisibility(View.GONE);
                     mBinding.imgEventDataEdit.setVisibility(View.GONE);
                     mBinding.imgEventDateTimeEdit.setVisibility(View.GONE);
                     mBinding.imgShareEvent.setVisibility(View.GONE);
                     mBinding.imgDeleteEvent.setVisibility(View.GONE);
-                }else {
+                } else {
                     mBinding.imgEventCoverEdit.setVisibility(View.VISIBLE);
                     mBinding.imgEventDataEdit.setVisibility(View.VISIBLE);
                     mBinding.imgEventDateTimeEdit.setVisibility(View.VISIBLE);
@@ -299,22 +302,38 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         mBinding.editEventLocation.setText(eventLocation);
         mBinding.editEventDate.setText(eventDate);
         mBinding.editEventTime.setText(eventTime);
-//        setImageInView();
-        /*if (!imageList.isEmpty()) {
-            if (imageList.get(0) != null) {
-                if (imageList.get(0).getImageURL().isEmpty()) {
-                    Glide.with(this).load(imageList.get(0).getUri()).apply(options).into(mBinding.imgCoverPhoto);
-                } else {
-                    Glide.with(this).load(imageList.get(0).getImageURL()).apply(options).into(mBinding.imgCoverPhoto);
-                }
-            }
-        }*/
         if (coverImageURL.isEmpty()) {
             Glide.with(this).load(temImageUri).apply(options).into(mBinding.imgCoverPhoto);
         } else {
             Glide.with(this).load(coverImageURL).apply(options).into(mBinding.imgCoverPhoto);
         }
-//        setEventImagesAdapter();
+
+        if (selectedManagerID.isEmpty() && selectedOrganiserName.isEmpty()) {
+            mBinding.linearSelectManager.setVisibility(View.GONE);
+        } else {
+            mBinding.linearSelectManager.setVisibility(View.VISIBLE);
+            if (selectedOrganiserType.isEmpty()) {
+                if (userDetailsModel.getUserType() == null) {
+                    mBinding.tvSelectManagerTitle.setText(context.getResources().getString(R.string.club));
+                } else {
+                    if (userDetailsModel.getUserType().equals("2")) {
+                        mBinding.tvSelectManagerTitle.setText(context.getResources().getString(R.string.dj));
+                    } else {
+                        mBinding.tvSelectManagerTitle.setText(context.getResources().getString(R.string.club));
+                    }
+                }
+            } else {
+                if (eventDetailsData.getSelectedManager().getUserType().equals("2")) {
+                    mBinding.tvSelectManagerTitle.setText(context.getResources().getString(R.string.club));
+                } else {
+                    mBinding.tvSelectManagerTitle.setText(context.getResources().getString(R.string.dj));
+                }
+            }
+
+
+            Glide.with(context).load(selectedOrganiserImgUrl).apply(options).into(mBinding.imgSelectManagerProfile);
+            mBinding.tvSelectManagerName.setText(selectedOrganiserName);
+        }
         setEventMarker();
     }
 
@@ -339,22 +358,6 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         } else {
             imagesAdapter = new EventImagesAdapter(context, false, imageList);
         }
-       /* imagesAdapter = new EventImagesAdapter(context, true, imageList, new EventImagesAdapter.EventImageClick() {
-            @Override
-            public void onImageRemove(int position) {
-                if (!imageList.get(position).getImageId().isEmpty()) {
-                    deleteImages.add(Integer.parseInt(imageList.get(position).getImageId()));
-                }
-                imageList.remove(position);
-                imagesAdapter.notifyItemRemoved(position);
-                imagesAdapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void addImage() {
-                showImagePickerAlert(REQUEST_LIST_IMAGE);
-            }
-        });*/
         mBinding.recyclerEventImages.setAdapter(imagesAdapter);
 
     }
@@ -440,7 +443,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         mBinding.imgEventDateTimeEdit.setOnClickListener(view -> {
 
-            DatePickerDialog dialog = new DatePickerDialog(this, R.style.Dialog_Theme,(datePicker, year, monthOfYear, dayOfMonth) -> {
+            DatePickerDialog dialog = new DatePickerDialog(this, R.style.Dialog_Theme, (datePicker, year, monthOfYear, dayOfMonth) -> {
                 selectedCalendar.set(Calendar.YEAR, year);
                 selectedCalendar.set(Calendar.MONTH, monthOfYear);
                 selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -462,7 +465,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         mBinding.imgDeleteEvent.setOnClickListener(view -> {
 
-           showDeleteEventDialog();
+            showDeleteEventDialog();
         });
     }
 
@@ -499,7 +502,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         dialog.show();
     }
 
-    private void deleteEvent(){
+    private void deleteEvent() {
         if (Commons.isOnline(context)) {
             progressDialog.show();
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
@@ -544,7 +547,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     private void showStartTimeDialog() {
         int startHours = selectedStartTimeCal == null ? 12 : selectedStartTimeCal.get(Calendar.HOUR_OF_DAY);
         int startMins = selectedStartTimeCal == null ? 0 : selectedStartTimeCal.get(Calendar.MINUTE);
-        TimePickerDialog mStartTimePicker = new TimePickerDialog(context,R.style.Dialog_Theme, (timePicker, selectedHour, selectedMinute) -> {
+        TimePickerDialog mStartTimePicker = new TimePickerDialog(context, R.style.Dialog_Theme, (timePicker, selectedHour, selectedMinute) -> {
             selectedStartTimeCal = Calendar.getInstance();
             selectedStartTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
             //instead of c.set(Calendar.HOUR, hour);
@@ -565,7 +568,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
     private void showEndTimeDialog() {
         int endHours = selectedEndTimeCal == null ? 12 : selectedEndTimeCal.get(Calendar.HOUR_OF_DAY);
         int endMins = selectedEndTimeCal == null ? 0 : selectedEndTimeCal.get(Calendar.MINUTE);
-        TimePickerDialog mEndTimePicker = new TimePickerDialog(context, R.style.Dialog_Theme,(timePicker, selectedHour, selectedMinute) -> {
+        TimePickerDialog mEndTimePicker = new TimePickerDialog(context, R.style.Dialog_Theme, (timePicker, selectedHour, selectedMinute) -> {
             selectedEndTimeCal = Calendar.getInstance();
             selectedEndTimeCal.set(Calendar.HOUR_OF_DAY, selectedHour);
             selectedEndTimeCal.set(Calendar.MINUTE, selectedMinute);
@@ -597,12 +600,10 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         setImageInView();
         dialogEventData.findViewById(R.id.imgCoverDialogClose).setOnClickListener(view -> {
-            if (!coverImageURL.isEmpty()){
+            if (!coverImageURL.isEmpty()) {
                 temImageUri = null;
                 tempImageUriPath = "";
             }
-//            temImageUri = null;
-//            tempImageUriPath = "";
             dialogEventData.dismiss();
         });
 
@@ -612,26 +613,9 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 
         dialogEventData.findViewById(R.id.tvCoverDialogDone).setOnClickListener(view -> {
             if (temImageUri != null && !tempImageUriPath.isEmpty()) {
-                /*for (EventImageModel imageData : imageList) {
-                    if (!imageData.getImageId().isEmpty()) {
-                        deleteImages.add(Integer.parseInt(imageData.getImageId()));
-                    }
-                }*/
-                /*if (imageList.isEmpty()) {
-                    imageList = new ArrayList<>();
-                    imageList.add(new EventImageModel("", "", tempImageUriPath, temImageUri));
-                } else {
-                    if (!imageList.get(0).getImageId().isEmpty()) {
-                        deleteImages.add(Integer.parseInt(imageList.get(0).getImageId()));
-                    }
-                    imageList.set(0, new EventImageModel("", "", tempImageUriPath, temImageUri));
-                }*/
                 if (!coverImageURL.isEmpty()) {
                     coverImageURL = "";
                 }
-//                imageList = new ArrayList<>();
-//                imageList.set(0,new EventImageModel("", "", tempImageUriPath, temImageUri));
-//                imageList.add(new EventImageModel("", "", tempImageUriPath, temImageUri));
                 setEventDetailsData();
                 dialogEventData.dismiss();
             } else {
@@ -651,17 +635,6 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         if (ivEditProfile != null) {
             RequestOptions roundOptions = new RequestOptions().centerCrop().placeholder(0).transform(new CenterCrop(), new RoundedCorners(30)).error(0).priority(Priority.HIGH);
             if (temImageUri == null) {
-                /*if (!imageList.isEmpty()) {
-                    if (imageList.get(0) != null) {
-                        if (imageList.get(0).getImageURL().isEmpty()) {
-                            temImageUri = imageList.get(0).getUri();
-                            tempImageUriPath = imageList.get(0).getImagePath();
-                            Glide.with(context).load(imageList.get(0).getUri()).apply(roundOptions).into(ivEditProfile);
-                        } else {
-                            Glide.with(context).load(imageList.get(0).getImageURL()).apply(roundOptions).into(ivEditProfile);
-                        }
-                    }
-                }*/
                 if (!coverImageURL.isEmpty()) {
                     Glide.with(context).load(coverImageURL).apply(roundOptions).into(ivEditProfile);
                 }
@@ -726,12 +699,19 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             tempLatitude = "";
             tempLongitude = "";
             temSelectedManagerID = "";
+            temSelectedManagerImageUrl = "";
             dialogEventData.dismiss();
         });
 
         etSelectOrganiser.setOnClickListener(view -> {
-            Intent intent = new Intent(context, AssignEventActivity.class);
-            startActivityForResult(intent, REQUEST_ASSIGN_MANAGER);
+            String name = etName.getText().toString().trim();
+            if (name.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_event_name));
+            } else {
+                Intent intent = new Intent(context, AssignEventActivity.class);
+                intent.putExtra("eventName", name);
+                startActivityForResult(intent, REQUEST_ASSIGN_MANAGER);
+            }
         });
 
         etLocation.setOnClickListener(view -> {
@@ -769,6 +749,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
                 longitude = tempLongitude;
                 selectedOrganiserName = organiserName;
                 selectedManagerID = temSelectedManagerID;
+                selectedOrganiserImgUrl = temSelectedManagerImageUrl;
                 setEventDetailsData();
                 dialogEventData.dismiss();
             }
@@ -783,25 +764,11 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_COVER_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                /*for (EventImageModel imageData : imageList) {
-                    if (!imageData.getImageId().isEmpty()) {
-                        deleteImages.add(Integer.parseInt(imageData.getImageId()));
-                    }
-                }
-                imageList = new ArrayList<>();
-                imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));*/
-
                 temImageUri = Uri.parse(data.getData().toString());
                 tempImageUriPath = ImagePicker.Companion.getFilePath(data);
                 setImageInView();
             }
         } else if (requestCode == REQUEST_LIST_IMAGE) {
-            /*for (EventImageModel imageData : imageList) {
-                if (!imageData.getImageId().isEmpty()) {
-                    deleteImages.add(Integer.parseInt(imageData.getImageId()));
-                }
-            }
-            imageList = new ArrayList<>();*/
             imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
             imagesAdapter.notifyDataSetChanged();
         } else if (requestCode == REQUEST_PLACE_PICKER) {
@@ -822,6 +789,7 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
         } else if (requestCode == REQUEST_ASSIGN_MANAGER) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 temSelectedManagerID = data.getStringExtra("selectedId");
+                temSelectedManagerImageUrl = data.getStringExtra("selectedImage");
                 if (dialogEventData != null) {
                     AppCompatEditText editText = (AppCompatEditText) dialogEventData.findViewById(R.id.etEventDataSelectOrganiser);
                     editText.setText(data.getStringExtra("selectedName"));
@@ -849,12 +817,12 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
 //            params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getUserType()));
             params.put("created_by", RequestBody.create(MultipartBody.FORM, userDetailsModel.getId()));
             if (temImageUri != null && !tempImageUriPath.isEmpty()) {
-                if (coverImageID.isEmpty()){
+                if (coverImageID.isEmpty()) {
                     params.put("cover_id", RequestBody.create(MultipartBody.FORM, ""));
-                }else {
+                } else {
                     params.put("cover_id", RequestBody.create(MultipartBody.FORM, coverImageID));
                 }
-            }else {
+            } else {
                 params.put("cover_id", RequestBody.create(MultipartBody.FORM, ""));
             }
 
@@ -871,12 +839,12 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
             MultipartBody.Part coverImageMultiPart = null;
             if (temImageUri != null && !tempImageUriPath.isEmpty()) {
                 File coverFile = new File(tempImageUriPath);
-                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"),coverFile);
-                coverImageMultiPart = MultipartBody.Part.createFormData("cover_image",coverFile.getName(),requestBody);
+                RequestBody requestBody = RequestBody.create(MediaType.parse("multipart/form-data"), coverFile);
+                coverImageMultiPart = MultipartBody.Part.createFormData("cover_image", coverFile.getName(), requestBody);
             }
 
             progressDialog.show();
-            ApiClient.create().addEditEvent(header, params, imagesMultiPart,coverImageMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
+            ApiClient.create().addEditEvent(header, params, imagesMultiPart, coverImageMultiPart, deleteImages).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();

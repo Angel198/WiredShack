@@ -69,6 +69,7 @@ public class AssignManagerAdapter extends RecyclerView.Adapter<AssignManagerAdap
                 Intent intent = new Intent();
                 intent.putExtra("selectedId",data.getId());
                 intent.putExtra("selectedName",data.getManagerName());
+                intent.putExtra("selectedImage",data.getManagerImage());
                 activity.setResult(Activity.RESULT_OK,intent);
                 activity.finish();
             });

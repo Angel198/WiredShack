@@ -197,8 +197,8 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                 for (EventDetailsMainModel.EventDetailsData.EventImage image : eventDetailsData.getImages()) {
                     imageList.add(new EventImageModel(image.getImages() == null ? "" : image.getImages(), image.getId() == null ? "" : image.getId(), "", null));
                 }
-                RecyclerView.LayoutManager manager ;
-                if (imageList.size() > 1){
+                RecyclerView.LayoutManager manager;
+                if (imageList.size() > 1) {
                     manager = new SpannedGridLayoutManager(
                             position -> {
                                 // Conditions for 2x2 items
@@ -211,13 +211,33 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
                             3, // number of columns
                             1f // how big is default item
                     );
-                }else {
-                    manager = new GridLayoutManager(mContext,2);
+                } else {
+                    manager = new GridLayoutManager(mContext, 2);
                 }
                 mBinding.recyclerEventImages.setHasFixedSize(true);
                 mBinding.recyclerEventImages.setLayoutManager(manager);
                 mBinding.recyclerEventImages.setAdapter(new EventDetailsImageAdapter(mContext, imageList));
             }
+            if (eventDetailsData.getSelectedManager() == null) {
+                mBinding.linearSelectManager.setVisibility(View.GONE);
+            } else {
+                mBinding.linearSelectManager.setVisibility(View.VISIBLE);
+                if (eventDetailsData.getSelectedManager().getUserType() == null) {
+                    mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.club));
+                } else {
+                    if (eventDetailsData.getSelectedManager().getUserType().equals("2")) {
+                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.club));
+                    } else {
+                        mBinding.tvSelectManagerTitle.setText(mContext.getResources().getString(R.string.dj));
+                    }
+                }
+                String imageURL = eventDetailsData.getSelectedManager().getImage() == null ? "" : eventDetailsData.getSelectedManager().getImage();
+                Glide.with(mContext).load(imageURL).apply(options).into(mBinding.imgSelectManagerProfile);
+
+                mBinding.tvSelectManagerName.setText(eventDetailsData.getSelectedManager().getName() == null ? "" : eventDetailsData.getSelectedManager().getName());
+            }
+
+
             mBinding.tvEventDescription.setText(eventDetailsData.getDescription() == null ? "N/A" : eventDetailsData.getDescription());
 
             mBinding.tvEventDate.setText(mContext.getResources().getString(R.string.event_date, eventDetailsData.getDate() == null ? "N/A" : getEventDate()));

@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.eventManager.assignEvent;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Context;
@@ -17,8 +18,10 @@ import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityAssignEventBinding;
+import com.jaylax.wiredshack.eventManager.editEvent.SelectManagerBottomSheet;
 import com.jaylax.wiredshack.eventManager.editEvent.SelectManagerListModel;
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedAdapter;
+import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.utils.Commons;
@@ -26,6 +29,7 @@ import com.jaylax.wiredshack.utils.SharePref;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Objects;
 
 import retrofit2.Call;
@@ -41,11 +45,17 @@ public class AssignEventActivity extends AppCompatActivity {
 
     ArrayList<SelectManagerListModel.SelectManagerListData> managerList = new ArrayList<>();
     AssignManagerAdapter adapter = null;
+    String eventName = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_assign_event);
+
+        if (getIntent().hasExtra("eventName")) {
+            eventName = getIntent().getStringExtra("eventName");
+        }
+
         mContext = this;
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
@@ -53,11 +63,14 @@ public class AssignEventActivity extends AppCompatActivity {
         Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
         if (userDetailsModel.getUserType() == null) {
             mBinding.tvTitleAssignManager.setText(getResources().getString(R.string.list_of_club));
+            mBinding.tvSendMail.setVisibility(View.GONE);
         } else {
             if (userDetailsModel.getUserType().equals("2")) {
                 mBinding.tvTitleAssignManager.setText(getResources().getString(R.string.list_of_dj));
+                mBinding.tvSendMail.setVisibility(View.VISIBLE);
             } else {
                 mBinding.tvTitleAssignManager.setText(getResources().getString(R.string.list_of_club));
+                mBinding.tvSendMail.setVisibility(View.GONE);
             }
         }
 
@@ -89,6 +102,17 @@ public class AssignEventActivity extends AppCompatActivity {
 
                 adapter.notifyDataSetChanged();
             }
+        });
+
+        mBinding.tvSendMail.setOnClickListener(view -> {
+            SelectManagerBottomSheet bottomSheet = new SelectManagerBottomSheet(mContext, eventName, new SelectManagerBottomSheet.BottomSheetListener() {
+                @Override
+                public void onEmailSend(String stEmail) {
+                    senEmail(stEmail);
+                }
+            });
+            bottomSheet.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog);
+            bottomSheet.show(getSupportFragmentManager(), "select");
         });
     }
 
@@ -129,10 +153,45 @@ public class AssignEventActivity extends AppCompatActivity {
         } else {
             managerList = list;
             mBinding.recyclerOrganiser.setVisibility(View.VISIBLE);
-            adapter = new AssignManagerAdapter(mContext,this, managerList);
+            adapter = new AssignManagerAdapter(mContext, this, managerList);
             mBinding.recyclerOrganiser.setLayoutManager(new LinearLayoutManager(mContext));
             mBinding.recyclerOrganiser.setAdapter(adapter);
         }
     }
 
+    private void senEmail(String stEmail) {
+        if (Commons.isOnline(mContext)) {
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_name", eventName);
+            params.put("email", stEmail);
+            params.put("manager_name", userDetailsModel.getName() == null ? "Event Organiser" : userDetailsModel.getName());
+
+            progressDialog.show();
+            ApiClient.create().sendEmail(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            Commons.showToast(mContext, response.body().getMessage() == null ? "" : response.body().getMessage());
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
 }

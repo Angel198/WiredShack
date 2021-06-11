@@ -117,6 +117,8 @@
     <string name="event_not_started">Event Not Started</string>
     <string name="storage_permission_denied">Storage Permission Denied</string>
 
+    <string name="select_club">Select Club</string>
+    <string name="select_dj">Select DJ</string>
 
     <string name="video">Video</string>
 

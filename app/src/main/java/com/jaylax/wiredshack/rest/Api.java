@@ -178,4 +178,13 @@ public interface Api {
     @Multipart
     @POST("api/auth/post_image")
     Call<CommonResponseModel> uploadUserImage(@Header("Authorization") String authHeader, @Part MultipartBody.Part profile);
+
+    @POST("api/auth/enter_live_stream")
+    Call<CommonResponseModel> enterLiveStream(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/exit_live_stream")
+    Call<CommonResponseModel> exitLiveStream(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/live_stream_user")
+    Call<CommonResponseModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 }
