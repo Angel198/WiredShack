@@ -178,7 +178,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
         tvStreamCountDown = (AppCompatTextView) findViewById(R.id.tvLiveStreamCountDown);
         tvStreamUserCount = (AppCompatTextView) findViewById(R.id.tvLiveStreamUserCount);
         recyclerViewLiveUser = (RecyclerView) findViewById(R.id.recyclerLiveUser);
-        recyclerViewLiveUser.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerViewLiveUser.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
         simpleExoPlayerView = (SimpleExoPlayerView) findViewById(R.id.player_view);
         simpleExoPlayerView.setControllerVisibilityListener(this);
@@ -194,7 +194,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
 
         tvStreamCountDown.setVisibility(View.VISIBLE);
 
-        /*if (getIntent().hasExtra("isRequested")) {
+        if (getIntent().hasExtra("isRequested")) {
             isRequested = getIntent().getStringExtra("isRequested");
             if (isRequested.equals("2")) {
                 callEnterEventAPI();
@@ -203,17 +203,17 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
                 streamCheck("1");
                 tvStreamCountDown.setVisibility(View.VISIBLE);
             }
-        }*/
-        callEnterEventAPI();
-
+        }
     }
 
     private void callEnterEventAPI() {
 
+        UserDetailsModel userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
         //TODO : Call enterLiveStream api
-        /*if (Commons.isOnline(mContext)) {
+        if (Commons.isOnline(mContext)) {
             HashMap<String, String> params = new HashMap<>();
             params.put("event_id", streamName);
+            params.put("uid", userDetailsModel.getId());
 
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
             ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
@@ -241,60 +241,69 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
             });
         } else {
             Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
-        }*/
-        callLiveStreamUserApi();
-
+        }
     }
 
-    private void callLiveStreamUserApi() {
-       /* Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Runnable runnable = this;
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (Commons.isOnline(mContext)) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("event_id", streamName);
 
-                if (Commons.isOnline(mContext)) {
-                    HashMap<String, String> params = new HashMap<>();
-                    params.put("event_id", streamName);
-
-                    String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-                    ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
-                        @Override
-                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                            if (response.code() == 200 && response.isSuccessful()) {
-                                if (response.body() != null) {
-                                    if (!response.body().getStatus().equals("200")) {
-                                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                                    }
+                String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                ApiClient.create().liveStreamUser(header, params).enqueue(new Callback<LiveStreamUserModel>() {
+                    @Override
+                    public void onResponse(Call<LiveStreamUserModel> call, Response<LiveStreamUserModel> response) {
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                if (response.body().getData().isEmpty()) {
+                                    recyclerViewLiveUser.setVisibility(View.GONE);
+                                    tvStreamUserCount.setText("0");
                                 } else {
+                                    recyclerViewLiveUser.setVisibility(View.VISIBLE);
+                                    tvStreamUserCount.setText(String.valueOf(response.body().getData().size()));
+
+                                    recyclerViewLiveUser.setAdapter(new LiveStreamUserAdapter(mContext,response.body().getData()));
+                                    recyclerViewLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
+                                }
+                                if (!response.body().getStatus().equals("200")) {
                                     Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                                 }
                             } else {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
-                            handler.postDelayed(runnable,5000);
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
+                        handler.postDelayed(runnable, 5000);
+                    }
 
-                        @Override
-                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                            Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                            handler.postDelayed(runnable,5000);
-                        }
-                    });
-                } else {
-                    Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
-                }
+                    @Override
+                    public void onFailure(Call<LiveStreamUserModel> call, Throwable t) {
+                        Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        handler.postDelayed(runnable, 5000);
+                    }
+                });
+            } else {
+                Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
             }
-        },5000);*/
+        }
+    };
 
-        recyclerViewLiveUser.setAdapter(new LiveStreamUserAdapter(mContext));
+    private void callLiveStreamUserApi() {
+        UserDetailsModel userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
+        handler.postDelayed(runnable, 5000);
     }
 
     private void callExitStream() {
         //TODO : Call exitLiveStream api
+        UserDetailsModel userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
         if (Commons.isOnline(mContext)) {
             HashMap<String, String> params = new HashMap<>();
             params.put("event_id", streamName);
+            params.put("uid", userDetailsModel.getId());
 
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
             ApiClient.create().exitLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
@@ -401,7 +410,7 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
             ApiClient.create().streamCheck(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
@@ -415,18 +424,18 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
                     }
                     if (isEnable.equals("0")) {
                         callExitStream();
-                    }else {
+                    } else {
                         callEnterEventAPI();
                     }
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                    progressDialog.dismiss();
+//                    progressDialog.dismiss();
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                     if (isEnable.equals("0")) {
                         callExitStream();
-                    }else {
+                    } else {
                         callEnterEventAPI();
                     }
                 }
@@ -489,11 +498,26 @@ public class LiveVideoPlayerActivity extends AppCompatActivity implements OnClic
 
     @Override
     public void onBackPressed() {
+        if (handler != null && runnable != null) {
+            handler.removeCallbacks(runnable);
+        }
         if (isRequested.equals("2")) {
             callExitStream();
         } else {
             streamCheck("0");
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (!this.isFinishing()) {
+            if (isRequested.equals("2")) {
+                callExitStream();
+            } else {
+                streamCheck("0");
+            }
+        }
+        super.onDestroy();
     }
 
     @Override

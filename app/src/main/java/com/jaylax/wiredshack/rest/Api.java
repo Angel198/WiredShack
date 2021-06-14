@@ -15,6 +15,7 @@ import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserModel;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsMainModel;
 import com.jaylax.wiredshack.user.notification.AcceptedEventMainModel;
 import com.jaylax.wiredshack.user.notification.PendingRequestMainModel;
@@ -186,5 +187,5 @@ public interface Api {
     Call<CommonResponseModel> exitLiveStream(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/auth/live_stream_user")
-    Call<CommonResponseModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+    Call<LiveStreamUserModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 }
