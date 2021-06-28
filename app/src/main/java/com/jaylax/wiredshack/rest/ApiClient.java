@@ -18,7 +18,8 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
 
-    public static String BASE_URL = "http://events.jaylaxsolution.com/";
+//    public static String BASE_URL = "http://events.jaylaxsolution.com/";
+    public static String BASE_URL = "https://wiredshack.com/";
 
     public static Api create(){
 
