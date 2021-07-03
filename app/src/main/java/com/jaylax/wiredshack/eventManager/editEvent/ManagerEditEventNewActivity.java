@@ -769,8 +769,10 @@ public class ManagerEditEventNewActivity extends AppCompatActivity implements On
                 setImageInView();
             }
         } else if (requestCode == REQUEST_LIST_IMAGE) {
-            imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
-            imagesAdapter.notifyDataSetChanged();
+            if (resultCode == Activity.RESULT_OK) {
+                imageList.add(new EventImageModel("", "", ImagePicker.Companion.getFilePath(data), Uri.parse(data.getData().toString())));
+                imagesAdapter.notifyDataSetChanged();
+            }
         } else if (requestCode == REQUEST_PLACE_PICKER) {
             if (resultCode == Activity.RESULT_OK && data != null) {
                 place = Autocomplete.getPlaceFromIntent(data);

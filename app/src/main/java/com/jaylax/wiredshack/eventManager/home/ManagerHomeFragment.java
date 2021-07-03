@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatEditText;
@@ -54,6 +55,12 @@ import com.jaylax.wiredshack.user.following.UserFollowingActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
+import com.jaylax.wiredshack.webcommunication.WebCall;
+import com.jaylax.wiredshack.webcommunication.WebConstants;
+import com.jaylax.wiredshack.webcommunication.WebResponse;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.text.ParseException;
@@ -75,7 +82,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ManagerHomeFragment extends Fragment {
+public class ManagerHomeFragment extends Fragment implements WebResponse {
 
     FragmentManagerHomeBinding mBinding;
     Context mContext;
@@ -173,11 +180,16 @@ public class ManagerHomeFragment extends Fragment {
         mBinding.imgGoLive.setOnClickListener(view -> {
             if (nearestEvent != null) {
                 if (isEventLive(nearestEvent.getDate(), nearestEvent.getStime(), nearestEvent.getEtime())) {
-                    Intent intent = new Intent(getActivity(), LiveVideoBroadcasterActivity.class);
+                    if (progressDialog != null) {
+                        progressDialog.show();
+                    }
+                    new WebCall(requireActivity(), this, null, WebConstants.createRoomURL, WebConstants.createRoomCode, false).execute();
+
+                    /*Intent intent = new Intent(getActivity(), LiveVideoBroadcasterActivity.class);
                     intent.putExtra("eventStream", nearestEvent.getId());
-                    startActivity(intent);
-                }else {
-                    Commons.showToast(mContext,mContext.getResources().getString(R.string.event_not_started));
+                    startActivity(intent);*/
+                } else {
+                    Commons.showToast(mContext, mContext.getResources().getString(R.string.event_not_started));
                 }
             }
         });
@@ -664,5 +676,78 @@ public class ManagerHomeFragment extends Fragment {
             }
         }
         return isLive;
+    }
+
+    private void onCreateTokenSuccess(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            if (jsonObject.optString("result").equalsIgnoreCase("0")) {
+
+                //TODO : Open LiveStream
+
+                /*Intent intent = new Intent(, VideoConfActivity.class);
+                intent.putExtra("token", jsonObject.optString("token"));
+                intent.putExtra("name", name);
+                startActivity(intent);*/
+            } else {
+                Toast.makeText(requireActivity(), jsonObject.optString("error"), Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void onCreateRoomSuccess(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.optString("result").equalsIgnoreCase("0")) {
+                new WebCall(requireActivity(), this, createTokenJSON(jsonObject), WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+            } else {
+                if (progressDialog != null) {
+                    progressDialog.dismiss();
+                }
+                Toast.makeText(requireActivity(), jsonObject.optString("error"), Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private JSONObject createTokenJSON(JSONObject response) {
+        JSONObject object = new JSONObject();
+        try {
+            String name = Objects.requireNonNull(response.optJSONObject("room")).optString("name");
+
+            object.put("name", Objects.requireNonNull(response.optJSONObject("room")).optString("name"));
+            object.put("role", "participant");
+            object.put("roomId", Objects.requireNonNull(response.optJSONObject("room")).optString("room_id"));
+            object.put("user_ref", Objects.requireNonNull(response.optJSONObject("room")).optString("owner_ref"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return object;
+    }
+
+    @Override
+    public void onWebResponse(String response, int callCode) {
+        Log.e("onWebResponse", response);
+        switch (callCode) {
+            case WebConstants.createRoomCode:
+                onCreateRoomSuccess(response);
+                break;
+            case WebConstants.createTokenCode:
+                onCreateTokenSuccess(response);
+                break;
+        }
+    }
+
+    @Override
+    public void onWebResponseError(String error, int callCode) {
+        Log.e("onWebResponseError", error);
     }
 }

@@ -1,3 +1,4 @@
+include ':Enx-Rtc-Android-1.9.6'
 include ':liveVideoBroadcasterSDK'
 include ':app'
 rootProject.name = "WiredShack"

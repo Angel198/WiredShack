@@ -106,4 +106,13 @@ dependencies {
     implementation 'me.relex:circleindicator:2.1.6'
 
 
+    //EnableX
+    implementation (name : 'Enx-Rtc-Android-1.9.6', ext :'aar')
+    implementation 'org.webrtc:google-webrtc:1.0.25331'
+
+    implementation('io.socket:socket.io-client:1.0.0') {
+        //Excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
+
 }

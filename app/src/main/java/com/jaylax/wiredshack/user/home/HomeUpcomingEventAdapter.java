@@ -23,6 +23,8 @@ import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingEventAdapter.MyViewHolder> {
@@ -81,12 +83,16 @@ public class HomeUpcomingEventAdapter extends RecyclerView.Adapter<HomeUpcomingE
             }
 
             mBinding.relativeUpcomingEvent.setOnClickListener(view -> {
-                listener.onEventClick(eventData);
+                try {
+                    listener.onEventClick(eventData);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             });
         }
     }
 
     public interface UpcomingEventClick {
-        void onEventClick(UpcomingEventMainModel.UpcomingEventData data);
+        void onEventClick(UpcomingEventMainModel.UpcomingEventData data) throws JSONException;
     }
 }

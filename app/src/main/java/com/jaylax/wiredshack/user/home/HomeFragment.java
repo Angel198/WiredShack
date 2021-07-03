@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
@@ -34,11 +36,18 @@ import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
+import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
 import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+import com.jaylax.wiredshack.webcommunication.WebCall;
+import com.jaylax.wiredshack.webcommunication.WebConstants;
+import com.jaylax.wiredshack.webcommunication.WebResponse;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -54,7 +63,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements WebResponse {
     FragmentHomeBinding mBinding;
     Context context;
     UserDetailsModel userDetailsModel = null;
@@ -186,22 +195,50 @@ public class HomeFragment extends Fragment {
                         intent.putExtra("eventId", data.getId());
                         context.startActivity(intent);
                     } else {
-                        if (data.getIsActive().equals("1")) {
+
+                        if (progressDialog != null) {
+                            progressDialog.show();
+                        }
+                        JSONObject jsonObject = new JSONObject();
+                        jsonObject.put("name",data.getEventName());
+                        jsonObject.put("role","participant");
+                        jsonObject.put("roomId","60dd64ba3eb2b025d931335b");
+                        jsonObject.put("user_ref","xdada");
+                        new WebCall(requireActivity(), this, jsonObject, WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+
+                        /*if (data.getIsActive().equals("1")) {
+                            JSONObject jsonObject = new JSONObject();
+                            jsonObject.put("name",data.getEventName());
+                            jsonObject.put("role","participant");
+                            jsonObject.put("roomId","60df630a3eb2b025d93146fe");
+                            jsonObject.put("user_ref","xdada");
+
                             if (isRequested.equals("2")) {
-                                Intent intent = new Intent(context, LiveVideoPlayerActivity.class);
+                                //TODO : Go TO Live Event
+                                new WebCall(requireActivity(), this, createTokenJSON(jsonObject), WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+                            } else {
+                                if (isFreeStream.equals("0")) {
+                                    showRequestDialog(isRequested, data.getId());
+                                } else {
+                                    //TODO : Go TO Live Event
+                                    new WebCall(requireActivity(), this, createTokenJSON(jsonObject), WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+                                }
+                            }
+                            */
+                        /*
+                         Intent intent = new Intent(context, LiveVideoPlayerActivity.class);
                                 intent.putExtra("liveStream", data.getId());
                                 intent.putExtra("isRequested", isRequested);
+                        if (isRequested.equals("2")) {
                                 context.startActivity(intent);
                             } else {
                                 if (isFreeStream.equals("0")) {
                                     showRequestDialog(isRequested, data.getId());
                                 } else {
-                                    Intent intent = new Intent(context, LiveVideoPlayerActivity.class);
-                                    intent.putExtra("liveStream", data.getId());
-                                    intent.putExtra("isRequested", isRequested);
                                     context.startActivity(intent);
                                 }
-                            }
+                            }*/
+                        /*
                         } else {
                             Intent intent;
                             if (hoursInMilli >= 1) {
@@ -211,7 +248,7 @@ public class HomeFragment extends Fragment {
                             }
                             intent.putExtra("eventId", data.getId());
                             context.startActivity(intent);
-                        }
+                        }*/
                     }
                 }
             });
@@ -291,10 +328,10 @@ public class HomeFragment extends Fragment {
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 setRecentEventData(response.body().getData());
-                            }else {
+                            } else {
                                 setRecentEventData(new ArrayList<>());
                             }
-                        }else {
+                        } else {
                             setRecentEventData(new ArrayList<>());
                         }
                     }
@@ -599,5 +636,38 @@ public class HomeFragment extends Fragment {
             dialog.dismiss();
         });
         dialog.show();
+    }
+
+    private void onCreateTokenSuccess(String response) {
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (progressDialog != null) {
+                progressDialog.dismiss();
+            }
+            if (jsonObject.optString("result").equalsIgnoreCase("0")) {
+
+                //TODO : Open LiveStream
+
+                Intent intent = new Intent(requireActivity(), LiveStreamActivity.class);
+                intent.putExtra("token", jsonObject.optString("token"));
+                intent.putExtra("name", "name");
+                startActivity(intent);
+            } else {
+                Toast.makeText(requireActivity(), jsonObject.optString("error"), Toast.LENGTH_SHORT).show();
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onWebResponse(String response, int callCode) {
+        Log.e("onWebResponse", response);
+        onCreateTokenSuccess(response);
+    }
+
+    @Override
+    public void onWebResponseError(String error, int callCode) {
+        Log.e("onWebResponseError", error);
     }
 }
