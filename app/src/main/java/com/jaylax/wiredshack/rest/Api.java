@@ -196,8 +196,11 @@ public interface Api {
     @POST("api/auth/live_stream_user")
     Call<LiveStreamUserModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
+
     @Headers({
             "Content-Type:application/json"})
     @POST
-    Call<JSONObject> getEnableXToken(@Url String url, @Body HashMap<String,String> params);
+    Call<JSONObject> getEnableXRoomId(@Url String url, @Body HashMap<String,String> params);
+
+
 }

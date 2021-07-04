@@ -37,9 +37,7 @@ import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
-import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
-import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.webcommunication.WebCall;
@@ -196,16 +194,7 @@ public class HomeFragment extends Fragment implements WebResponse {
                         context.startActivity(intent);
                     } else {
 
-                        if (progressDialog != null) {
-                            progressDialog.show();
-                        }
-                        JSONObject jsonObject = new JSONObject();
-                        jsonObject.put("name",data.getEventName());
-                        jsonObject.put("role","participant");
-                        jsonObject.put("roomId","60dd64ba3eb2b025d931335b");
-                        jsonObject.put("user_ref","xdada");
-                        new WebCall(requireActivity(), this, jsonObject, WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
-
+                        getEnableXRoomId(data);
                         /*if (data.getIsActive().equals("1")) {
                             JSONObject jsonObject = new JSONObject();
                             jsonObject.put("name",data.getEventName());
@@ -263,6 +252,7 @@ public class HomeFragment extends Fragment implements WebResponse {
             adapter.registerAdapterDataObserver(mBinding.indicatorUpcoming.getAdapterDataObserver());
         }
     }
+
 
     private void hideUpcomingEventData() {
         mBinding.tvHomeUpcomingEventTitle.setVisibility(View.GONE);
@@ -636,6 +626,51 @@ public class HomeFragment extends Fragment implements WebResponse {
             dialog.dismiss();
         });
         dialog.show();
+    }
+
+    private void getEnableXRoomId(UpcomingEventMainModel.UpcomingEventData data) {
+
+        /*if (Commons.isOnline(context)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", data.getId());
+
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().getEnableXRoomId(WebConstants.baseURL+"get_room_id", params).enqueue(new Callback<JSONObject>() {
+                @Override
+                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+//
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<JSONObject> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+        }*/
+
+        try {
+            if (progressDialog != null){
+                progressDialog.show();
+            }
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("name", data.getEventName());
+            jsonObject.put("role", "participant");
+            jsonObject.put("roomId", "60ddc3ab1d6a5c25cc6a486a");
+            jsonObject.put("user_ref", "xdada");
+            new WebCall(requireActivity(), this, jsonObject, WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+
+        }catch (JSONException e){
+
+        }
     }
 
     private void onCreateTokenSuccess(String response) {

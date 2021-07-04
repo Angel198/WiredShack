@@ -10,16 +10,18 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE"/>
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
-    <uses-permission android:name="android.permission.BLUETOOTH"/>
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
-    <uses-feature android:name="android.hardware.camera"/>
-    <uses-feature android:name="android.hardware.camera.autofocus"/>
-    <uses-feature android:glEsVersion="0x00020000" android:required="true"/>
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:glEsVersion="0x00020000"
+        android:required="true" />
 
     <application
         android:name=".MyApp"
@@ -35,7 +37,7 @@
             android:name=".LoginSignupActivity"
             android:configChanges="orientation"
             android:screenOrientation="portrait"
-            android:theme="@style/BaseTheme.one"/>
+            android:theme="@style/BaseTheme.one" />
 
         <service android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster" />
 
@@ -44,14 +46,14 @@
             android:configChanges="orientation"
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
-
         <activity
             android:name=".user.liveStream.LiveStreamActivity"
+            android:configChanges="orientation"
+            android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.liveStream.LiveStreamPublisherActivity"
             android:theme="@style/BaseTheme.one" />
-
         <activity
             android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
             android:theme="@style/BaseTheme.one" />
