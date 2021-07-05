@@ -8,7 +8,8 @@ public class WebConstants {
     /*Your webservice host URL, Keet the defined host when kTry = true */
 
 //    public static final String baseURL = "https://api.enablex.io/";
-    public static final String baseURL = "https://events.jaylaxsolution.com/api/";
+//    public static final String baseURL = "https://events.jaylaxsolution.com/api/";
+    public static final String baseURL = "https://wiredshack.com/api/";
 
     /*The following information required, Only when kTry = true, When you hosted your own webservice remove these fileds*/
 

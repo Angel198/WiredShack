@@ -12,6 +12,8 @@ import com.jaylax.wiredshack.user.account.UploadImageModel;
 import com.jaylax.wiredshack.user.eventDetails.EventCommentMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.following.UserFollowingMainModel;
+import com.jaylax.wiredshack.user.home.EventRoomModel;
+import com.jaylax.wiredshack.user.home.EventTokenModel;
 import com.jaylax.wiredshack.user.home.ManagerListMainModel;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
 import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
@@ -197,10 +199,11 @@ public interface Api {
     Call<LiveStreamUserModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
 
-    @Headers({
-            "Content-Type:application/json"})
-    @POST
-    Call<JSONObject> getEnableXRoomId(@Url String url, @Body HashMap<String,String> params);
+    @POST("api/auth/get_room_id")
+    Call<EventRoomModel> getEnableXRoomId(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/createToken")
+    Call<EventTokenModel> getEnableXToken(@Body HashMap<String, String> params);
 
 
 }

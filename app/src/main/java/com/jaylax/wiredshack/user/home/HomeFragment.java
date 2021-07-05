@@ -38,6 +38,7 @@ import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
 import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
+import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.webcommunication.WebCall;
@@ -61,7 +62,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment implements WebResponse {
+public class HomeFragment extends Fragment {
     FragmentHomeBinding mBinding;
     Context context;
     UserDetailsModel userDetailsModel = null;
@@ -193,51 +194,27 @@ public class HomeFragment extends Fragment implements WebResponse {
                         intent.putExtra("eventId", data.getId());
                         context.startActivity(intent);
                     } else {
-
-                        getEnableXRoomId(data);
-                        /*if (data.getIsActive().equals("1")) {
-                            JSONObject jsonObject = new JSONObject();
-                            jsonObject.put("name",data.getEventName());
-                            jsonObject.put("role","participant");
-                            jsonObject.put("roomId","60df630a3eb2b025d93146fe");
-                            jsonObject.put("user_ref","xdada");
-
+                        if (data.getIsActive().equals("1")) {
                             if (isRequested.equals("2")) {
-                                //TODO : Go TO Live Event
-                                new WebCall(requireActivity(), this, createTokenJSON(jsonObject), WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+                                getEnableXRoomId(data);
                             } else {
                                 if (isFreeStream.equals("0")) {
                                     showRequestDialog(isRequested, data.getId());
                                 } else {
-                                    //TODO : Go TO Live Event
-                                    new WebCall(requireActivity(), this, createTokenJSON(jsonObject), WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
+                                    getEnableXRoomId(data);
                                 }
                             }
-                            */
-                        /*
-                         Intent intent = new Intent(context, LiveVideoPlayerActivity.class);
-                                intent.putExtra("liveStream", data.getId());
-                                intent.putExtra("isRequested", isRequested);
-                        if (isRequested.equals("2")) {
-                                context.startActivity(intent);
-                            } else {
-                                if (isFreeStream.equals("0")) {
-                                    showRequestDialog(isRequested, data.getId());
-                                } else {
-                                    context.startActivity(intent);
-                                }
-                            }*/
-                        /*
                         } else {
                             Intent intent;
-                            if (hoursInMilli >= 1) {
+                            /*if (hoursInMilli >= 1) {
                                 intent = new Intent(context, EventDetailsActivity.class);
                             } else {
                                 intent = new Intent(context, UpcomingEventActivity.class);
-                            }
+                            }*/
+                            intent = new Intent(context, EventDetailsActivity.class);
                             intent.putExtra("eventId", data.getId());
                             context.startActivity(intent);
-                        }*/
+                        }
                     }
                 }
             });
@@ -630,79 +607,83 @@ public class HomeFragment extends Fragment implements WebResponse {
 
     private void getEnableXRoomId(UpcomingEventMainModel.UpcomingEventData data) {
 
-        /*if (Commons.isOnline(context)) {
+        if (Commons.isOnline(context)) {
             progressDialog.show();
             HashMap<String, String> params = new HashMap<>();
             params.put("event_id", data.getId());
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getEnableXRoomId(WebConstants.baseURL+"get_room_id", params).enqueue(new Callback<JSONObject>() {
+            ApiClient.create().getEnableXRoomId(header, params).enqueue(new Callback<EventRoomModel>() {
                 @Override
-                public void onResponse(Call<JSONObject> call, Response<JSONObject> response) {
+                public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
                     progressDialog.dismiss();
                     if (response.code() == 200 && response.isSuccessful()) {
-//
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                callGetTokenApi(data, response.body());
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(context, msg);
+                            }
+                        }
                     } else {
                         Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
                     }
                 }
 
                 @Override
-                public void onFailure(Call<JSONObject> call, Throwable t) {
+                public void onFailure(Call<EventRoomModel> call, Throwable t) {
                     progressDialog.dismiss();
                     Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
                 }
             });
         } else {
             Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
-        }*/
-
-        try {
-            if (progressDialog != null){
-                progressDialog.show();
-            }
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("name", data.getEventName());
-            jsonObject.put("role", "participant");
-            jsonObject.put("roomId", "60ddc3ab1d6a5c25cc6a486a");
-            jsonObject.put("user_ref", "xdada");
-            new WebCall(requireActivity(), this, jsonObject, WebConstants.createTokenURL, WebConstants.createTokenCode, false).execute();
-
-        }catch (JSONException e){
-
         }
     }
 
-    private void onCreateTokenSuccess(String response) {
-        try {
-            JSONObject jsonObject = new JSONObject(response);
-            if (progressDialog != null) {
-                progressDialog.dismiss();
-            }
-            if (jsonObject.optString("result").equalsIgnoreCase("0")) {
+    private void callGetTokenApi(UpcomingEventMainModel.UpcomingEventData data, EventRoomModel body) {
+        if (Commons.isOnline(context)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("name", data.getEventName());
+            params.put("role", "participant");
+            params.put("roomId", body.getData());
+            params.put("user_ref", "xdada");
 
-                //TODO : Open LiveStream
+            ApiClient.create().getEnableXToken(params).enqueue(new Callback<EventTokenModel>() {
+                @Override
+                public void onResponse(Call<EventTokenModel> call, Response<EventTokenModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getToken() != null) {
+                                Intent intent = new Intent(requireActivity(), LiveStreamActivity.class);
+                                intent.putExtra("token", response.body().getToken());
+                                intent.putExtra("name", "name");
+                                intent.putExtra("streamId", data.getId());
+                                intent.putExtra("isRequested", data.getIsRequest());
+                                startActivity(intent);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
 
-                Intent intent = new Intent(requireActivity(), LiveStreamActivity.class);
-                intent.putExtra("token", jsonObject.optString("token"));
-                intent.putExtra("name", "name");
-                startActivity(intent);
-            } else {
-                Toast.makeText(requireActivity(), jsonObject.optString("error"), Toast.LENGTH_SHORT).show();
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
+                @Override
+                public void onFailure(Call<EventTokenModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
         }
-    }
-
-    @Override
-    public void onWebResponse(String response, int callCode) {
-        Log.e("onWebResponse", response);
-        onCreateTokenSuccess(response);
-    }
-
-    @Override
-    public void onWebResponseError(String error, int callCode) {
-        Log.e("onWebResponseError", error);
     }
 }

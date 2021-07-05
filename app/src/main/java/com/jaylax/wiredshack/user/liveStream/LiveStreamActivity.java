@@ -1,45 +1,43 @@
 package com.jaylax.wiredshack.user.liveStream;
 
-import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Base64;
+import android.os.CountDownTimer;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 
+import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityLiveStreamBinding;
-import com.jaylax.wiredshack.eventManager.liveStream.LiveStreamPublisherActivity;
-import com.jaylax.wiredshack.webcommunication.WebCall;
-import com.jaylax.wiredshack.webcommunication.WebConstants;
-import com.jaylax.wiredshack.webcommunication.WebResponse;
+import com.jaylax.wiredshack.model.CommonResponseModel;
+import com.jaylax.wiredshack.model.UserDetailsModel;
+import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserAdapter;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserModel;
+import com.jaylax.wiredshack.utils.Commons;
+import com.jaylax.wiredshack.utils.SharePref;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 import enx_rtc_android.Controller.EnxAdvancedOptionsObserver;
 import enx_rtc_android.Controller.EnxPlayerView;
-import enx_rtc_android.Controller.EnxReconnectObserver;
 import enx_rtc_android.Controller.EnxRoom;
 import enx_rtc_android.Controller.EnxRoomObserver;
-import enx_rtc_android.Controller.EnxRtc;
-import enx_rtc_android.Controller.EnxScreenShotObserver;
 import enx_rtc_android.Controller.EnxStream;
 import enx_rtc_android.Controller.EnxStreamObserver;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObserver, EnxStreamObserver, EnxAdvancedOptionsObserver {
@@ -49,11 +47,23 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     ActivityLiveStreamBinding mBinding;
     EnxRoom mEnxRoom;
     private EnxPlayerView enxPlayerView;
+    private EnxStream liveStream;
+    private Context mContext;
+    private ProgressDialog progressDialog;
+
+    private String isRequested = "";
+    private String streamId = "";
+    private UserDetailsModel userDetailsModel;
+    private CountDownTimer streamCountDown = null;
+    private long timerMilliSec = 120000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_live_stream);
+        mContext = this;
+        userDetailsModel = Commons.convertStringToObject(this, SharePref.PREF_USER, UserDetailsModel.class);
+        progressDialog = new ProgressDialog(mContext);
 
         getDataFromIntent();
         initData();
@@ -63,6 +73,10 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         if (getIntent() != null) {
             token = getIntent().getStringExtra("token");
             name = getIntent().getStringExtra("name");
+            streamId = getIntent().getStringExtra("streamId");
+            if (getIntent().hasExtra("isRequested")) {
+                isRequested = getIntent().getStringExtra("isRequested");
+            }
         }
     }
 
@@ -70,6 +84,15 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         mEnxRoom = new EnxRoom(this, this, this);
         mEnxRoom.init(this);
         mEnxRoom.connect(token, getRoomConnectInfo(), new JSONArray());
+
+        if (isRequested.equals("2")) {
+//            callEnterEventAPI();
+            mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
+        } else {
+            streamCheck("1");
+            mBinding.tvLiveStreamCountDown.setVisibility(View.VISIBLE);
+            startTimer();
+        }
     }
 
     public JSONObject getRoomConnectInfo() {
@@ -115,12 +138,14 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     @Override
     public void onUserConnected(JSONObject jsonObject) {
         Log.e("onUserConnected", jsonObject.toString());
+        mBinding.tvStreamLive.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onUserDisConnected(JSONObject jsonObject) {
         //while Stream closed
         Log.e("onUserDisConnected", jsonObject.toString());
+        mBinding.tvStreamLive.setVisibility(View.VISIBLE);
         mEnxRoom.disconnect();
     }
 
@@ -150,9 +175,10 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         Log.e("onSubscribedStream", "isLocal : " + enxStream.isLocal());
         Log.e("onSubscribedStream", "State : " + enxStream.getState());
 
+        this.liveStream = enxStream;
         runOnUiThread(() -> {
             enxPlayerView = new EnxPlayerView(LiveStreamActivity.this, EnxPlayerView.ScalingType.SCALE_ASPECT_BALANCED, true);
-            enxStream.attachRenderer(enxPlayerView);
+            liveStream.attachRenderer(enxPlayerView);
             mBinding.selfFL.setVisibility(View.VISIBLE);
             mBinding.selfFL.addView(enxPlayerView);
             Log.e("runOnUiThread", "jsonObject.toString()");
@@ -313,5 +339,309 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     @Override
     public void onGetAdvancedOptions(JSONObject jsonObject) {
         Log.e("onGetAdvancedOptions", jsonObject.toString());
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (mEnxRoom.isConnected()) {
+            if (liveStream != null) {
+                liveStream.detachRenderer();
+            }
+            mEnxRoom.disconnect();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    private void callEnterEventAPI() {
+
+        //TODO : Call enterLiveStream api
+        if (Commons.isOnline(mContext)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", streamId);
+            params.put("uid", userDetailsModel.getId());
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                    callLiveStreamUserApi();
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    callLiveStreamUserApi();
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            if (Commons.isOnline(mContext)) {
+                HashMap<String, String> params = new HashMap<>();
+                params.put("event_id", streamId);
+
+                String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+                ApiClient.create().liveStreamUser(header, params).enqueue(new Callback<LiveStreamUserModel>() {
+                    @Override
+                    public void onResponse(Call<LiveStreamUserModel> call, Response<LiveStreamUserModel> response) {
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                if (response.body().getData().isEmpty()) {
+                                    mBinding.recyclerLiveUser.setVisibility(View.GONE);
+                                    mBinding.tvLiveStreamUserCount.setText("0");
+                                } else {
+                                    mBinding.recyclerLiveUser.setVisibility(View.VISIBLE);
+                                    mBinding.tvLiveStreamUserCount.setText(String.valueOf(response.body().getData().size()));
+
+                                    mBinding.recyclerLiveUser.setAdapter(new LiveStreamUserAdapter(mContext, response.body().getData()));
+                                    mBinding.recyclerLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
+                                }
+                                if (!response.body().getStatus().equals("200")) {
+                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                }
+                            } else {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                        handler.postDelayed(runnable, 5000);
+                    }
+
+                    @Override
+                    public void onFailure(Call<LiveStreamUserModel> call, Throwable t) {
+                        Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                        handler.postDelayed(runnable, 5000);
+                    }
+                });
+            } else {
+                Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+            }
+        }
+    };
+
+    private void callLiveStreamUserApi() {
+        handler.postDelayed(runnable, 5000);
+    }
+
+    private void callExitStream() {
+        //TODO : Call exitLiveStream api
+        if (Commons.isOnline(mContext)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", streamId);
+            params.put("uid", userDetailsModel.getId());
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().exitLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                    new Handler().postDelayed(() -> {
+                        finish();
+                    }, 1500);
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    new Handler().postDelayed(() -> {
+                        finish();
+                    }, 1500);
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void startTimer() {
+        streamCountDown = new CountDownTimer(timerMilliSec, 1000) {
+            public void onTick(long millisUntilFinished) {
+                timerMilliSec = millisUntilFinished;
+                //Convert milliseconds into hour,minute and seconds
+
+                String hms = String.format("%02d:%02d:%02d",
+                        TimeUnit.MILLISECONDS.toHours(timerMilliSec),
+                        TimeUnit.MILLISECONDS.toMinutes(timerMilliSec) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(timerMilliSec)), TimeUnit.MILLISECONDS.toSeconds(timerMilliSec) - TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(timerMilliSec)));
+
+                mBinding.tvLiveStreamCountDown.setText(hms);//set text
+            }
+
+            public void onFinish() {
+                mBinding.tvLiveStreamCountDown.setText("00:00:00"); //On finish change timer text
+                if (!isRequested.equals("2")) {
+                    showRequestDialog();
+                }
+
+            }
+        }.start();
+    }
+
+
+    private void showRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String msg = "";
+        String positiveTxt = "";
+        String negativeTxt = "";
+        if (isRequested.equals("1")) {
+            msg = getResources().getString(R.string.already_requested_msg);
+            positiveTxt = getResources().getString(R.string.txt_ok);
+            negativeTxt = "";
+        } else {
+            msg = getResources().getString(R.string.request_event_msg);
+            positiveTxt = getResources().getString(R.string.txt_cancel);
+            negativeTxt = getResources().getString(R.string.request);
+        }
+
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setPositiveButton(positiveTxt, (dialogInterface, i) -> {
+            //TODO : Call stream_check Api
+            streamCheck("0");
+        });
+
+        if (!isRequested.equals("1")) {
+            builder.setNegativeButton(negativeTxt, (dialogInterface, i) -> {
+                //TODO : RequestLiveStream and close thi activity
+                requestStream();
+            });
+        }
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
+    }
+
+    private void requestStream() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", streamId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().requestForLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(mContext, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                    streamCheck("0");
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    streamCheck("0");
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+
+    private void streamCheck(String isEnable) {
+
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("uid", userDetailsModel.getId());
+            params.put("event_id", streamId);
+            params.put("is_enabale", isEnable);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().streamCheck(header, params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (!response.body().getStatus().equals("200")) {
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                    /*if (isEnable.equals("0")) {
+                        callExitStream();
+                    } else {
+                        callEnterEventAPI();
+                    }*/
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            onBackPressed();
+                        }, 500);
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    /*if (isEnable.equals("0")) {
+                        callExitStream();
+                    } else {
+                        callEnterEventAPI();
+                    }*/
+
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            onBackPressed();
+                        }, 500);
+                    }
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
     }
 }
