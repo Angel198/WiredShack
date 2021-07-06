@@ -18,7 +18,7 @@ public class WebConstants {
     public static final String kAppkey = "y3aSuUe8uZeeareEaPubeRaqujabu9uhypu5";
 
 
-    public static final String createRoomURL = "createRoom/";
+    public static final String createRoomURL = "createRoom";
     public static final int createRoomCode = 1;
     public static final String createTokenURL = "createToken";
     public static final int createTokenCode = 2;

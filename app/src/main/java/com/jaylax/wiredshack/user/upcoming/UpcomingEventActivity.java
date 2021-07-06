@@ -35,6 +35,10 @@ import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsImageAdapter;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
+import com.jaylax.wiredshack.user.home.EventRoomModel;
+import com.jaylax.wiredshack.user.home.EventTokenModel;
+import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
+import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
 import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
@@ -90,20 +94,12 @@ public class UpcomingEventActivity extends AppCompatActivity {
 
         mBinding.relativeUpcomingEventLiveView.setOnClickListener(view -> {
             if (isRequested.equals("2")) {
-                Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
-//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
-                intent.putExtra("liveStream", eventId);
-                intent.putExtra("isRequested", isRequested);
-                startActivityForResult(intent, 101);
+                getEnableXRoomId();
             } else {
                 if (isFreeStream.equals("0")) {
                     showRequestDialog();
                 } else {
-                    Intent intent = new Intent(this, LiveVideoPlayerActivity.class);
-//                intent.putExtra("liveStream",eventData.getId()+"_"+eventData.getEventName());
-                    intent.putExtra("liveStream", eventId);
-                    intent.putExtra("isRequested", isRequested);
-                    startActivityForResult(intent, 101);
+                    getEnableXRoomId();
                 }
             }
         });
@@ -407,6 +403,87 @@ public class UpcomingEventActivity extends AppCompatActivity {
         return isLive;
     }
 
+    private void getEnableXRoomId() {
+
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", eventId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().getEnableXRoomId(header, params).enqueue(new Callback<EventRoomModel>() {
+                @Override
+                public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                callGetTokenApi(response.body());
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(mContext, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventRoomModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void callGetTokenApi(EventRoomModel body) {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("name", "name");
+            params.put("role", "participant");
+            params.put("roomId", body.getData());
+            params.put("user_ref", "xdada");
+
+            ApiClient.create().getEnableXToken(params).enqueue(new Callback<EventTokenModel>() {
+                @Override
+                public void onResponse(Call<EventTokenModel> call, Response<EventTokenModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getToken() != null) {
+                                Intent intent = new Intent(UpcomingEventActivity.this, LiveStreamActivity.class);
+                                intent.putExtra("token", response.body().getToken());
+                                intent.putExtra("name", "name");
+                                intent.putExtra("streamId", eventId);
+                                intent.putExtra("isRequested", isRequested);
+                                startActivityForResult(intent,101);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventTokenModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.rest;
 
 import com.jaylax.wiredshack.eventManager.editEvent.SelectManagerListModel;
 import com.jaylax.wiredshack.eventManager.followed.ManagerFollowedMainModel;
+import com.jaylax.wiredshack.eventManager.home.RoomIDCreateModel;
 import com.jaylax.wiredshack.eventManager.managerActivity.IncomingRequestMainModel;
 import com.jaylax.wiredshack.eventManager.managerActivity.ManagerActivityMainModel;
 import com.jaylax.wiredshack.model.CommonResponseModel;
@@ -204,6 +205,9 @@ public interface Api {
 
     @POST("api/createToken")
     Call<EventTokenModel> getEnableXToken(@Body HashMap<String, String> params);
+
+    @POST("api/createRoom")
+    Call<RoomIDCreateModel> createEnableXRoomId(@Body HashMap<String, String> params);
 
 
 }

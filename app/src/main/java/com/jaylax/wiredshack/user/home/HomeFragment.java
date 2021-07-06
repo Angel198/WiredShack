@@ -206,12 +206,11 @@ public class HomeFragment extends Fragment {
                             }
                         } else {
                             Intent intent;
-                            /*if (hoursInMilli >= 1) {
+                            if (hoursInMilli >= 1) {
                                 intent = new Intent(context, EventDetailsActivity.class);
                             } else {
                                 intent = new Intent(context, UpcomingEventActivity.class);
-                            }*/
-                            intent = new Intent(context, EventDetailsActivity.class);
+                            }
                             intent.putExtra("eventId", data.getId());
                             context.startActivity(intent);
                         }

@@ -58,6 +58,9 @@
             android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
             android:theme="@style/BaseTheme.one" />
         <activity
+            android:name=".eventManager.liveStream.VideoBroadcastActivity"
+            android:theme="@style/BaseTheme.one"/>
+        <activity
             android:name=".eventManager.liveVideoBroadcaster.LiveVideoBroadcasterActivity"
             android:theme="@style/BaseTheme.one" />
         <activity
