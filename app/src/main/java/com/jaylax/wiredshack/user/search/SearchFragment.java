@@ -118,7 +118,6 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         Places.initialize(getActivity().getApplicationContext(), getResources().getString(R.string.google_place_key));
 
         Locus.INSTANCE.getCurrentLocation(getActivity(), locusResult -> {
-            Log.e("CuurrentLocation : ", locusResult.getLocation().toString());
             if (locusResult.getLocation() != null) {
                 latLng = new LatLng(locusResult.getLocation().getLatitude(), locusResult.getLocation().getLongitude());
                 getRecentEvent(true);

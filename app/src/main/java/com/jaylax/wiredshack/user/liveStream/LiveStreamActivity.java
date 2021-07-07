@@ -1,18 +1,25 @@
 package com.jaylax.wiredshack.user.liveStream;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
@@ -56,8 +63,12 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     private String isRequested = "";
     private String streamId = "";
     private UserDetailsModel userDetailsModel;
-    private CountDownTimer streamCountDown = null;
     private long timerMilliSec = 120000;
+
+    String[] PERMISSIONS = {
+            Manifest.permission.READ_PHONE_STATE
+    };
+    private int PERMISSION_ALL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +79,16 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         progressDialog = new ProgressDialog(mContext);
 
         getDataFromIntent();
-        initData();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!hasPermissions(this, PERMISSIONS)) {
+                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+            } else {
+                initData();
+            }
+        }
+
+//        initData();
 
 
     }
@@ -98,13 +118,27 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         }
     }
 
+    private boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     private void initData() {
+
         mEnxRoom = new EnxRoom(this, this, this);
-        mEnxRoom.init(this);
+        mEnxRoom.init(LiveStreamActivity.this);
         mEnxRoom.connect(token, getRoomConnectInfo(), new JSONArray());
 
+        mBinding.recyclerLiveUser.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         if (isRequested.equals("2")) {
-//            callEnterEventAPI();
+            callEnterEventAPI();
             mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
         } else {
             streamCheck("1");
@@ -163,8 +197,8 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     public void onUserDisConnected(JSONObject jsonObject) {
         //while Stream closed
         Log.e("onUserDisConnected", jsonObject.toString());
-        mBinding.tvStreamLive.setVisibility(View.VISIBLE);
-        mEnxRoom.disconnect();
+        /*mBinding.tvStreamLive.setVisibility(View.VISIBLE);
+        mEnxRoom.disconnect();*/
     }
 
     @Override
@@ -211,7 +245,6 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     @Override
     public void onRoomDisConnected(JSONObject jsonObject) {
         Log.e("onRoomDisConnected", jsonObject.toString());
-        onBackPressed();
     }
 
     @Override
@@ -361,14 +394,22 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
 
     @Override
     public void onBackPressed() {
-        if (mEnxRoom.isConnected()) {
+
+        handler.removeCallbacks(runnable);
+        if (isRequested.equals("2")) {
+            callExitStream();
+        } else {
+            streamCheck("0");
+        }
+
+        /*if (mEnxRoom.isConnected()) {
             if (liveStream != null) {
                 liveStream.detachRenderer();
             }
             mEnxRoom.disconnect();
         } else {
-            super.onBackPressed();
-        }
+            finish();
+        }*/
     }
 
     private void callEnterEventAPI() {
@@ -383,7 +424,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    if (response.code() == 200 && response.isSuccessful()) {
+                    /*if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -393,7 +434,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }
+                    }*/
                     callLiveStreamUserApi();
                 }
 
@@ -432,14 +473,14 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                                     mBinding.recyclerLiveUser.setAdapter(new LiveStreamUserAdapter(mContext, response.body().getData()));
                                     mBinding.recyclerLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
                                 }
-                                if (!response.body().getStatus().equals("200")) {
+                                /*if (!response.body().getStatus().equals("200")) {
                                     Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                                }
+                                }*/
                             } else {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+//                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
                         } else {
-                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+//                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
                         handler.postDelayed(runnable, 5000);
                     }
@@ -471,7 +512,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().exitLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    if (response.code() == 200 && response.isSuccessful()) {
+                    /*if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -481,15 +522,27 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }*/
+                    if (mEnxRoom.isConnected()) {
+                        if (liveStream != null) {
+                            liveStream.detachRenderer();
+                        }
+                        mEnxRoom.disconnect();
                     }
                     new Handler().postDelayed(() -> {
-                        finish();
+                            finish();
                     }, 1500);
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    if (mEnxRoom.isConnected()) {
+                        if (liveStream != null) {
+                            liveStream.detachRenderer();
+                        }
+                        mEnxRoom.disconnect();
+                    }
                     new Handler().postDelayed(() -> {
                         finish();
                     }, 1500);
@@ -501,7 +554,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     }
 
     private void startTimer() {
-        streamCountDown = new CountDownTimer(timerMilliSec, 1000) {
+        CountDownTimer streamCountDown = new CountDownTimer(timerMilliSec, 1000) {
             public void onTick(long millisUntilFinished) {
                 timerMilliSec = millisUntilFinished;
                 //Convert milliseconds into hour,minute and seconds
@@ -516,7 +569,9 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             public void onFinish() {
                 mBinding.tvLiveStreamCountDown.setText("00:00:00"); //On finish change timer text
                 if (!isRequested.equals("2")) {
-                    showRequestDialog();
+                    if (!(isFinishing())) {
+                        showRequestDialog();
+                    }
                 }
 
             }
@@ -569,7 +624,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
-                    if (response.code() == 200 && response.isSuccessful()) {
+                   /*if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (response.body().getStatus().equals("200")) {
 
@@ -585,7 +640,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }
+                    }*/
                     streamCheck("0");
                 }
 
@@ -616,7 +671,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
-                    if (response.code() == 200 && response.isSuccessful()) {
+                    /*if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -626,16 +681,11 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }
-                    /*if (isEnable.equals("0")) {
+                    }*/
+                    if (isEnable.equals("0")) {
                         callExitStream();
                     } else {
                         callEnterEventAPI();
-                    }*/
-                    if (isEnable.equals("0")) {
-                        new Handler().postDelayed(() -> {
-                            onBackPressed();
-                        }, 500);
                     }
 
 
@@ -645,21 +695,29 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     progressDialog.dismiss();
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                    /*if (isEnable.equals("0")) {
+                    if (isEnable.equals("0")) {
                         callExitStream();
                     } else {
                         callEnterEventAPI();
-                    }*/
-
-                    if (isEnable.equals("0")) {
-                        new Handler().postDelayed(() -> {
-                            onBackPressed();
-                        }, 500);
                     }
                 }
             });
         } else {
             Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 1:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    initData();
+                } else {
+                    Toast.makeText(this, "Please enable permissions to further proceed.", Toast.LENGTH_SHORT).show();
+                }
+                break;
         }
     }
 }
