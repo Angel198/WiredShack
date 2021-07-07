@@ -2,12 +2,14 @@ package com.jaylax.wiredshack.user.liveStream;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
@@ -67,6 +69,22 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
 
         getDataFromIntent();
         initData();
+
+
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+
+        }
     }
 
     private void getDataFromIntent() {
@@ -177,7 +195,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
 
         this.liveStream = enxStream;
         runOnUiThread(() -> {
-            enxPlayerView = new EnxPlayerView(LiveStreamActivity.this, EnxPlayerView.ScalingType.SCALE_ASPECT_BALANCED, true);
+            enxPlayerView = new EnxPlayerView(LiveStreamActivity.this, EnxPlayerView.ScalingType.SCALE_ASPECT_FILL, true);
             liveStream.attachRenderer(enxPlayerView);
             mBinding.selfFL.setVisibility(View.VISIBLE);
             mBinding.selfFL.addView(enxPlayerView);

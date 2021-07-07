@@ -48,8 +48,7 @@
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.liveStream.LiveStreamActivity"
-            android:configChanges="orientation"
-            android:screenOrientation="portrait"
+            android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".eventManager.liveStream.LiveStreamPublisherActivity"
