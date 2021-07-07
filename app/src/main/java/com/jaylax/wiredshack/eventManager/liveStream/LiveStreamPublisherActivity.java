@@ -11,23 +11,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.webcommunication.WebCall;
 import com.jaylax.wiredshack.webcommunication.WebConstants;
 import com.jaylax.wiredshack.webcommunication.WebResponse;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-
 import enx_rtc_android.Controller.EnxPlayerView;
 import enx_rtc_android.Controller.EnxReconnectObserver;
 import enx_rtc_android.Controller.EnxRoom;
@@ -39,6 +34,7 @@ import enx_rtc_android.Controller.EnxStreamObserver;
 
 
 public class LiveStreamPublisherActivity extends AppCompatActivity implements EnxRoomObserver, EnxStreamObserver, EnxScreenShotObserver, WebResponse, EnxReconnectObserver {
+
     private String token;
     private String name;
     private FrameLayout selfFL;
@@ -49,6 +45,7 @@ public class LiveStreamPublisherActivity extends AppCompatActivity implements En
     private EnxPlayerView enxPlayerView;
     private int count = 0;
     String roomId;
+
     String[] PERMISSIONS = {
             Manifest.permission.CAMERA,
             Manifest.permission.READ_EXTERNAL_STORAGE,

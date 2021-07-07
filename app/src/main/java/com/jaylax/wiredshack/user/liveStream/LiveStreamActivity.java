@@ -11,7 +11,6 @@ import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
@@ -55,6 +54,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     private String isRequested = "";
     private String streamId = "";
     private UserDetailsModel userDetailsModel;
+    private CountDownTimer streamCountDown = null;
     private long timerMilliSec = 120000;
 
     @Override
@@ -85,9 +85,8 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         mEnxRoom.init(this);
         mEnxRoom.connect(token, getRoomConnectInfo(), new JSONArray());
 
-        mBinding.recyclerLiveUser.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
         if (isRequested.equals("2")) {
-            callEnterEventAPI();
+//            callEnterEventAPI();
             mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
         } else {
             streamCheck("1");
@@ -350,8 +349,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             }
             mEnxRoom.disconnect();
         } else {
-            finish();
-//            super.onBackPressed();
+            super.onBackPressed();
         }
     }
 
@@ -367,7 +365,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    /*if (response.code() == 200 && response.isSuccessful()) {
+                    if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -377,7 +375,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
+                    }
                     callLiveStreamUserApi();
                 }
 
@@ -416,14 +414,14 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                                     mBinding.recyclerLiveUser.setAdapter(new LiveStreamUserAdapter(mContext, response.body().getData()));
                                     mBinding.recyclerLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
                                 }
-                                /*if (!response.body().getStatus().equals("200")) {
+                                if (!response.body().getStatus().equals("200")) {
                                     Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                                }*/
+                                }
                             } else {
-//                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                             }
                         } else {
-//                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
                         }
                         handler.postDelayed(runnable, 5000);
                     }
@@ -455,7 +453,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().exitLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    /*if (response.code() == 200 && response.isSuccessful()) {
+                    if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -465,9 +463,9 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
+                    }
                     new Handler().postDelayed(() -> {
-                        onBackPressed();
+                        finish();
                     }, 1500);
                 }
 
@@ -475,7 +473,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                     new Handler().postDelayed(() -> {
-                        onBackPressed();
+                        finish();
                     }, 1500);
                 }
             });
@@ -485,7 +483,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     }
 
     private void startTimer() {
-        CountDownTimer streamCountDown = new CountDownTimer(timerMilliSec, 1000) {
+        streamCountDown = new CountDownTimer(timerMilliSec, 1000) {
             public void onTick(long millisUntilFinished) {
                 timerMilliSec = millisUntilFinished;
                 //Convert milliseconds into hour,minute and seconds
@@ -500,9 +498,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             public void onFinish() {
                 mBinding.tvLiveStreamCountDown.setText("00:00:00"); //On finish change timer text
                 if (!isRequested.equals("2")) {
-                    if (!(isFinishing())) {
-                        showRequestDialog();
-                    }
+                    showRequestDialog();
                 }
 
             }
@@ -555,7 +551,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
-                    /*if (response.code() == 200 && response.isSuccessful()) {
+                    if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (response.body().getStatus().equals("200")) {
 
@@ -571,7 +567,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
+                    }
                     streamCheck("0");
                 }
 
@@ -602,7 +598,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
                     progressDialog.dismiss();
-                    /*if (response.code() == 200 && response.isSuccessful()) {
+                    if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             if (!response.body().getStatus().equals("200")) {
                                 Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
@@ -612,11 +608,16 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                         }
                     } else {
                         Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
-                    if (isEnable.equals("0")) {
+                    }
+                    /*if (isEnable.equals("0")) {
                         callExitStream();
                     } else {
                         callEnterEventAPI();
+                    }*/
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            onBackPressed();
+                        }, 500);
                     }
 
 
@@ -626,10 +627,16 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     progressDialog.dismiss();
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                    if (isEnable.equals("0")) {
+                    /*if (isEnable.equals("0")) {
                         callExitStream();
                     } else {
                         callEnterEventAPI();
+                    }*/
+
+                    if (isEnable.equals("0")) {
+                        new Handler().postDelayed(() -> {
+                            onBackPressed();
+                        }, 500);
                     }
                 }
             });

@@ -10,11 +10,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.widget.DatePicker;
 import android.widget.RadioButton;
-
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
@@ -27,7 +25,6 @@ import com.jaylax.wiredshack.rest.Api;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
-
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -35,7 +32,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
-
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -47,7 +43,6 @@ public class EditProfileActivity extends AppCompatActivity {
 
     ActivityEditProfileBinding mBinding;
     UserDetailsModel userDetailsModel;
-
     final Calendar selectedCalendar = Calendar.getInstance();
     String profileImagePath = "", coverPhotoImagePath = "";
     RequestOptions options;
@@ -230,10 +225,13 @@ public class EditProfileActivity extends AppCompatActivity {
                     }
                 });
             }
+
         } else {
             Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
         }
+
     }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -248,6 +246,9 @@ public class EditProfileActivity extends AppCompatActivity {
                 Glide.with(this).load(Uri.parse(data.getData().toString())).apply(options).into(mBinding.imgUserCoverPhoto);
                 coverPhotoImagePath = ImagePicker.Companion.getFilePath(data);
             }
+
         }
+
     }
+
 }
