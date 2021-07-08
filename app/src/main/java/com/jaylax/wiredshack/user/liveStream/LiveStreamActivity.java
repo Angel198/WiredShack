@@ -87,10 +87,6 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
                 initData();
             }
         }
-
-//        initData();
-
-
     }
 
     @Override
@@ -424,17 +420,6 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().enterLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    /*if (response.code() == 200 && response.isSuccessful()) {
-                        if (response.body() != null) {
-                            if (!response.body().getStatus().equals("200")) {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                            }
-                        } else {
-                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                        }
-                    } else {
-                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
                     callLiveStreamUserApi();
                 }
 
@@ -453,52 +438,48 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     Runnable runnable = new Runnable() {
         @Override
         public void run() {
-            if (Commons.isOnline(mContext)) {
-                HashMap<String, String> params = new HashMap<>();
-                params.put("event_id", streamId);
-
-                String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-                ApiClient.create().liveStreamUser(header, params).enqueue(new Callback<LiveStreamUserModel>() {
-                    @Override
-                    public void onResponse(Call<LiveStreamUserModel> call, Response<LiveStreamUserModel> response) {
-                        if (response.code() == 200 && response.isSuccessful()) {
-                            if (response.body() != null) {
-                                if (response.body().getData().isEmpty()) {
-                                    mBinding.recyclerLiveUser.setVisibility(View.GONE);
-                                    mBinding.tvLiveStreamUserCount.setText("0");
-                                } else {
-                                    mBinding.recyclerLiveUser.setVisibility(View.VISIBLE);
-                                    mBinding.tvLiveStreamUserCount.setText(String.valueOf(response.body().getData().size()));
-
-                                    mBinding.recyclerLiveUser.setAdapter(new LiveStreamUserAdapter(mContext, response.body().getData()));
-                                    mBinding.recyclerLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
-                                }
-                                /*if (!response.body().getStatus().equals("200")) {
-                                    Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                                }*/
-                            } else {
-//                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                            }
-                        } else {
-//                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                        }
-                        handler.postDelayed(runnable, 5000);
-                    }
-
-                    @Override
-                    public void onFailure(Call<LiveStreamUserModel> call, Throwable t) {
-                        Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                        handler.postDelayed(runnable, 5000);
-                    }
-                });
-            } else {
-                Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
-            }
+            callApiEveryIntervalTime();
+            handler.postDelayed(runnable, 5000);
         }
     };
 
     private void callLiveStreamUserApi() {
         handler.postDelayed(runnable, 5000);
+    }
+
+    private void callApiEveryIntervalTime() {
+        if (Commons.isOnline(mContext)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", streamId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().liveStreamUser(header, params).enqueue(new Callback<LiveStreamUserModel>() {
+                @Override
+                public void onResponse(Call<LiveStreamUserModel> call, Response<LiveStreamUserModel> response) {
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getData().isEmpty()) {
+                                mBinding.recyclerLiveUser.setVisibility(View.GONE);
+                                mBinding.tvLiveStreamUserCount.setText("0");
+                            } else {
+                                mBinding.recyclerLiveUser.setVisibility(View.VISIBLE);
+                                mBinding.tvLiveStreamUserCount.setText(String.valueOf(response.body().getData().size()));
+
+                                mBinding.recyclerLiveUser.setAdapter(new LiveStreamUserAdapter(mContext, response.body().getData()));
+                                mBinding.recyclerLiveUser.smoothScrollToPosition(response.body().getData().size() - 1);
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LiveStreamUserModel> call, Throwable t) {
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
     }
 
     private void callExitStream() {
@@ -512,36 +493,29 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             ApiClient.create().exitLiveStream(header, params).enqueue(new Callback<CommonResponseModel>() {
                 @Override
                 public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                    /*if (response.code() == 200 && response.isSuccessful()) {
-                        if (response.body() != null) {
-                            if (!response.body().getStatus().equals("200")) {
-                                Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    if (mEnxRoom != null) {
+                        if (mEnxRoom.isConnected()) {
+                            if (liveStream != null) {
+                                liveStream.detachRenderer();
                             }
-                        } else {
-                            Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                            mEnxRoom.disconnect();
                         }
-                    } else {
-                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
-                    }*/
-                    if (mEnxRoom.isConnected()) {
-                        if (liveStream != null) {
-                            liveStream.detachRenderer();
-                        }
-                        mEnxRoom.disconnect();
                     }
                     new Handler().postDelayed(() -> {
-                            finish();
+                        finish();
                     }, 1500);
                 }
 
                 @Override
                 public void onFailure(Call<CommonResponseModel> call, Throwable t) {
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
-                    if (mEnxRoom.isConnected()) {
-                        if (liveStream != null) {
-                            liveStream.detachRenderer();
+                    if (mEnxRoom != null) {
+                        if (mEnxRoom.isConnected()) {
+                            if (liveStream != null) {
+                                liveStream.detachRenderer();
+                            }
+                            mEnxRoom.disconnect();
                         }
-                        mEnxRoom.disconnect();
                     }
                     new Handler().postDelayed(() -> {
                         finish();

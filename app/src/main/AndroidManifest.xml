@@ -51,9 +51,6 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:theme="@style/BaseTheme.one" />
         <activity
-            android:name=".eventManager.liveStream.LiveStreamPublisherActivity"
-            android:theme="@style/BaseTheme.one" />
-        <activity
             android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
             android:theme="@style/BaseTheme.one" />
         <activity

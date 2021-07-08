@@ -1,31 +1,34 @@
 package com.jaylax.wiredshack.eventManager.liveStream;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
-
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityLiveStreamBinding;
 import com.jaylax.wiredshack.model.UserDetailsModel;
-import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
+import com.jaylax.wiredshack.rest.ApiClient;
+import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.HashMap;
 
 import enx_rtc_android.Controller.EnxAdvancedOptionsObserver;
 import enx_rtc_android.Controller.EnxPlayerView;
@@ -34,6 +37,9 @@ import enx_rtc_android.Controller.EnxRoomObserver;
 import enx_rtc_android.Controller.EnxRtc;
 import enx_rtc_android.Controller.EnxStream;
 import enx_rtc_android.Controller.EnxStreamObserver;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoomObserver, EnxStreamObserver, EnxAdvancedOptionsObserver {
 
@@ -58,7 +64,7 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.READ_PHONE_STATE
     };
-    private int PERMISSION_ALL = 1;
+    private final int PERMISSION_ALL = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +73,6 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
         mContext = this;
         userDetailsModel = Commons.convertStringToObject(this, SharePref.PREF_USER, UserDetailsModel.class);
         progressDialog = new ProgressDialog(mContext);
-
-        mBinding.llLiveStreamLeft.setVisibility(View.GONE);
         mBinding.llLiveStreamRight.setVisibility(View.GONE);
         getDataFromIntent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -92,6 +96,50 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
     private void initData() {
         mEnxRtc = new EnxRtc(this, this, this);
         mEnxStream = mEnxRtc.joinRoom(token, getPublisherInfo(), getRoomConnectInfo(), getAdvancedOption());
+        callLiveStreamUserApi();
+    }
+
+    Handler handler = new Handler();
+    Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            callApiEveryInterval();
+            handler.postDelayed(runnable, 5000);
+        }
+    };
+
+    private void callLiveStreamUserApi() {
+        handler.postDelayed(runnable, 5000);
+    }
+
+    private void callApiEveryInterval() {
+        if (Commons.isOnline(mContext)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("event_id", streamId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().liveStreamUser(header, params).enqueue(new Callback<LiveStreamUserModel>() {
+                @Override
+                public void onResponse(Call<LiveStreamUserModel> call, Response<LiveStreamUserModel> response) {
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getData().isEmpty()) {
+                                mBinding.tvLiveStreamUserCount.setText("0");
+                            } else {
+                                mBinding.tvLiveStreamUserCount.setText(String.valueOf(response.body().getData().size()));
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<LiveStreamUserModel> call, Throwable t) {
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, mContext.getResources().getString(R.string.no_internet_connection));
+        }
     }
 
     private boolean hasPermissions(Context context, String... permissions) {
@@ -390,6 +438,8 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
 
     @Override
     public void onBackPressed() {
+        handler.removeCallbacks(runnable);
+
         if (mEnxRoom == null) {
             finish();
         } else {
@@ -401,7 +451,7 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case 1:
+            case PERMISSION_ALL:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED
                         && grantResults[2] == PackageManager.PERMISSION_GRANTED

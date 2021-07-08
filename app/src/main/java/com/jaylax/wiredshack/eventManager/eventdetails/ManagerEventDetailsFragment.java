@@ -39,6 +39,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
+import java.util.Objects;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -59,7 +60,7 @@ public class ManagerEventDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getActivity()), R.layout.fragment_manager_event_details, container, false);
         mContext = getActivity();
-        progressDialog = new ProgressDialog(mContext);
+        progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
 
         Bundle bundle = this.getArguments();

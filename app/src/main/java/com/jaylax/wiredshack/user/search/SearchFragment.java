@@ -96,7 +96,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         // Inflate the layout for this fragment
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_search, container, false);
         mContext = getActivity();
-        progressDialog = new ProgressDialog(mContext);
+        progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
 
         userDetailsModel = Commons.convertStringToObject(mContext, SharePref.PREF_USER, UserDetailsModel.class);
 
@@ -159,7 +159,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        getActivity().runOnUiThread(SearchFragment.this::searchManager);
+                        Objects.requireNonNull(getActivity()).runOnUiThread(SearchFragment.this::searchManager);
                     }
                 }, delay);
             }

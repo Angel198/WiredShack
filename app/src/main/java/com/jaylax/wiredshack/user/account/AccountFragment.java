@@ -92,7 +92,7 @@ public class AccountFragment extends Fragment {
 
         mBinding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.fragment_account, container, false);
         mContext = getActivity();
-        progressDialog = new ProgressDialog(mContext);
+        progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
 
         /*mBinding.tvAccountWishList.setOnClickListener(view -> {
             Intent intent = new Intent(getActivity(), UserWishListActivity.class);

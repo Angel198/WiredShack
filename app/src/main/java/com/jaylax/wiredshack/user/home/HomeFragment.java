@@ -41,6 +41,7 @@ import com.jaylax.wiredshack.user.managerDetails.ManagerDetailsActivity;
 import com.jaylax.wiredshack.user.upcoming.UpcomingEventActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,6 +51,7 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -83,14 +85,13 @@ public class HomeFragment extends Fragment {
         mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_home, container, false);
 
         context = getActivity();
-        progressDialog = new ProgressDialog(context);
+        progressDialog = new ProgressDialog(Objects.requireNonNull(context));
         userDetailsModel = Commons.convertStringToObject(context, SharePref.PREF_USER, UserDetailsModel.class);
 
         if (userDetailsModel == null) {
             mBinding.imgProfileLogout.setVisibility(View.INVISIBLE);
             mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.toplogo));
-        }
-        else {
+        } else {
             mBinding.imgProfileLogout.setVisibility(View.VISIBLE);
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
             Glide.with(this).load(userDetailsModel.getImage() == null ? "" : userDetailsModel.getImage()).apply(options).into(mBinding.imgAccountProfile);
@@ -126,7 +127,7 @@ public class HomeFragment extends Fragment {
                 call.enqueue(new Callback<UpcomingEventMainModel>() {
                     @Override
                     public void onResponse(Call<UpcomingEventMainModel> call, Response<UpcomingEventMainModel> response) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         getEventList(false);
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
@@ -145,7 +146,7 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<UpcomingEventMainModel> call, Throwable t) {
-                        progressDialog.dismiss();
+//                        progressDialog.dismiss();
                         hideUpcomingEventData();
                         getEventList(false);
                         Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
@@ -278,14 +279,15 @@ public class HomeFragment extends Fragment {
                 call = ApiClient.create().getRecentEventsUser(header);
             }
             if (call != null) {
-                if (!isRefresh) {
+                if (isRefresh) {
                     progressDialog.show();
                 }
                 call.enqueue(new Callback<RecentEventMainModel>() {
                     @Override
                     public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
-                        if (!isRefresh) {
+                        if (isRefresh) {
                             progressDialog.dismiss();
+                        } else {
                             getEventManagerList();
                         }
                         if (response.code() == 200 && response.isSuccessful()) {
@@ -301,12 +303,13 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
-                        if (!isRefresh) {
+                        if (isRefresh) {
                             progressDialog.dismiss();
+                        }else {
                             getEventManagerList();
                             Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
-                            setRecentEventData(new ArrayList<>());
                         }
+                        setRecentEventData(new ArrayList<>());
                     }
                 });
             }
@@ -372,7 +375,7 @@ public class HomeFragment extends Fragment {
                 call = ApiClient.create().getEventsManager(header);
             }
             if (call != null) {
-                progressDialog.show();
+//                progressDialog.show();
                 call.enqueue(new Callback<ManagerListMainModel>() {
                     @Override
                     public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
