@@ -1,12 +1,5 @@
 package com.jaylax.wiredshack.user.upcoming;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
-import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -15,8 +8,14 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.text.format.DateUtils;
 import android.util.Log;
-import android.util.TimeUtils;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
@@ -24,22 +23,16 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
-import com.jaylax.wiredshack.databinding.ActivityUpcomingEventBinding;
 import com.jaylax.wiredshack.databinding.ActivityUpcomingEventNewBinding;
 import com.jaylax.wiredshack.eventManager.editEvent.EventImageModel;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.account.AccountUploadImageAdapter;
-import com.jaylax.wiredshack.user.account.FollowingEventMainModel;
-import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsImageAdapter;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsMainModel;
 import com.jaylax.wiredshack.user.home.EventRoomModel;
 import com.jaylax.wiredshack.user.home.EventTokenModel;
-import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
 import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
-import com.jaylax.wiredshack.user.liveVideoPlayer.LiveVideoPlayerActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;

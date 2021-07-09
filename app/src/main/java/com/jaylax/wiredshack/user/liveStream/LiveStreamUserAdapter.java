@@ -1,8 +1,7 @@
-package com.jaylax.wiredshack.user.liveVideoPlayer;
+package com.jaylax.wiredshack.user.liveStream;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;

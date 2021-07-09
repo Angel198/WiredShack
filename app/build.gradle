@@ -87,16 +87,7 @@ dependencies {
     //PhotoView
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 
-    //LiveStream
-    implementation project(path: ':liveVideoBroadcasterSDK')
-
-
-    //Exoplayer
-    implementation 'com.google.android.exoplayer:exoplayer:r2.3.1'
-
     implementation 'com.github.BirjuVachhani:locus-android:3.2.0'
-
-    implementation "de.mrmaffen:vlc-android-sdk:2.0.6"
 
     //DatePicker
     implementation 'com.github.florent37:singledateandtimepicker:2.2.7'

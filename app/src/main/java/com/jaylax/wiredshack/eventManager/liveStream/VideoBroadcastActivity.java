@@ -20,7 +20,7 @@ import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityLiveStreamBinding;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserModel;
+import com.jaylax.wiredshack.user.liveStream.LiveStreamUserModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -29,6 +29,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 import enx_rtc_android.Controller.EnxAdvancedOptionsObserver;
 import enx_rtc_android.Controller.EnxPlayerView;
@@ -74,6 +75,7 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
         userDetailsModel = Commons.convertStringToObject(this, SharePref.PREF_USER, UserDetailsModel.class);
         progressDialog = new ProgressDialog(mContext);
         mBinding.llLiveStreamRight.setVisibility(View.GONE);
+        Objects.requireNonNull(mBinding.imgSwitchCamera).setVisibility(View.VISIBLE);
         getDataFromIntent();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!hasPermissions(this, PERMISSIONS)) {
@@ -97,6 +99,15 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
         mEnxRtc = new EnxRtc(this, this, this);
         mEnxStream = mEnxRtc.joinRoom(token, getPublisherInfo(), getRoomConnectInfo(), getAdvancedOption());
         callLiveStreamUserApi();
+        setClick();
+    }
+
+    private void setClick() {
+        mBinding.imgSwitchCamera.setOnClickListener(view -> {
+            if (mEnxStream != null){
+                mEnxStream.switchCamera();
+            }
+        });
     }
 
     Handler handler = new Handler();

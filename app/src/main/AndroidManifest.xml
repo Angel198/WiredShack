@@ -39,8 +39,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/BaseTheme.one" />
 
-        <service android:name="io.antmedia.android.broadcaster.LiveVideoBroadcaster" />
-
         <activity
             android:name=".eventManager.assignEvent.AssignEventActivity"
             android:configChanges="orientation"
@@ -51,13 +49,7 @@
             android:configChanges="orientation|keyboard|keyboardHidden|screenSize|screenLayout|uiMode"
             android:theme="@style/BaseTheme.one" />
         <activity
-            android:name=".user.liveVideoPlayer.LiveVideoPlayerActivity"
-            android:theme="@style/BaseTheme.one" />
-        <activity
             android:name=".eventManager.liveStream.VideoBroadcastActivity"
-            android:theme="@style/BaseTheme.one"/>
-        <activity
-            android:name=".eventManager.liveVideoBroadcaster.LiveVideoBroadcasterActivity"
             android:theme="@style/BaseTheme.one" />
         <activity
             android:name=".user.upcoming.UpcomingEventActivity"

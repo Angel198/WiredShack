@@ -1,4 +1,4 @@
-package com.jaylax.wiredshack.user.liveVideoPlayer;
+package com.jaylax.wiredshack.user.liveStream;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

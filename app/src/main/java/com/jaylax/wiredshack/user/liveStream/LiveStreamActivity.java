@@ -27,8 +27,6 @@ import com.jaylax.wiredshack.databinding.ActivityLiveStreamBinding;
 import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
-import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserAdapter;
-import com.jaylax.wiredshack.user.liveVideoPlayer.LiveStreamUserModel;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
@@ -36,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import enx_rtc_android.Controller.EnxAdvancedOptionsObserver;
@@ -131,7 +130,7 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         mEnxRoom = new EnxRoom(this, this, this);
         mEnxRoom.init(LiveStreamActivity.this);
         mEnxRoom.connect(token, getRoomConnectInfo(), new JSONArray());
-
+        Objects.requireNonNull(mBinding.imgSwitchCamera).setVisibility(View.GONE);
         mBinding.recyclerLiveUser.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         if (isRequested.equals("2")) {
             callEnterEventAPI();
