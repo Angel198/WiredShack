@@ -159,7 +159,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 timer.schedule(new TimerTask() {
                     @Override
                     public void run() {
-                        Objects.requireNonNull(getActivity()).runOnUiThread(SearchFragment.this::searchManager);
+                        Objects.requireNonNull(getActivity()).runOnUiThread(() -> {
+                            searchManager(true);
+                        });
                     }
                 }, delay);
             }
@@ -177,9 +179,10 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
             ApiClient.create().getNearByEvent(params).enqueue(new Callback<RecentEventMainModel>() {
                 @Override
                 public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
-                    progressDialog.dismiss();
                     if (isCallManagerList) {
-                        searchManager();
+                        searchManager(false);
+                    }else {
+                        progressDialog.dismiss();
                     }
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
@@ -194,9 +197,10 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
 
                 @Override
                 public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
-                    progressDialog.dismiss();
                     if (isCallManagerList) {
-                        searchManager();
+                        searchManager(false);
+                    }else {
+                        progressDialog.dismiss();
                     }
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                 }
@@ -260,7 +264,7 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
         }
     }
 
-    private void searchManager() {
+    private void searchManager(boolean isSearchCall) {
         if (Commons.isOnline(mContext)) {
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
 
@@ -273,7 +277,9 @@ public class SearchFragment extends Fragment implements OnMapReadyCallback {
                 call = ApiClient.create().getEventsManagerFilter(header, params);
             }
             if (call != null) {
-                progressDialog.show();
+                if (isSearchCall) {
+                    progressDialog.show();
+                }
                 call.enqueue(new Callback<ManagerListMainModel>() {
                     @Override
                     public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {

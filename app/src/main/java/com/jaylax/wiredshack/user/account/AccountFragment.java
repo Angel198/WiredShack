@@ -140,7 +140,9 @@ public class AccountFragment extends Fragment {
             ApiClient.create().userDetails(header).enqueue(new Callback<UserDetailsModel>() {
                 @Override
                 public void onResponse(Call<UserDetailsModel> call, Response<UserDetailsModel> response) {
-                    progressDialog.dismiss();
+                    if (isRefresh) {
+                        progressDialog.dismiss();
+                    }
                     if (response.code() == 200 && response.isSuccessful()) {
                         if (response.body() != null) {
                             SharePref.getInstance(mContext).save(SharePref.PREF_USER, Commons.convertObjectToString(response.body()));
@@ -153,7 +155,9 @@ public class AccountFragment extends Fragment {
 
                 @Override
                 public void onFailure(Call<UserDetailsModel> call, Throwable t) {
-                    progressDialog.dismiss();
+                    if (isRefresh) {
+                        progressDialog.dismiss();
+                    }
                     Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
                 }
             });
