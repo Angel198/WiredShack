@@ -19,16 +19,10 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.request.RequestOptions;
-import com.jaylax.wiredshack.EditProfileActivity;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.FragmentManagerAccountBinding;
-import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
-import com.jaylax.wiredshack.eventManager.home.ManagerRecentEventsAdapter;
-import com.jaylax.wiredshack.eventManager.managerActivity.ManagerEventActivitiesAdapter;
-import com.jaylax.wiredshack.eventManager.managerActivity.ManagerIncomingRequestAdapter;
 import com.jaylax.wiredshack.model.UserDetailsModel;
-import com.jaylax.wiredshack.rest.Api;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.model.RecentEventMainModel;
@@ -66,8 +60,7 @@ public class ManagerAccountFragment extends Fragment {
         progressDialog = new ProgressDialog(Objects.requireNonNull(mContext));
 
         mBinding.tvAccountEditProfile.setOnClickListener(view -> {
-            Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-            getActivity().startActivity(intent);
+
         });
 
 

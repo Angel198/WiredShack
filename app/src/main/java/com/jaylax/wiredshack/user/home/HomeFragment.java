@@ -128,7 +128,8 @@ public class HomeFragment extends Fragment {
                     @Override
                     public void onResponse(Call<UpcomingEventMainModel> call, Response<UpcomingEventMainModel> response) {
 //                        progressDialog.dismiss();
-                        getEventList(false);
+//                        getEventList(false);
+                        getEventManagerList();
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 if (response.body().getStatus().equals("200") && response.body().getData() != null) {
@@ -148,7 +149,8 @@ public class HomeFragment extends Fragment {
                     public void onFailure(Call<UpcomingEventMainModel> call, Throwable t) {
 //                        progressDialog.dismiss();
                         hideUpcomingEventData();
-                        getEventList(false);
+//                        getEventList(false);
+                        getEventManagerList();
                         Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
                     }
                 });
@@ -268,6 +270,64 @@ public class HomeFragment extends Fragment {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
     }
 
+    private void getEventManagerList() {
+        if (Commons.isOnline(context)) {
+            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
+
+            Call<ManagerListMainModel> call;
+            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                call = ApiClient.create().getGuestEventsManager();
+            } else {
+                call = ApiClient.create().getEventsManager(header);
+            }
+            if (call != null) {
+//                progressDialog.show();
+                call.enqueue(new Callback<ManagerListMainModel>() {
+                    @Override
+                    public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
+//                        progressDialog.dismiss();
+                        getEventList(false);
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                setEventManagerData(response.body().getData());
+                            }
+                        } else {
+                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ManagerListMainModel> call, Throwable t) {
+//                        progressDialog.dismiss();
+                        getEventList(false);
+                        Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            }
+        } else {
+            Commons.showToast(context, context.getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
+        if (list.isEmpty()) {
+            mBinding.tvHomeFollowingSubTitle.setVisibility(View.GONE);
+            mBinding.tvHomeFollowingTitle.setVisibility(View.GONE);
+            mBinding.recyclerHomeManager.setVisibility(View.GONE);
+        } else {
+            mBinding.tvHomeFollowingSubTitle.setVisibility(View.VISIBLE);
+            mBinding.tvHomeFollowingTitle.setVisibility(View.VISIBLE);
+            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
+
+            mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+            mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, list, data -> {
+                Intent intent = new Intent(context, ManagerDetailsActivity.class);
+                intent.putExtra("managerId", data.getId());
+                context.startActivity(intent);
+            }));
+        }
+    }
+
     private void getEventList(boolean isRefresh) {
         if (Commons.isOnline(context)) {
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
@@ -285,11 +345,7 @@ public class HomeFragment extends Fragment {
                 call.enqueue(new Callback<RecentEventMainModel>() {
                     @Override
                     public void onResponse(Call<RecentEventMainModel> call, Response<RecentEventMainModel> response) {
-                        if (isRefresh) {
-                            progressDialog.dismiss();
-                        } else {
-                            getEventManagerList();
-                        }
+                        progressDialog.dismiss();
                         if (response.code() == 200 && response.isSuccessful()) {
                             if (response.body() != null) {
                                 setRecentEventData(response.body().getData());
@@ -303,12 +359,7 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onFailure(Call<RecentEventMainModel> call, Throwable t) {
-                        if (isRefresh) {
-                            progressDialog.dismiss();
-                        }else {
-                            getEventManagerList();
-                            Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
-                        }
+                        progressDialog.dismiss();
                         setRecentEventData(new ArrayList<>());
                     }
                 });
@@ -361,62 +412,6 @@ public class HomeFragment extends Fragment {
 
 // optional
             adapter.registerAdapterDataObserver(mBinding.indicator.getAdapterDataObserver());
-        }
-    }
-
-    private void getEventManagerList() {
-        if (Commons.isOnline(context)) {
-            String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-
-            Call<ManagerListMainModel> call;
-            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
-                call = ApiClient.create().getGuestEventsManager();
-            } else {
-                call = ApiClient.create().getEventsManager(header);
-            }
-            if (call != null) {
-//                progressDialog.show();
-                call.enqueue(new Callback<ManagerListMainModel>() {
-                    @Override
-                    public void onResponse(Call<ManagerListMainModel> call, Response<ManagerListMainModel> response) {
-                        progressDialog.dismiss();
-                        if (response.code() == 200 && response.isSuccessful()) {
-                            if (response.body() != null) {
-                                setEventManagerData(response.body().getData());
-                            }
-                        } else {
-                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<ManagerListMainModel> call, Throwable t) {
-                        progressDialog.dismiss();
-                        Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
-                    }
-                });
-            }
-        } else {
-            Commons.showToast(context, context.getResources().getString(R.string.no_internet_connection));
-        }
-    }
-
-    private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
-        if (list.isEmpty()) {
-            mBinding.tvHomeFollowingSubTitle.setVisibility(View.GONE);
-            mBinding.tvHomeFollowingTitle.setVisibility(View.GONE);
-            mBinding.recyclerHomeManager.setVisibility(View.GONE);
-        } else {
-            mBinding.tvHomeFollowingSubTitle.setVisibility(View.VISIBLE);
-            mBinding.tvHomeFollowingTitle.setVisibility(View.VISIBLE);
-            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
-
-            mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, list, data -> {
-                Intent intent = new Intent(context, ManagerDetailsActivity.class);
-                intent.putExtra("managerId", data.getId());
-                context.startActivity(intent);
-            }));
         }
     }
 

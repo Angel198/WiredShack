@@ -204,4 +204,14 @@
     <string name="txt_live">Live</string>
     <string name="delete_image_msg">Are you sure\nyou want to delete Image?</string>
     <string name="delete_event_msg">Are you sure\nyou want to delete Event?</string>
+    <string name="hint_club_name">Club Name</string>
+    <string name="hint_physical_address">Physical Address</string>
+    <string name="hint_opening_time">Opening Time</string>
+    <string name="hint_closing_time">Closing Time</string>
+    <string name="hint_type_of_club">Type of Club</string>
+    <string name="enter_club_name">Enter Club Name</string>
+    <string name="enter_physical_address">Enter Physical Address</string>
+    <string name="select_opening_time">Select Opening Time</string>
+    <string name="select_closing_time">Select Closing Time</string>
+    <string name="select_club_type">Select Club Type</string>
 </resources>

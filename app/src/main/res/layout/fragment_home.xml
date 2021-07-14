@@ -43,8 +43,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clipToPadding="false"
-                    android:overScrollMode="never"
-                    android:nestedScrollingEnabled="false"/>
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never" />
 
                 <me.relex.circleindicator.CircleIndicator2
                     android:id="@+id/indicatorUpcoming"
@@ -52,13 +52,48 @@
                     android:layout_height="48dp"
                     android:gravity="center_horizontal"
                     app:ci_drawable="@drawable/ic_indicator_select"
-                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect"/>
+                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeFollowingSubTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/club"
+                    android:textColor="@color/colorPink88"
+                    android:textSize="@dimen/_12ssp"
+                    app:fontFamily="@font/roboto_medium" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/tvHomeFollowingTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_18sdp"
+                    android:includeFontPadding="false"
+                    android:text="@string/following"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_28ssp"
+                    app:fontFamily="@font/roboto_medium" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerHomeManager"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_14sdp"
+                    android:clipToPadding="false"
+                    android:nestedScrollingEnabled="false"
+                    android:overScrollMode="never"
+                    android:paddingStart="@dimen/_18sdp"
+                    android:paddingEnd="@dimen/_13sdp" />
+
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeRecentEventTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
                     android:includeFontPadding="false"
                     android:text="@string/events_near_you"
                     android:textColor="@color/white"
@@ -82,39 +117,7 @@
                     android:layout_height="48dp"
                     android:gravity="center_horizontal"
                     app:ci_drawable="@drawable/ic_indicator_select"
-                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect"/>
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvHomeFollowingSubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_18sdp"
-                    android:includeFontPadding="false"
-                    android:text="@string/club"
-                    android:textColor="@color/colorPink88"
-                    android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/roboto_medium" />
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/tvHomeFollowingTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_18sdp"
-                    android:includeFontPadding="false"
-                    android:text="@string/following"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/_28ssp"
-                    app:fontFamily="@font/roboto_medium" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerHomeManager"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_14sdp"
-                    android:clipToPadding="false"
-                    android:nestedScrollingEnabled="false"
-                    android:overScrollMode="never"
-                    android:paddingStart="@dimen/_18sdp"
-                    android:paddingEnd="@dimen/_13sdp" />
+                    app:ci_drawable_unselected="@drawable/ic_indicator_unselect" />
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
