@@ -1,5 +1,6 @@
 package com.jaylax.wiredshack;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
@@ -16,11 +17,33 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.login.widget.LoginButton;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FacebookAuthProvider;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.jaylax.wiredshack.databinding.ActivityLoginSignupBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
@@ -37,6 +60,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -58,6 +82,11 @@ public class LoginSignupActivity extends AppCompatActivity {
     Calendar selectedEndTimeCal = null;
     Place place = null;
     String addressLat = "", addressLong = "";
+    GoogleSignInClient mGoogleSignInClient;
+    private CallbackManager mCallbackManager;
+    private FirebaseAuth mFirebaseAuth;
+    private FirebaseAuth.AuthStateListener mAuthStateListener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +101,34 @@ public class LoginSignupActivity extends AppCompatActivity {
 
         Places.initialize(getApplicationContext(), getResources().getString(R.string.google_place_key));
 
-        /*mBinding.imgLogin.setOnClickListener(view -> {
-            mBinding.linearSignupChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_down));
-            mBinding.linearSignupChild.animate().alpha(0.0f);
+        setGoogleLogin();
+        setFacebookLogin();
+            /*mBinding.imgLogin.setOnClickListener(view -> {
+                mBinding.linearSignupChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_down));
+                mBinding.linearSignupChild.animate().alpha(0.0f);
 
-            mBinding.linearLoginChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
-                    R.anim.slide_up));
-            mBinding.linearLoginChild.animate().alpha(1.0f);
-        });*/
+                mBinding.linearLoginChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
+                        R.anim.slide_up));
+                mBinding.linearLoginChild.animate().alpha(1.0f);
+            });*/
 
         setSelectionUI();
         setListener();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mFirebaseAuth.addAuthStateListener(mAuthStateListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthStateListener != null){
+            mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
+        }
     }
 
     private void setListener() {
@@ -203,6 +248,68 @@ public class LoginSignupActivity extends AppCompatActivity {
             Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)).build(context);
             startActivityForResult(intent, 102);
         });
+
+        mBinding.imgSignupGoogle.setOnClickListener(view -> {
+            progressDialog.show();
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, 101);
+        });
+
+        mBinding.imgSignupFacebook.setOnClickListener(view -> {
+            List<String> permissionNeeds = Arrays.asList("user_photos", "email", "public_profile", "AccessToken");
+            LoginManager.getInstance().logInWithReadPermissions(this, permissionNeeds);
+        });
+    }
+
+    private void setGoogleLogin() {
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+        mGoogleSignInClient.signOut();
+    }
+
+    private void setFacebookLogin() {
+        mFirebaseAuth = FirebaseAuth.getInstance();
+        FacebookSdk.sdkInitialize(getApplicationContext());
+        mCallbackManager = CallbackManager.Factory.create();
+
+        LoginManager.getInstance().registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
+            @Override
+            public void onSuccess(LoginResult loginResult) {
+                Log.e("FacebookLogin ", "OnSuccess");
+                handelFacebookLogin(loginResult.getAccessToken());
+            }
+
+            @Override
+            public void onCancel() {
+                Log.e("FacebookLogin ", "onCancel");
+            }
+
+            @Override
+            public void onError(FacebookException error) {
+                Log.e("FacebookLogin ", "onError");
+            }
+        });
+
+        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                if (user != null) {
+
+                }
+            }
+        };
+        new AccessTokenTracker(){
+            @Override
+            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
+                if (currentAccessToken == null){
+                    mFirebaseAuth.signOut();
+                }
+            }
+        };
     }
 
     private void openTypeSelectPopup() {
@@ -298,66 +405,64 @@ public class LoginSignupActivity extends AppCompatActivity {
                 Commons.showToast(context, getResources().getString(R.string.start_end_time_not_valid_msg));
             } else {
 
-                if (isValid) {
-                    /*if (Commons.isOnline(context)) {
-                        progressDialog.show();
-                        HashMap<String, String> params = new HashMap<>();
-                        params.put("email", email);
-                        params.put("password", password);
-                        params.put("name", name);
-                        params.put("user_type", userType);
-                        params.put("device_token", token);
+                if (Commons.isOnline(context)) {
+                    progressDialog.show();
+                    HashMap<String, String> params = new HashMap<>();
+                    params.put("email", email);
+                    params.put("password", password);
+                    params.put("name", name);
+                    params.put("user_type", userType);
+                    params.put("device_token", token);
 
-                        if (userType.equalsIgnoreCase("2")) {
-                            params.put("clubName", clubName);
-                            params.put("clubAddress", clubAddress);
-                            params.put("clubOpenTime", clubOpenTime);
-                            params.put("clubCloseTime", clubCloseTime);
-                            params.put("clubType", clubType);
-                            params.put("latitude", addressLat);
-                            params.put("longitude", addressLong);
-                        } else {
-                            params.put("clubName", "");
-                            params.put("clubAddress", "");
-                            params.put("clubOpenTime", "");
-                            params.put("clubCloseTime", "");
-                            params.put("clubType", "");
-                            params.put("latitude", "");
-                            params.put("longitude", "");
+                    if (userType.equalsIgnoreCase("2")) {
+                        params.put("clubName", clubName);
+                        params.put("clubAddress", clubAddress);
+                        params.put("clubOpenTime", clubOpenTime);
+                        params.put("clubCloseTime", clubCloseTime);
+                        params.put("clubType", clubType);
+                        params.put("latitude", addressLat);
+                        params.put("longitude", addressLong);
+                    } else {
+                        params.put("clubName", "");
+                        params.put("clubAddress", "");
+                        params.put("clubOpenTime", "");
+                        params.put("clubCloseTime", "");
+                        params.put("clubType", "");
+                        params.put("latitude", "");
+                        params.put("longitude", "");
+                    }
+
+                    ApiClient.create().register(params).enqueue(new Callback<CommonResponseModel>() {
+                        @Override
+                        public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                            progressDialog.dismiss();
+                            if (response.code() == 200 && response.isSuccessful()) {
+                                if (response.body() != null) {
+                                    if (response.body().getStatus().equals("200")) {
+                                        callLogin(false);
+                                    } else {
+                                        String msg = "";
+                                        if (response.body().getMessage().isEmpty()) {
+                                            msg = getResources().getString(R.string.please_try_after_some_time);
+                                        } else {
+                                            msg = response.body().getMessage();
+                                        }
+                                        Commons.showToast(context, msg);
+                                    }
+                                }
+                            } else {
+                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            }
                         }
 
-                        ApiClient.create().register(params).enqueue(new Callback<CommonResponseModel>() {
-                            @Override
-                            public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
-                                progressDialog.dismiss();
-                                if (response.code() == 200 && response.isSuccessful()) {
-                                    if (response.body() != null) {
-                                        if (response.body().getStatus().equals("200")) {
-                                            callLogin(false);
-                                        } else {
-                                            String msg = "";
-                                            if (response.body().getMessage().isEmpty()) {
-                                                msg = getResources().getString(R.string.please_try_after_some_time);
-                                            } else {
-                                                msg = response.body().getMessage();
-                                            }
-                                            Commons.showToast(context, msg);
-                                        }
-                                    }
-                                } else {
-                                    Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<CommonResponseModel> call, Throwable t) {
-                                progressDialog.dismiss();
-                                Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
-                            }
-                        });
-                    } else {
-                        Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
-                    }*/
+                        @Override
+                        public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                            progressDialog.dismiss();
+                            Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                        }
+                    });
+                } else {
+                    Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
                 }
             }
         });
@@ -469,6 +574,7 @@ public class LoginSignupActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        mCallbackManager.onActivityResult(requestCode,resultCode,data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 102) {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -481,6 +587,54 @@ public class LoginSignupActivity extends AppCompatActivity {
                 addressLong = String.valueOf(place.getLatLng().longitude);
                 mBinding.editSignupClubAddress.setText(address);
             }
+        } else if (requestCode == 101) {
+            Log.e("GoogleLogin : Account ", "resultCode = 101");
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            handleSignInResult(task);
         }
     }
+
+    private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        if (progressDialog.isShowing()) {
+            progressDialog.dismiss();
+        }
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            // Signed in successfully, show authenticated UI.
+            Log.e("GoogleLogin : Account ", "Name : " + account.getDisplayName());
+            Log.e("GoogleLogin : Account ", "Email : " + account.getEmail());
+            Log.e("GoogleLogin : Account ", "ProfileImage : " + account.getPhotoUrl());
+
+        } catch (ApiException e) {
+            // The ApiException status code indicates the detailed failure reason.
+            // Please refer to the GoogleSignInStatusCodes class reference for more information.
+            Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
+            Toast.makeText(this, getResources().getString(R.string.something_wants_wrong), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void handelFacebookLogin(AccessToken accessToken) {
+        Log.e("FacebookLogin : Handel Token ", "" + accessToken);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        mFirebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                Log.e("FacebookLogin", "Task Success");
+                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                updateUIWithFBLogin(user);
+            } else {
+                Log.e("FacebookLogin", "Task Failed");
+            }
+        });
+    }
+
+    private void updateUIWithFBLogin(FirebaseUser user) {
+        if (user != null) {
+            Log.e("FacebookLogin : Account ", "Name : " + user.getDisplayName());
+            Log.e("FacebookLogin : Account ", "Email : " + user.getEmail());
+            Log.e("FacebookLogin : Account ", "ProfileImage : " + user.getPhotoUrl());
+        }
+    }
+
 }

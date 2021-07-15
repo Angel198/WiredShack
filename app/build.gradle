@@ -75,7 +75,14 @@ dependencies {
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-crashlytics-ktx'
+    implementation 'com.google.firebase:firebase-auth-ktx'
 
+
+    //Google Login
+    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+
+    //FacebookLogin
+    implementation 'com.facebook.android:facebook-android-sdk:[5,6)'
 
     //LottieAnimation
     implementation 'com.airbnb.android:lottie:3.4.0'

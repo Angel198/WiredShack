@@ -3,10 +3,16 @@ package com.jaylax.wiredshack;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 
 import com.jaylax.wiredshack.databinding.ActivityMainBinding;
@@ -15,6 +21,9 @@ import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -29,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
 
         mContext = this;
 
+        printHashKey();
         if (getIntent().hasExtra("isLogout")) {
             isLogout = getIntent().getBooleanExtra("isLogout", false);
         }
@@ -72,5 +82,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finishAffinity();
         });
+    }
+
+    public void printHashKey() {
+        try {
+            @SuppressLint("PackageManagerGetSignatures") PackageInfo info = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String hashKey = new String(Base64.encode(md.digest(), 0));
+                Log.e("TAG", "printHashKey() Hash Key: " + hashKey);
+            }
+        } catch (Exception e) {
+            Log.e("TAG", "printHashKey()", e);
+        }
     }
 }
