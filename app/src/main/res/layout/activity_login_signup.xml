@@ -188,41 +188,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/linearLogin">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:includeFontPadding="false"
-                    android:text="@string/signup"
-                    android:textColor="@color/colorBlack20"
-                    android:textSize="@dimen/_35sdp"
-                    app:fontFamily="@font/roboto_bold" />
-
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imgSignupGoogle"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_google"
-                    tools:visibility="visible" />
-
-
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/imgSignupFacebook"
-                    android:layout_width="@dimen/_30sdp"
-                    android:layout_height="@dimen/_30sdp"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:visibility="gone"
-                    app:srcCompat="@drawable/ic_facebook"
-                    tools:visibility="visible" />
-            </LinearLayout>
+                android:includeFontPadding="false"
+                android:text="@string/signup"
+                android:textColor="@color/colorBlack20"
+                android:textSize="@dimen/_35sdp"
+                app:fontFamily="@font/roboto_bold" />
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/nestedSignupChild"
@@ -395,7 +369,7 @@
                             android:includeFontPadding="false"
                             android:textColor="@color/colorBlack20"
                             android:textSize="@dimen/_16ssp"
-                            app:fontFamily="@font/roboto_regular"/>
+                            app:fontFamily="@font/roboto_regular" />
 
                         <View
                             android:layout_width="match_parent"
@@ -435,7 +409,7 @@
                                     android:includeFontPadding="false"
                                     android:textColor="@color/colorBlack20"
                                     android:textSize="@dimen/_16ssp"
-                                    app:fontFamily="@font/roboto_regular"/>
+                                    app:fontFamily="@font/roboto_regular" />
 
                                 <View
                                     android:layout_width="match_parent"
@@ -504,7 +478,36 @@
                             android:layout_height="@dimen/_1sdp"
                             android:layout_marginTop="@dimen/_5sdp"
                             android:background="@color/colorBlack26" />
+
                     </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_15sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:orientation="horizontal">
+
+                        <androidx.appcompat.widget.AppCompatCheckBox
+                            android:id="@+id/checkTermsPrivacy"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:buttonTint="@color/colorBlack20" />
+
+
+                        <androidx.appcompat.widget.AppCompatTextView
+                            android:id="@+id/txtTermsPrivacy"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="@dimen/_5sdp"
+                            android:layout_weight="1"
+                            android:fontFamily="@font/poppins_medium"
+                            android:gravity="top"
+                            android:text="@string/term_privacy_msg"
+                            android:textColor="@color/colorBlack20"
+                            android:textSize="@dimen/_14ssp" />
+                    </LinearLayout>
+
                 </LinearLayout>
             </androidx.core.widget.NestedScrollView>
 
@@ -545,5 +548,45 @@
             app:layout_constraintBottom_toBottomOf="@id/linearLogin"
             app:layout_constraintEnd_toStartOf="@id/imgClose"
             app:layout_constraintTop_toBottomOf="@id/linearLogin" />
+
+        <LinearLayout
+            android:id="@+id/llSocialLogin"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="@id/linearLogin"
+            app:layout_constraintEnd_toStartOf="@id/imgLogin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/linearLogin">
+
+            <RelativeLayout
+                android:id="@+id/imgSignupFacebook"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:background="@drawable/circle_white">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/_32sdp"
+                    android:layout_height="@dimen/_32sdp"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/_10sdp"
+                    app:srcCompat="@drawable/ic_facebook" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/imgSignupGoogle"
+                android:layout_width="@dimen/_50sdp"
+                android:layout_height="@dimen/_50sdp"
+                android:background="@drawable/circle_black">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="@dimen/_30sdp"
+                    android:layout_height="@dimen/_30sdp"
+                    android:layout_centerInParent="true"
+                    app:srcCompat="@drawable/ic_google"
+                    android:padding="@dimen/_2sdp"/>
+            </RelativeLayout>
+        </LinearLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

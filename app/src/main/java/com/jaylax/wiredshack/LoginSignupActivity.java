@@ -3,19 +3,32 @@ package com.jaylax.wiredshack;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.UnderlineSpan;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
@@ -45,6 +58,7 @@ import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.Gson;
 import com.jaylax.wiredshack.databinding.ActivityLoginSignupBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.model.CommonResponseModel;
@@ -103,18 +117,9 @@ public class LoginSignupActivity extends AppCompatActivity {
 
         setGoogleLogin();
         setFacebookLogin();
-            /*mBinding.imgLogin.setOnClickListener(view -> {
-                mBinding.linearSignupChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_down));
-                mBinding.linearSignupChild.animate().alpha(0.0f);
-
-                mBinding.linearLoginChild.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),
-                        R.anim.slide_up));
-                mBinding.linearLoginChild.animate().alpha(1.0f);
-            });*/
-
         setSelectionUI();
         setListener();
+        setTermsPrivacyText();
     }
 
     @Override
@@ -126,7 +131,7 @@ public class LoginSignupActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (mAuthStateListener != null){
+        if (mAuthStateListener != null) {
             mFirebaseAuth.removeAuthStateListener(mAuthStateListener);
         }
     }
@@ -165,13 +170,12 @@ public class LoginSignupActivity extends AppCompatActivity {
             if (mBinding.linearLoginChild.getVisibility() == View.GONE) {
                 mBinding.linearLoginChild.setVisibility(View.VISIBLE);
                 mBinding.nestedSignupChild.setVisibility(View.GONE);
-                mBinding.imgSignupGoogle.setVisibility(View.GONE);
-                mBinding.imgSignupFacebook.setVisibility(View.GONE);
                 mBinding.linearLoginChild.animate().alpha(0.0f);
                 mBinding.nestedSignupChild.animate().alpha(1.0f);
                 mBinding.linearLoginChild.animate().alpha(1.0f).translationY(0);
                 mBinding.nestedSignupChild.animate().alpha(0.0f).translationY(0);
                 setSelectionUI();
+                clearAllEntry();
             } else {
                 callLogin(true);
             }
@@ -181,13 +185,12 @@ public class LoginSignupActivity extends AppCompatActivity {
             if (mBinding.nestedSignupChild.getVisibility() == View.GONE) {
                 mBinding.linearLoginChild.setVisibility(View.GONE);
                 mBinding.nestedSignupChild.setVisibility(View.VISIBLE);
-                mBinding.imgSignupGoogle.setVisibility(View.VISIBLE);
-                mBinding.imgSignupFacebook.setVisibility(View.VISIBLE);
                 mBinding.linearLoginChild.animate().alpha(1.0f);
                 mBinding.nestedSignupChild.animate().alpha(0.0f);
                 mBinding.linearLoginChild.animate().alpha(0.0f).translationY(0);
                 mBinding.nestedSignupChild.animate().alpha(1.0f).translationY(0);
                 setSelectionUI();
+                clearAllEntry();
             } else {
                 callRegistration();
             }
@@ -302,10 +305,10 @@ public class LoginSignupActivity extends AppCompatActivity {
                 }
             }
         };
-        new AccessTokenTracker(){
+        new AccessTokenTracker() {
             @Override
             protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken currentAccessToken) {
-                if (currentAccessToken == null){
+                if (currentAccessToken == null) {
                     mFirebaseAuth.signOut();
                 }
             }
@@ -341,15 +344,15 @@ public class LoginSignupActivity extends AppCompatActivity {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_child));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.VISIBLE);
-                mBinding.imgSignupGoogle.setVisibility(View.GONE);
-                mBinding.imgSignupFacebook.setVisibility(View.GONE);
+                mBinding.llSocialLogin.setVisibility(View.GONE);
+
             }
         } else {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_main));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.GONE);
-                mBinding.imgSignupGoogle.setVisibility(View.VISIBLE);
-                mBinding.imgSignupFacebook.setVisibility(View.VISIBLE);
+                mBinding.llSocialLogin.setVisibility(View.VISIBLE);
+
             }
         }
 
@@ -371,8 +374,6 @@ public class LoginSignupActivity extends AppCompatActivity {
             String password = Objects.requireNonNull(mBinding.editSignupPassword.getText()).toString().trim();
             String clubName = Objects.requireNonNull(mBinding.editSignupClubName.getText()).toString().trim();
             String clubAddress = Objects.requireNonNull(mBinding.editSignupClubAddress.getText()).toString().trim();
-            String clubOpenTime = Objects.requireNonNull(mBinding.editSignupClubStartTime.getText()).toString().trim();
-            String clubCloseTime = Objects.requireNonNull(mBinding.editSignupClubEndTime.getText()).toString().trim();
             String clubType = Objects.requireNonNull(mBinding.editSignupClubType.getText()).toString().trim();
 
             boolean isValid = false;
@@ -403,9 +404,12 @@ public class LoginSignupActivity extends AppCompatActivity {
                 Commons.showToast(context, getResources().getString(R.string.select_club_type));
             } else if (userType.equalsIgnoreCase("2") && !isValid) {
                 Commons.showToast(context, getResources().getString(R.string.start_end_time_not_valid_msg));
+            } else if (!mBinding.checkTermsPrivacy.isChecked()) {
+                Commons.showToast(context, getResources().getString(R.string.accept_privacy_terms_msg));
             } else {
 
                 if (Commons.isOnline(context)) {
+
                     progressDialog.show();
                     HashMap<String, String> params = new HashMap<>();
                     params.put("email", email);
@@ -415,10 +419,15 @@ public class LoginSignupActivity extends AppCompatActivity {
                     params.put("device_token", token);
 
                     if (userType.equalsIgnoreCase("2")) {
+                        String myFormat = "HH:mm"; //In which you need put here
+                        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+                        String openTime = sdf.format(selectedStartTimeCal.getTime());
+                        String closeTime = sdf.format(selectedEndTimeCal.getTime());
+
                         params.put("clubName", clubName);
                         params.put("clubAddress", clubAddress);
-                        params.put("clubOpenTime", clubOpenTime);
-                        params.put("clubCloseTime", clubCloseTime);
+                        params.put("clubOpenTime", openTime);
+                        params.put("clubCloseTime", closeTime);
                         params.put("clubType", clubType);
                         params.put("latitude", addressLat);
                         params.put("longitude", addressLong);
@@ -439,7 +448,12 @@ public class LoginSignupActivity extends AppCompatActivity {
                             if (response.code() == 200 && response.isSuccessful()) {
                                 if (response.body() != null) {
                                     if (response.body().getStatus().equals("200")) {
-                                        callLogin(false);
+                                        if (userType.equalsIgnoreCase("2")) {
+                                            showAccountVerifyDialog();
+                                            clearAllEntry();
+                                        } else {
+                                            callLogin(false);
+                                        }
                                     } else {
                                         String msg = "";
                                         if (response.body().getMessage().isEmpty()) {
@@ -466,6 +480,50 @@ public class LoginSignupActivity extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showAccountVerifyDialog() {
+        Dialog dialog = new Dialog(context);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setContentView(R.layout.dialog_log_out);
+
+        Window window = dialog.getWindow();
+        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.copyFrom(window.getAttributes());
+        layoutParams.width = WindowManager.LayoutParams.MATCH_PARENT;
+        layoutParams.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        layoutParams.gravity = Gravity.CENTER;
+        window.setAttributes(layoutParams);
+
+        AppCompatTextView tvTitleMsg = dialog.findViewById(R.id.tvLogoutTitle);
+        AppCompatTextView tvLogoutYes = dialog.findViewById(R.id.tvLogoutYes);
+        AppCompatTextView tvLogoutNo = dialog.findViewById(R.id.tvLogoutNo);
+
+        tvTitleMsg.setText(getResources().getString(R.string.txt_login_msg));
+        tvLogoutYes.setText(getResources().getString(R.string.txt_ok));
+        tvLogoutNo.setVisibility(View.GONE);
+        tvLogoutYes.setOnClickListener(view -> {
+            dialog.dismiss();
+        });
+        dialog.show();
+    }
+
+    private void clearAllEntry() {
+        mBinding.editSignupEmail.setText("");
+        mBinding.editSignupName.setText("");
+        mBinding.editSignupPassword.setText("");
+        mBinding.editSignupClubName.setText("");
+        mBinding.editSignupClubAddress.setText("");
+        mBinding.editSignupClubType.setText("");
+        mBinding.editSignupClubStartTime.setText("");
+        mBinding.editSignupClubEndTime.setText("");
+        addressLat = "";
+        addressLong = "";
+        mBinding.checkTermsPrivacy.setChecked(false);
     }
 
     private void callLogin(boolean isLogin) {
@@ -574,7 +632,7 @@ public class LoginSignupActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        mCallbackManager.onActivityResult(requestCode,resultCode,data);
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 102) {
             if (resultCode == Activity.RESULT_OK && data != null) {
@@ -605,6 +663,7 @@ public class LoginSignupActivity extends AppCompatActivity {
             Log.e("GoogleLogin : Account ", "Name : " + account.getDisplayName());
             Log.e("GoogleLogin : Account ", "Email : " + account.getEmail());
             Log.e("GoogleLogin : Account ", "ProfileImage : " + account.getPhotoUrl());
+
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -637,4 +696,47 @@ public class LoginSignupActivity extends AppCompatActivity {
         }
     }
 
+    private void setTermsPrivacyText() {
+        String text = getResources().getString(R.string.term_privacy_msg);
+        SpannableString content = new SpannableString(text);
+        String privacy = getResources().getString(R.string.privacy_policy);
+        int indexPrivacy = text.indexOf(privacy);
+        content.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                Intent intent = new Intent(LoginSignupActivity.this, WebViewActivity.class);
+                intent.putExtra("title", privacy);
+                intent.putExtra("url", ApiClient.BASE_URL + "policy");
+                startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+            }
+        }, indexPrivacy, indexPrivacy + privacy.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+        String terms = getResources().getString(R.string.terms_cond);
+        int indexTerms = text.indexOf(terms);
+        content.setSpan(new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View view) {
+                Intent intent = new Intent(LoginSignupActivity.this, WebViewActivity.class);
+                intent.putExtra("title", terms);
+                intent.putExtra("url", ApiClient.BASE_URL + "tc");
+                startActivity(intent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+            }
+        }, indexTerms, indexTerms + terms.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        mBinding.txtTermsPrivacy.setText(content);
+        mBinding.txtTermsPrivacy.setMovementMethod(LinkMovementMethod.getInstance());
+    }
 }
