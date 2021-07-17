@@ -344,16 +344,14 @@ public class LoginSignupActivity extends AppCompatActivity {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_child));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.VISIBLE);
-                mBinding.llSocialLogin.setVisibility(View.GONE);
-
             }
+            mBinding.llSocialLogin.setVisibility(View.GONE);
         } else {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_main));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.GONE);
-                mBinding.llSocialLogin.setVisibility(View.VISIBLE);
-
             }
+            mBinding.llSocialLogin.setVisibility(View.VISIBLE);
         }
 
         if (isDJ) {
