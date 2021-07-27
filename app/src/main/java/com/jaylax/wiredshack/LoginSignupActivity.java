@@ -252,7 +252,7 @@ public class LoginSignupActivity extends AppCompatActivity {
             startActivityForResult(intent, 102);
         });
 
-        mBinding.imgSignupGoogle.setOnClickListener(view -> {
+        /*mBinding.imgSignupGoogle.setOnClickListener(view -> {
             progressDialog.show();
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, 101);
@@ -261,7 +261,7 @@ public class LoginSignupActivity extends AppCompatActivity {
         mBinding.imgSignupFacebook.setOnClickListener(view -> {
             List<String> permissionNeeds = Arrays.asList("user_photos", "email", "public_profile", "AccessToken");
             LoginManager.getInstance().logInWithReadPermissions(this, permissionNeeds);
-        });
+        });*/
     }
 
     private void setGoogleLogin() {

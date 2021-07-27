@@ -106,7 +106,9 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         if (getIntent() != null) {
             token = getIntent().getStringExtra("token");
             name = getIntent().getStringExtra("name");
-            streamId = getIntent().getStringExtra("streamId");
+            if (getIntent().hasExtra("streamId")) {
+                streamId = getIntent().getStringExtra("streamId");
+            }
             if (getIntent().hasExtra("isRequested")) {
                 isRequested = getIntent().getStringExtra("isRequested");
             }
@@ -132,13 +134,20 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         mEnxRoom.connect(token, getRoomConnectInfo(), new JSONArray());
         Objects.requireNonNull(mBinding.imgSwitchCamera).setVisibility(View.GONE);
         mBinding.recyclerLiveUser.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        if (isRequested.equals("2")) {
-            callEnterEventAPI();
-            mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
+        if (streamId.isEmpty()) {
+            mBinding.llLiveStreamRight.setVisibility(View.GONE);
+            mBinding.llLiveStreamLeft.setVisibility(View.GONE);
         } else {
-            streamCheck("1");
-            mBinding.tvLiveStreamCountDown.setVisibility(View.VISIBLE);
-            startTimer();
+            mBinding.llLiveStreamRight.setVisibility(View.VISIBLE);
+            mBinding.llLiveStreamLeft.setVisibility(View.VISIBLE);
+            if (isRequested.equals("2")) {
+                callEnterEventAPI();
+                mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
+            } else {
+                streamCheck("1");
+                mBinding.tvLiveStreamCountDown.setVisibility(View.VISIBLE);
+                startTimer();
+            }
         }
     }
 
@@ -391,12 +400,15 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     public void onBackPressed() {
 
         handler.removeCallbacks(runnable);
-        if (isRequested.equals("2")) {
-            callExitStream();
-        } else {
-            streamCheck("0");
+        if (!streamId.isEmpty()) {
+            if (isRequested.equals("2")) {
+                callExitStream();
+            } else {
+                streamCheck("0");
+            }
+        }else {
+            finish();
         }
-
         /*if (mEnxRoom.isConnected()) {
             if (liveStream != null) {
                 liveStream.detachRenderer();

@@ -170,8 +170,10 @@ public class ManagerHomeFragment extends Fragment {
                 if (isEventLive(nearestEvent.getDate(), nearestEvent.getStime(), nearestEvent.getEtime())) {
                     callCreateRoom();
                 } else {
-                    Commons.showToast(mContext, mContext.getResources().getString(R.string.event_not_started));
+                    callCreateRoomForLive();
                 }
+            }else {
+                callCreateRoomForLive();
             }
         });
     }
@@ -689,15 +691,53 @@ public class ManagerHomeFragment extends Fragment {
         }
     }
 
+    private void callCreateRoomForLive() {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("uid",userDetailsModel.getId());
+
+            ApiClient.create().createEnableXRoomIdForManager(params).enqueue(new Callback<RoomIDCreateModel>() {
+                @Override
+                public void onResponse(Call<RoomIDCreateModel> call, Response<RoomIDCreateModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        assert response.body() != null;
+                        if (response.body().getRoom() != null){
+                            callGetTokenApi(response.body().getRoom().getRoomId());
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<RoomIDCreateModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
     private void callGetTokenApi(String roomId) {
         if (Commons.isOnline(mContext)) {
             progressDialog.show();
             HashMap<String, String> params = new HashMap<>();
-            params.put("name", nearestEvent.getEventName());
+            String name = "";
+            if (nearestEvent == null){
+                name = userDetailsModel.getName();
+            }else {
+                name = nearestEvent.getEventName();
+            }
+            params.put("name", name);
             params.put("role", "moderator");
             params.put("roomId", roomId);
             params.put("user_ref", "xdada");
 
+            String finalName = name;
             ApiClient.create().getEnableXToken(params).enqueue(new Callback<EventTokenModel>() {
                 @Override
                 public void onResponse(Call<EventTokenModel> call, Response<EventTokenModel> response) {
@@ -707,8 +747,10 @@ public class ManagerHomeFragment extends Fragment {
                             if (response.body().getToken() != null) {
                                 Intent intent = new Intent(requireActivity(), VideoBroadcastActivity.class);
                                 intent.putExtra("token", response.body().getToken());
-                                intent.putExtra("name", "name");
-                                intent.putExtra("streamId", nearestEvent.getId());
+                                intent.putExtra("name", finalName);
+                                if (nearestEvent != null) {
+                                    intent.putExtra("streamId",nearestEvent.getId());
+                                }
                                 startActivity(intent);
                             }
                         }

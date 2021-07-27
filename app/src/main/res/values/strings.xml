@@ -223,4 +223,5 @@
     <string name="privacy_policy">Privacy Policy</string>
     <string name="terms_cond">Terms &amp; Condition</string>
     <string name="accept_privacy_terms_msg">Accept Privacy Policy and Terms &amp; Condition.</string>
+    <string name="user_is_live_now">%1s is Live Now</string>
 </resources>

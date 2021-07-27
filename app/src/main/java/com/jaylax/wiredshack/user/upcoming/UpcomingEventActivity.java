@@ -404,7 +404,7 @@ public class UpcomingEventActivity extends AppCompatActivity {
             params.put("event_id", eventId);
 
             String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getEnableXRoomId(header, params).enqueue(new Callback<EventRoomModel>() {
+            ApiClient.create().getEnableXRoomId(header,params).enqueue(new Callback<EventRoomModel>() {
                 @Override
                 public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
                     progressDialog.dismiss();

@@ -139,19 +139,43 @@
                             android:textSize="@dimen/_12ssp"
                             app:fontFamily="@font/roboto_regular" />
                     </LinearLayout>
+
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tvManagerLive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:background="@drawable/rounded_live"
+                        android:includeFontPadding="false"
+                        android:padding="@dimen/_8ssp"
+                        android:text="@string/user_is_live_now"
+                        android:textAlignment="center"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_10ssp"
+                        app:fontFamily="@font/roboto_medium"
+                        android:layout_gravity="center"
+                        android:visibility="gone"
+                        tools:visibility="visible"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:layout_marginTop="@dimen/_10sdp"
+                        app:layout_constraintTop_toBottomOf="@id/linearProfileAboutMe"/>
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerRecentEvent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
                     android:layout_marginTop="@dimen/_15sdp"
                     android:clipToPadding="false"
                     android:nestedScrollingEnabled="false"
                     android:overScrollMode="never"
                     android:paddingStart="@dimen/_18sdp"
                     android:paddingEnd="@dimen/_11sdp" />
+
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 

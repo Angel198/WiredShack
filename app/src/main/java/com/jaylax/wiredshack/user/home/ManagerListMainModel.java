@@ -48,6 +48,9 @@ public class ManagerListMainModel {
         @SerializedName("user_type")
         @Expose
         private String userType;
+        @SerializedName("is_active")
+        @Expose
+        private String isActive;
 
         public String getId() {
             return id;
@@ -95,6 +98,14 @@ public class ManagerListMainModel {
 
         public void setUserType(String userType) {
             this.userType = userType;
+        }
+
+        public String getIsActive() {
+            return isActive;
+        }
+
+        public void setIsActive(String isActive) {
+            this.isActive = isActive;
         }
     }
 }

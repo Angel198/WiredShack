@@ -607,7 +607,7 @@ public class HomeFragment extends Fragment {
             params.put("event_id", data.getId());
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getEnableXRoomId(header, params).enqueue(new Callback<EventRoomModel>() {
+            ApiClient.create().getEnableXRoomId(header,params).enqueue(new Callback<EventRoomModel>() {
                 @Override
                 public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
                     progressDialog.dismiss();

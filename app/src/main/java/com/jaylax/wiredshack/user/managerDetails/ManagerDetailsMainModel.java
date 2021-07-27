@@ -55,6 +55,9 @@ public class ManagerDetailsMainModel {
         @SerializedName("about_me")
         @Expose
         private String aboutMe;
+        @SerializedName("is_active")
+        @Expose
+        private String isActive;
         @SerializedName("recent_event")
         @Expose
         private ArrayList<RecentEventMainModel.RecentEventData> recentEvent = new ArrayList<>();
@@ -129,6 +132,14 @@ public class ManagerDetailsMainModel {
 
         public void setAboutMe(String aboutMe) {
             this.aboutMe = aboutMe;
+        }
+
+        public String getIsActive() {
+            return isActive;
+        }
+
+        public void setIsActive(String isActive) {
+            this.isActive = isActive;
         }
     }
 }

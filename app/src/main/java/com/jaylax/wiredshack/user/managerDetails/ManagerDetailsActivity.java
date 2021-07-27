@@ -23,6 +23,10 @@ import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.eventDetails.EventDetailsActivity;
+import com.jaylax.wiredshack.user.home.EventRoomModel;
+import com.jaylax.wiredshack.user.home.EventTokenModel;
+import com.jaylax.wiredshack.user.home.UpcomingEventMainModel;
+import com.jaylax.wiredshack.user.liveStream.LiveStreamActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 import com.jaylax.wiredshack.utils.SpannedGridLayoutManager;
@@ -120,29 +124,44 @@ public class ManagerDetailsActivity extends AppCompatActivity {
         Glide.with(this).load(image).apply(options).into(mBinding.imgManagerProfile);
 
 
-        if (managerDetailsData.getUserType() ==null){
+        String userType = "";
+        if (managerDetailsData.getUserType() == null) {
             mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
-        }else {
-            if (managerDetailsData.getUserType().equals("2")){
+            userType = getResources().getString(R.string.club);
+        } else {
+            if (managerDetailsData.getUserType().equals("2")) {
                 mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
-            }else if (managerDetailsData.getUserType().equals("3")){
+                userType = getResources().getString(R.string.club);
+            } else if (managerDetailsData.getUserType().equals("3")) {
                 mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.drawable.back_dj_details));
-            }else {
+                userType = getResources().getString(R.string.dj);
+            } else {
                 mBinding.clMainManagerDetails.setBackground(ContextCompat.getDrawable(this, R.color.colorBlack20));
+                userType = getResources().getString(R.string.club);
             }
         }
 
-        if (managerDetailsData.getAboutMe() == null){
+        if (managerDetailsData.getAboutMe() == null) {
             mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-        }else {
-            if (managerDetailsData.getAboutMe().isEmpty()){
+        } else {
+            if (managerDetailsData.getAboutMe().isEmpty()) {
                 mBinding.linearProfileAboutMe.setVisibility(View.GONE);
-            }else {
+            } else {
                 mBinding.linearProfileAboutMe.setVisibility(View.VISIBLE);
                 mBinding.tvManagerAboutMe.setText(managerDetailsData.getAboutMe());
             }
         }
 
+        if (managerDetailsData.getIsActive() == null) {
+            mBinding.tvManagerLive.setVisibility(View.GONE);
+        } else {
+            if (managerDetailsData.getIsActive().equals("1")) {
+                mBinding.tvManagerLive.setVisibility(View.VISIBLE);
+                mBinding.tvManagerLive.setText(getResources().getString(R.string.user_is_live_now, userType));
+            } else {
+                mBinding.tvManagerLive.setVisibility(View.GONE);
+            }
+        }
 
         mBinding.tvEventManagerName.setText(managerDetailsData.getManagerName());
 
@@ -168,8 +187,8 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             mBinding.recyclerRecentEvent.setVisibility(View.GONE);
         } else {
             mBinding.recyclerRecentEvent.setVisibility(View.VISIBLE);
-            RecyclerView.LayoutManager manager ;
-            if (managerDetailsData.getRecentEvent().size() > 1){
+            RecyclerView.LayoutManager manager;
+            if (managerDetailsData.getRecentEvent().size() > 1) {
                 manager = new SpannedGridLayoutManager(
                         position -> {
                             // Conditions for 2x2 items
@@ -182,8 +201,8 @@ public class ManagerDetailsActivity extends AppCompatActivity {
                         3, // number of columns
                         1f // how big is default item
                 );
-            }else {
-                manager = new GridLayoutManager(mContext,2);
+            } else {
+                manager = new GridLayoutManager(mContext, 2);
             }
             mBinding.recyclerRecentEvent.setHasFixedSize(true);
             mBinding.recyclerRecentEvent.setLayoutManager(manager);
@@ -251,6 +270,14 @@ public class ManagerDetailsActivity extends AppCompatActivity {
                 }
             }
         });
+
+        mBinding.tvManagerLive.setOnClickListener(view -> {
+            if (SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                openLogin();
+            } else {
+                getEnableXRoomId();
+            }
+        });
     }
 
     private void setFollowUI() {
@@ -279,5 +306,85 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             setResult(Activity.RESULT_OK, intent);
         }
         super.onBackPressed();
+    }
+
+    private void getEnableXRoomId() {
+
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("manager_id", mangerId);
+
+            String header = "Bearer " + SharePref.getInstance(mContext).get(SharePref.PREF_TOKEN, "");
+            ApiClient.create().getManagerEnableXRoomId(header,params).enqueue(new Callback<EventRoomModel>() {
+                @Override
+                public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getStatus().equals("200")) {
+                                callGetTokenApi(response.body());
+                            } else {
+                                String msg = "";
+                                if (response.body().getMessage().isEmpty()) {
+                                    msg = getResources().getString(R.string.please_try_after_some_time);
+                                } else {
+                                    msg = response.body().getMessage();
+                                }
+                                Commons.showToast(mContext, msg);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventRoomModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    private void callGetTokenApi(EventRoomModel body) {
+        if (Commons.isOnline(mContext)) {
+            progressDialog.show();
+            HashMap<String, String> params = new HashMap<>();
+            params.put("name", mBinding.tvEventManagerName.getText().toString().trim());
+            params.put("role", "participant");
+            params.put("roomId", body.getData());
+            params.put("user_ref", "xdada");
+
+            ApiClient.create().getEnableXToken(params).enqueue(new Callback<EventTokenModel>() {
+                @Override
+                public void onResponse(Call<EventTokenModel> call, Response<EventTokenModel> response) {
+                    progressDialog.dismiss();
+                    if (response.code() == 200 && response.isSuccessful()) {
+                        if (response.body() != null) {
+                            if (response.body().getToken() != null) {
+                                Intent intent = new Intent(ManagerDetailsActivity.this, LiveStreamActivity.class);
+                                intent.putExtra("token", response.body().getToken());
+                                intent.putExtra("name", "name");
+                                startActivity(intent);
+                            }
+                        }
+                    } else {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<EventTokenModel> call, Throwable t) {
+                    progressDialog.dismiss();
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
     }
 }

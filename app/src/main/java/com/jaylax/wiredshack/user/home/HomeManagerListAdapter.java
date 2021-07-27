@@ -2,6 +2,7 @@ package com.jaylax.wiredshack.user.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
@@ -57,18 +58,17 @@ public class HomeManagerListAdapter extends RecyclerView.Adapter<HomeManagerList
             Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgHomeManagerProfile);
 
             mBinding.tvHomeManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
-
-            /*if (data.getUserType() ==null){
-                mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+            if (data.getIsActive() == null){
+                mBinding.tvManagerLiveTag.setVisibility(View.GONE);
             }else {
-                if (data.getUserType().equals("2")){
-                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
-                }else if (data.getUserType().equals("3")){
-                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_dj_border));
+                if (data.getIsActive().equals("1")){
+                    mBinding.tvManagerLiveTag.setVisibility(View.VISIBLE);
                 }else {
-                    mBinding.imgHomeManagerProfile.setBackground(ContextCompat.getDrawable(context, R.drawable.back_dash_manager_border));
+                    mBinding.tvManagerLiveTag.setVisibility(View.GONE);
                 }
-            }*/
+            }
+
+
             mBinding.constraintMain.setOnClickListener(view -> {
                 listener.onManagerClick(data);
             });

@@ -192,15 +192,23 @@ public interface Api {
     @POST("api/auth/live_stream_user")
     Call<LiveStreamUserModel> liveStreamUser(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
-
     @POST("api/auth/get_room_id")
     Call<EventRoomModel> getEnableXRoomId(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
+
+    @POST("api/auth/get_manager_room")
+    Call<EventRoomModel> getManagerEnableXRoomId(@Header("Authorization") String authHeader, @Body HashMap<String, String> params);
 
     @POST("api/createToken")
     Call<EventTokenModel> getEnableXToken(@Body HashMap<String, String> params);
 
     @POST("api/createRoom")
     Call<RoomIDCreateModel> createEnableXRoomId(@Body HashMap<String, String> params);
+
+    @POST("api/manager_live_room")
+    Call<RoomIDCreateModel> createEnableXRoomIdForManager(@Body HashMap<String, String> params);
+
+    @POST("api/manager_live")
+    Call<CommonResponseModel> setMangerLive(@Body HashMap<String, String> params);
 
 
 }

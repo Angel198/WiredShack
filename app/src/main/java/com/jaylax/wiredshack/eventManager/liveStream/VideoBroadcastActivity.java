@@ -18,6 +18,8 @@ import androidx.databinding.DataBindingUtil;
 import com.jaylax.wiredshack.ProgressDialog;
 import com.jaylax.wiredshack.R;
 import com.jaylax.wiredshack.databinding.ActivityLiveStreamBinding;
+import com.jaylax.wiredshack.eventManager.home.RoomIDCreateModel;
+import com.jaylax.wiredshack.model.CommonResponseModel;
 import com.jaylax.wiredshack.model.UserDetailsModel;
 import com.jaylax.wiredshack.rest.ApiClient;
 import com.jaylax.wiredshack.user.liveStream.LiveStreamUserModel;
@@ -91,20 +93,26 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
         if (getIntent() != null) {
             token = getIntent().getStringExtra("token");
             name = getIntent().getStringExtra("name");
-            streamId = getIntent().getStringExtra("streamId");
+            if (getIntent().hasExtra("streamId")) {
+                streamId = getIntent().getStringExtra("streamId");
+            }
         }
     }
 
     private void initData() {
         mEnxRtc = new EnxRtc(this, this, this);
         mEnxStream = mEnxRtc.joinRoom(token, getPublisherInfo(), getRoomConnectInfo(), getAdvancedOption());
-        callLiveStreamUserApi();
+        if (streamId.isEmpty()) {
+            callManagerLiveApi("1");
+        } else {
+            callLiveStreamUserApi();
+        }
         setClick();
     }
 
     private void setClick() {
         mBinding.imgSwitchCamera.setOnClickListener(view -> {
-            if (mEnxStream != null){
+            if (mEnxStream != null) {
                 mEnxStream.switchCamera();
             }
         });
@@ -118,6 +126,37 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
             handler.postDelayed(runnable, 5000);
         }
     };
+
+    private void callManagerLiveApi(String isActive) {
+        if (Commons.isOnline(mContext)) {
+            HashMap<String, String> params = new HashMap<>();
+            params.put("uid", userDetailsModel.getId());
+            params.put("is_active", isActive);
+
+            ApiClient.create().setMangerLive(params).enqueue(new Callback<CommonResponseModel>() {
+                @Override
+                public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                    if (response.code() != 200 && !response.isSuccessful()) {
+                        Commons.showToast(mContext, getResources().getString(R.string.please_try_after_some_time));
+                    }
+
+                    if (isActive.equals("0")) {
+                        finish();
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                    Commons.showToast(mContext, getResources().getString(R.string.something_wants_wrong));
+                    if (isActive.equals("0")) {
+                        finish();
+                    }
+                }
+            });
+        } else {
+            Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
 
     private void callLiveStreamUserApi() {
         handler.postDelayed(runnable, 5000);
@@ -299,7 +338,8 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
     @Override
     public void onRoomDisConnected(JSONObject jsonObject) {
         Log.e("onRoomDisConnected", jsonObject.toString());
-        finish();
+        callManagerLiveApi("0");
+//        finish();
     }
 
     @Override
@@ -452,7 +492,7 @@ public class VideoBroadcastActivity extends AppCompatActivity implements EnxRoom
         handler.removeCallbacks(runnable);
 
         if (mEnxRoom == null) {
-            finish();
+            callManagerLiveApi("0");
         } else {
             mEnxRoom.disconnect();
         }
