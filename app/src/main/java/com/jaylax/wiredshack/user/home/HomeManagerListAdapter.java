@@ -22,11 +22,13 @@ public class HomeManagerListAdapter extends RecyclerView.Adapter<HomeManagerList
     Context context;
     ArrayList<ManagerListMainModel.ManagerListData> list;
     ManagerClick listener;
+    boolean isShowLiveTag;
 
-    public HomeManagerListAdapter(Context context, ArrayList<ManagerListMainModel.ManagerListData> list, ManagerClick listener) {
+    public HomeManagerListAdapter(Context context, ArrayList<ManagerListMainModel.ManagerListData> list, ManagerClick listener, boolean isShowLiveTag) {
         this.context = context;
         this.list = list;
         this.listener = listener;
+        this.isShowLiveTag = isShowLiveTag;
     }
 
     @NonNull
@@ -58,16 +60,20 @@ public class HomeManagerListAdapter extends RecyclerView.Adapter<HomeManagerList
             Glide.with(context).load(data.getManagerImage() == null ? "" : data.getManagerImage()).apply(options).into(mBinding.imgHomeManagerProfile);
 
             mBinding.tvHomeManagerName.setText(data.getManagerName() == null ? "N/A" : data.getManagerName());
-            if (data.getIsActive() == null){
-                mBinding.tvManagerLiveTag.setVisibility(View.GONE);
-            }else {
-                if (data.getIsActive().equals("1")){
-                    mBinding.tvManagerLiveTag.setVisibility(View.VISIBLE);
-                }else {
-                    mBinding.tvManagerLiveTag.setVisibility(View.GONE);
-                }
-            }
 
+            if (isShowLiveTag) {
+                if (data.getIsActive() == null) {
+                    mBinding.tvManagerLiveTag.setVisibility(View.GONE);
+                } else {
+                    if (data.getIsActive().equals("1")) {
+                        mBinding.tvManagerLiveTag.setVisibility(View.VISIBLE);
+                    } else {
+                        mBinding.tvManagerLiveTag.setVisibility(View.GONE);
+                    }
+                }
+            }else {
+                mBinding.tvManagerLiveTag.setVisibility(View.GONE);
+            }
 
             mBinding.constraintMain.setOnClickListener(view -> {
                 listener.onManagerClick(data);

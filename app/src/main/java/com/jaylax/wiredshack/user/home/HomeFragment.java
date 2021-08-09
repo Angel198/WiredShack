@@ -56,7 +56,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements HomeManagerListAdapter.ManagerClick {
 
     FragmentHomeBinding mBinding;
     Context context;
@@ -67,6 +67,7 @@ public class HomeFragment extends Fragment {
 
     ArrayList<ManagerListMainModel.ManagerListData> managerList = new ArrayList<>();
     ArrayList<ManagerListMainModel.ManagerListData> djList = new ArrayList<>();
+    ArrayList<ManagerListMainModel.ManagerListData> followingList = new ArrayList<>();
 
     PagerSnapHelper pagerSnapHelperUpcoming = new PagerSnapHelper();
     PagerSnapHelper pagerSnapHelperRecent = new PagerSnapHelper();
@@ -310,22 +311,85 @@ public class HomeFragment extends Fragment {
     }
 
     private void setEventManagerData(ArrayList<ManagerListMainModel.ManagerListData> list) {
+        followingList = new ArrayList<>();
+        managerList = new ArrayList<>();
+        djList = new ArrayList<>();
         if (list.isEmpty()) {
             mBinding.tvHomeFollowingSubTitle.setVisibility(View.GONE);
             mBinding.tvHomeFollowingTitle.setVisibility(View.GONE);
             mBinding.recyclerHomeManager.setVisibility(View.GONE);
-        } else {
-            mBinding.tvHomeFollowingSubTitle.setVisibility(View.VISIBLE);
-            mBinding.tvHomeFollowingTitle.setVisibility(View.VISIBLE);
-            mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
 
-            mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-            mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, list, data -> {
-                Intent intent = new Intent(context, ManagerDetailsActivity.class);
-                intent.putExtra("managerId", data.getId());
-                context.startActivity(intent);
-            }));
+            mBinding.tvHomeClubTitle.setVisibility(View.GONE);
+            mBinding.recyclerHomeClub.setVisibility(View.GONE);
+
+            mBinding.tvHomeDJTitle.setVisibility(View.GONE);
+            mBinding.recyclerHomeDJ.setVisibility(View.GONE);
+        } else {
+            if (SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "").toString().isEmpty()) {
+                followingList = new ArrayList<>();
+            } else {
+                for (ManagerListMainModel.ManagerListData data : list) {
+                    if (data.getFollowing() != null) {
+                        if (data.getFollowing().equals("1")) {
+                            followingList.add(data);
+                        }
+                    }
+                }
+            }
+
+            for (ManagerListMainModel.ManagerListData data : list) {
+                if (data.getUserType() != null) {
+                    if (data.getUserType().equals("2")) {
+                        managerList.add(data);
+                    } else if (data.getUserType().equals("3")) {
+                        djList.add(data);
+                    } else {
+                        managerList.add(data);
+                    }
+                }
+            }
+
+            if (followingList.isEmpty()) {
+                mBinding.tvHomeFollowingSubTitle.setVisibility(View.GONE);
+                mBinding.tvHomeFollowingTitle.setVisibility(View.GONE);
+                mBinding.recyclerHomeManager.setVisibility(View.GONE);
+            } else {
+                mBinding.tvHomeFollowingSubTitle.setVisibility(View.VISIBLE);
+                mBinding.tvHomeFollowingTitle.setVisibility(View.VISIBLE);
+                mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
+
+                mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+                mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, followingList, this, false));
+            }
+
+            if (managerList.isEmpty()) {
+                mBinding.tvHomeClubTitle.setVisibility(View.GONE);
+                mBinding.recyclerHomeClub.setVisibility(View.GONE);
+            } else {
+                mBinding.tvHomeClubTitle.setVisibility(View.VISIBLE);
+                mBinding.recyclerHomeClub.setVisibility(View.VISIBLE);
+
+                mBinding.recyclerHomeClub.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+                mBinding.recyclerHomeClub.setAdapter(new HomeManagerListAdapter(context, managerList, this, true));
+            }
+            if (djList.isEmpty()) {
+                mBinding.tvHomeDJTitle.setVisibility(View.GONE);
+                mBinding.recyclerHomeDJ.setVisibility(View.GONE);
+            } else {
+                mBinding.tvHomeDJTitle.setVisibility(View.VISIBLE);
+                mBinding.recyclerHomeDJ.setVisibility(View.VISIBLE);
+
+                mBinding.recyclerHomeDJ.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+                mBinding.recyclerHomeDJ.setAdapter(new HomeManagerListAdapter(context, djList, this, true));
+            }
         }
+    }
+
+    @Override
+    public void onManagerClick(ManagerListMainModel.ManagerListData data) {
+        Intent intent = new Intent(context, ManagerDetailsActivity.class);
+        intent.putExtra("managerId", data.getId());
+        context.startActivity(intent);
     }
 
     private void getEventList(boolean isRefresh) {
@@ -607,7 +671,7 @@ public class HomeFragment extends Fragment {
             params.put("event_id", data.getId());
 
             String header = "Bearer " + SharePref.getInstance(context).get(SharePref.PREF_TOKEN, "");
-            ApiClient.create().getEnableXRoomId(header,params).enqueue(new Callback<EventRoomModel>() {
+            ApiClient.create().getEnableXRoomId(header, params).enqueue(new Callback<EventRoomModel>() {
                 @Override
                 public void onResponse(Call<EventRoomModel> call, Response<EventRoomModel> response) {
                     progressDialog.dismiss();
@@ -680,4 +744,5 @@ public class HomeFragment extends Fragment {
             Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
         }
     }
+
 }

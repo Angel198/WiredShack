@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.databinding.DataBindingUtil;
@@ -369,7 +370,8 @@ public class ManagerDetailsActivity extends AppCompatActivity {
                                 Intent intent = new Intent(ManagerDetailsActivity.this, LiveStreamActivity.class);
                                 intent.putExtra("token", response.body().getToken());
                                 intent.putExtra("name", "name");
-                                startActivity(intent);
+                                intent.putExtra("isFollow", isFollow);
+                                startActivityForResult(intent,101);
                             }
                         }
                     } else {
@@ -385,6 +387,16 @@ public class ManagerDetailsActivity extends AppCompatActivity {
             });
         } else {
             Commons.showToast(mContext, getResources().getString(R.string.no_internet_connection));
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode ==101){
+            if (resultCode == Activity.RESULT_OK){
+                mBinding.tvFollow.performClick();
+            }
         }
     }
 }

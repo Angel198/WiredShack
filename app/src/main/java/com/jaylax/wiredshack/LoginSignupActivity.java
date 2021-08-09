@@ -337,21 +337,21 @@ public class LoginSignupActivity extends AppCompatActivity {
     private void setSelectionUI() {
         if (isUser) {
             mBinding.tvSelectionUser.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_child));
+            mBinding.llSocialLogin.setVisibility(View.VISIBLE);
         } else {
             mBinding.tvSelectionUser.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_main));
+            mBinding.llSocialLogin.setVisibility(View.GONE);
         }
         if (isClub) {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_child));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.VISIBLE);
             }
-            mBinding.llSocialLogin.setVisibility(View.GONE);
         } else {
             mBinding.tvSelectionClub.setBackgroundDrawable(ContextCompat.getDrawable(context, R.drawable.back_login_selection_main));
             if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 mBinding.llClubOtherField.setVisibility(View.GONE);
             }
-            mBinding.llSocialLogin.setVisibility(View.VISIBLE);
         }
 
         if (isDJ) {

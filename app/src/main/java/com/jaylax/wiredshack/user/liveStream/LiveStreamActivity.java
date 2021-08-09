@@ -1,6 +1,7 @@
 package com.jaylax.wiredshack.user.liveStream;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -64,6 +65,8 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
     private UserDetailsModel userDetailsModel;
     private long timerMilliSec = 120000;
 
+    private boolean isFollowManager = false;
+
     String[] PERMISSIONS = {
             Manifest.permission.READ_PHONE_STATE
     };
@@ -79,12 +82,10 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
 
         getDataFromIntent();
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (!hasPermissions(this, PERMISSIONS)) {
-                ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
-            } else {
-                initData();
-            }
+        if (!hasPermissions(this, PERMISSIONS)) {
+            ActivityCompat.requestPermissions(this, PERMISSIONS, PERMISSION_ALL);
+        } else {
+            initData();
         }
     }
 
@@ -112,6 +113,10 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             if (getIntent().hasExtra("isRequested")) {
                 isRequested = getIntent().getStringExtra("isRequested");
             }
+
+            if (getIntent().hasExtra("isFollow")) {
+                isFollowManager = getIntent().getBooleanExtra("isFollow", false);
+            }
         }
     }
 
@@ -135,10 +140,14 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
         Objects.requireNonNull(mBinding.imgSwitchCamera).setVisibility(View.GONE);
         mBinding.recyclerLiveUser.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         if (streamId.isEmpty()) {
-            mBinding.llLiveStreamRight.setVisibility(View.GONE);
+            if (isFollowManager) {
+                mBinding.tvLiveStreamCountDown.setVisibility(View.GONE);
+            } else {
+                mBinding.tvLiveStreamCountDown.setVisibility(View.VISIBLE);
+                startTimer();
+            }
             mBinding.llLiveStreamLeft.setVisibility(View.GONE);
         } else {
-            mBinding.llLiveStreamRight.setVisibility(View.VISIBLE);
             mBinding.llLiveStreamLeft.setVisibility(View.VISIBLE);
             if (isRequested.equals("2")) {
                 callEnterEventAPI();
@@ -406,8 +415,21 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
             } else {
                 streamCheck("0");
             }
-        }else {
-            finish();
+        } else {
+            if (mEnxRoom != null) {
+                if (mEnxRoom.isConnected()) {
+                    if (liveStream != null) {
+                        liveStream.detachRenderer();
+                    }
+                    mEnxRoom.disconnect();
+                }
+            }
+            new Handler().postDelayed(() -> {
+                if (!isFollowManager) {
+                    setResult(Activity.RESULT_OK);
+                }
+                finish();
+            }, 1000);
         }
         /*if (mEnxRoom.isConnected()) {
             if (liveStream != null) {
@@ -553,14 +575,40 @@ public class LiveStreamActivity extends AppCompatActivity implements EnxRoomObse
 
             public void onFinish() {
                 mBinding.tvLiveStreamCountDown.setText("00:00:00"); //On finish change timer text
-                if (!isRequested.equals("2")) {
-                    if (!(isFinishing())) {
-                        showRequestDialog();
+                if (streamId.isEmpty()) {
+                    if (!isFollowManager) {
+                        showManagerFollowRequestDialog();
+                    }
+                } else {
+                    if (!isRequested.equals("2")) {
+                        if (!(isFinishing())) {
+                            showRequestDialog();
+                        }
                     }
                 }
-
             }
         }.start();
+    }
+
+    private void showManagerFollowRequestDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        String msg = "";
+        String positiveTxt = "";
+        String negativeTxt = "";
+
+        msg = getResources().getString(R.string.request_event_msg);
+        negativeTxt = getResources().getString(R.string.request);
+
+        builder.setMessage(msg);
+        builder.setCancelable(false);
+        builder.setNegativeButton(negativeTxt, (dialogInterface, i) -> {
+            //TODO : RequestLiveStream and close thi activity
+            onBackPressed();
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(Color.RED);
+//        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(Color.BLACK);
     }
 
 
