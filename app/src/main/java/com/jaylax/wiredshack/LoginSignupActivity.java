@@ -21,15 +21,12 @@ import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
-import android.text.style.UnderlineSpan;
 import android.util.Log;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -40,25 +37,21 @@ import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.gson.Gson;
 import com.jaylax.wiredshack.databinding.ActivityLoginSignupBinding;
 import com.jaylax.wiredshack.eventManager.dashboard.DashboardEventManagerActivity;
 import com.jaylax.wiredshack.model.CommonResponseModel;
@@ -74,7 +67,6 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -252,13 +244,13 @@ public class LoginSignupActivity extends AppCompatActivity {
             startActivityForResult(intent, 102);
         });
 
-        /*mBinding.imgSignupGoogle.setOnClickListener(view -> {
+        mBinding.imgSignupGoogle.setOnClickListener(view -> {
             progressDialog.show();
             Intent signInIntent = mGoogleSignInClient.getSignInIntent();
             startActivityForResult(signInIntent, 101);
         });
 
-        mBinding.imgSignupFacebook.setOnClickListener(view -> {
+        /*mBinding.imgSignupFacebook.setOnClickListener(view -> {
             List<String> permissionNeeds = Arrays.asList("user_photos", "email", "public_profile", "AccessToken");
             LoginManager.getInstance().logInWithReadPermissions(this, permissionNeeds);
         });*/
@@ -366,9 +358,8 @@ public class LoginSignupActivity extends AppCompatActivity {
 
             String token = instanceIdResult.getToken();
             Log.e("DeviceToken", token);
-
-            String email = Objects.requireNonNull(mBinding.editSignupEmail.getText()).toString().trim();
             String name = Objects.requireNonNull(mBinding.editSignupName.getText()).toString().trim();
+            String email = Objects.requireNonNull(mBinding.editSignupEmail.getText()).toString().trim();
             String password = Objects.requireNonNull(mBinding.editSignupPassword.getText()).toString().trim();
             String clubName = Objects.requireNonNull(mBinding.editSignupClubName.getText()).toString().trim();
             String clubAddress = Objects.requireNonNull(mBinding.editSignupClubAddress.getText()).toString().trim();
@@ -388,9 +379,9 @@ public class LoginSignupActivity extends AppCompatActivity {
                 Commons.showToast(context, getResources().getString(R.string.enter_email));
             } else if (!Commons.isValidEmail(email)) {
                 Commons.showToast(context, getResources().getString(R.string.enter_valid_email));
-            } else if (password.isEmpty()) {
+            }/* else if (password.isEmpty() && loginType.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_password));
-            } else if (userType.equalsIgnoreCase("2") && clubName.isEmpty()) {
+            } */ else if (userType.equalsIgnoreCase("2") && clubName.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_club_name));
             } else if (userType.equalsIgnoreCase("2") && clubAddress.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_physical_address));
@@ -415,6 +406,9 @@ public class LoginSignupActivity extends AppCompatActivity {
                     params.put("name", name);
                     params.put("user_type", userType);
                     params.put("device_token", token);
+                    params.put("login_type", "");
+                    params.put("googleac", "");
+
 
                     if (userType.equalsIgnoreCase("2")) {
                         String myFormat = "HH:mm"; //In which you need put here
@@ -537,7 +531,6 @@ public class LoginSignupActivity extends AppCompatActivity {
                 email = mBinding.editSignupEmail.getText().toString().trim();
                 password = mBinding.editSignupPassword.getText().toString().trim();
             }
-
             if (email.isEmpty()) {
                 Commons.showToast(context, getResources().getString(R.string.enter_email));
             } else if (!Commons.isValidEmail(email)) {
@@ -552,6 +545,7 @@ public class LoginSignupActivity extends AppCompatActivity {
                     params.put("password", password);
                     params.put("user_type", userType);
                     params.put("device_token", token);
+                    params.put("login_type", "normal");
 
                     ApiClient.create().login(params).enqueue(new Callback<LoginResponseModel>() {
                         @Override
@@ -661,14 +655,152 @@ public class LoginSignupActivity extends AppCompatActivity {
             Log.e("GoogleLogin : Account ", "Name : " + account.getDisplayName());
             Log.e("GoogleLogin : Account ", "Email : " + account.getEmail());
             Log.e("GoogleLogin : Account ", "ProfileImage : " + account.getPhotoUrl());
+            Log.e("GoogleLogin : Account ", account.getId());
 
 
+            if (mBinding.linearLoginChild.getVisibility() == View.VISIBLE) {
+                callSocialLogin("google", account.getEmail());
+            } else if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
+                callSocialRegistration("google", account.getDisplayName(), account.getEmail(), account.getId());
+            }else {
+                callSocialLogin("google", account.getEmail());
+            }
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             // Please refer to the GoogleSignInStatusCodes class reference for more information.
             Log.w("TAG", "signInResult:failed code=" + e.getStatusCode());
             Toast.makeText(this, getResources().getString(R.string.something_wants_wrong), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    void callSocialRegistration(String loginType, String socialName, String socialEmail, String socialID) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+
+            String token = instanceIdResult.getToken();
+            Log.e("DeviceToken", token);
+
+            if (Commons.isOnline(context)) {
+
+                progressDialog.show();
+                HashMap<String, String> params = new HashMap<>();
+                params.put("email", socialEmail);
+                params.put("password", "");
+                params.put("name", socialName);
+                params.put("user_type", userType);
+                params.put("device_token", token);
+                params.put("login_type", loginType);
+                params.put("googleac", socialID);
+                params.put("clubName", "");
+                params.put("clubAddress", "");
+                params.put("clubOpenTime", "");
+                params.put("clubCloseTime", "");
+                params.put("clubType", "");
+                params.put("latitude", "");
+                params.put("longitude", "");
+
+
+                ApiClient.create().register(params).enqueue(new Callback<CommonResponseModel>() {
+                    @Override
+                    public void onResponse(Call<CommonResponseModel> call, Response<CommonResponseModel> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                if (response.body().getStatus().equals("200")) {
+                                    callSocialLogin(loginType, socialEmail);
+                                } else {
+                                    String msg = "";
+                                    if (response.body().getMessage().isEmpty()) {
+                                        msg = getResources().getString(R.string.please_try_after_some_time);
+                                    } else {
+                                        msg = response.body().getMessage();
+                                    }
+                                    Commons.showToast(context, msg);
+                                }
+                            }
+                        } else {
+                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommonResponseModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            } else {
+                Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+            }
+
+        });
+    }
+
+    private void callSocialLogin(String loginType, String socialEmail) {
+        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(this, instanceIdResult -> {
+            String token = instanceIdResult.getToken();
+
+            /*if (isLogin) {
+                email = mBinding.editLoginEmail.getText().toString().trim();
+                password = mBinding.editLoginPassword.getText().toString().trim();
+            } else {
+                email = mBinding.editSignupEmail.getText().toString().trim();
+                password = mBinding.editSignupPassword.getText().toString().trim();
+            }
+            if (email.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_email));
+            } else if (!Commons.isValidEmail(email)) {
+                Commons.showToast(context, getResources().getString(R.string.enter_valid_email));
+            } else if (password.isEmpty()) {
+                Commons.showToast(context, getResources().getString(R.string.enter_password));
+            } else {
+            */
+            if (Commons.isOnline(context)) {
+                progressDialog.show();
+                HashMap<String, String> params = new HashMap<>();
+                params.put("email", socialEmail);
+                params.put("password", "");
+                params.put("user_type", userType);
+                params.put("device_token", token);
+                params.put("login_type", loginType);
+
+                ApiClient.create().login(params).enqueue(new Callback<LoginResponseModel>() {
+                    @Override
+                    public void onResponse(Call<LoginResponseModel> call, Response<LoginResponseModel> response) {
+                        progressDialog.dismiss();
+                        if (response.code() == 200 && response.isSuccessful()) {
+                            if (response.body() != null) {
+                                if (response.body().getStatus().equals("200")) {
+                                    SharePref.getInstance(context).save(SharePref.PREF_TOKEN, response.body().getAccessToken());
+                                    getUserDetails();
+                                } else {
+                                    String msg = "";
+                                    if (response.body().getMessage().isEmpty()) {
+                                        msg = getResources().getString(R.string.please_try_after_some_time);
+                                    } else {
+                                        msg = response.body().getMessage();
+                                    }
+                                    Commons.showToast(context, msg);
+                                }
+                            } else {
+                                Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                            }
+                        } else {
+                            Commons.showToast(context, getResources().getString(R.string.please_try_after_some_time));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<LoginResponseModel> call, Throwable t) {
+                        progressDialog.dismiss();
+                        Commons.showToast(context, getResources().getString(R.string.something_wants_wrong));
+                    }
+                });
+            } else {
+                Commons.showToast(context, getResources().getString(R.string.no_internet_connection));
+            }
+
+        });
+
     }
 
     private void handelFacebookLogin(AccessToken accessToken) {
