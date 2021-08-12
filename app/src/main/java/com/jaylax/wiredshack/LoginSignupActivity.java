@@ -35,6 +35,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -62,11 +64,17 @@ import com.jaylax.wiredshack.user.dashboard.DashboardActivity;
 import com.jaylax.wiredshack.utils.Commons;
 import com.jaylax.wiredshack.utils.SharePref;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -250,10 +258,10 @@ public class LoginSignupActivity extends AppCompatActivity {
             startActivityForResult(signInIntent, 101);
         });
 
-        /*mBinding.imgSignupFacebook.setOnClickListener(view -> {
-            List<String> permissionNeeds = Arrays.asList("user_photos", "email", "public_profile", "AccessToken");
+        mBinding.imgSignupFacebook.setOnClickListener(view -> {
+            List<String> permissionNeeds = Arrays.asList("email", "public_profile");
             LoginManager.getInstance().logInWithReadPermissions(this, permissionNeeds);
-        });*/
+        });
     }
 
     private void setGoogleLogin() {
@@ -274,7 +282,31 @@ public class LoginSignupActivity extends AppCompatActivity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 Log.e("FacebookLogin ", "OnSuccess");
-                handelFacebookLogin(loginResult.getAccessToken());
+
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+
+                    @Override
+                    public void onCompleted(JSONObject object, GraphResponse response) {
+                        Log.i("LoginActivity", response.toString());
+                        // Get facebook data from login
+                        Bundle bFacebookData = getFacebookData(object);
+
+                        if (!bFacebookData.getString("email").isEmpty()) {
+                            if (mBinding.linearLoginChild.getVisibility() == View.VISIBLE) {
+                                callSocialLogin("facebook", bFacebookData.getString("email"));
+                            } else if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
+                                callSocialRegistration("facebook", bFacebookData.getString("first_name") + bFacebookData.getString("last_name"), bFacebookData.getString("email"), bFacebookData.getString("idFacebook"));
+                            } else {
+                                callSocialLogin("facebook", bFacebookData.getString("email"));
+                            }
+                        }
+                    }
+                });
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, first_name, last_name, email,gender, birthday, location"); // Parámetros que pedimos a facebook
+                request.setParameters(parameters);
+                request.executeAsync();
+//                handelFacebookLogin(loginResult.getAccessToken());
             }
 
             @Override
@@ -288,13 +320,10 @@ public class LoginSignupActivity extends AppCompatActivity {
             }
         });
 
-        mAuthStateListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                if (user != null) {
+        mAuthStateListener = firebaseAuth -> {
+            FirebaseUser user = mFirebaseAuth.getCurrentUser();
+            if (user != null) {
 
-                }
             }
         };
         new AccessTokenTracker() {
@@ -305,6 +334,54 @@ public class LoginSignupActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+
+    private void handelFacebookLogin(AccessToken accessToken) {
+        Log.e("FacebookLogin : Handel Token ", "" + accessToken);
+
+        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
+        mFirebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
+            if (task.isSuccessful()) {
+                Log.e("FacebookLogin", "Task Success");
+                FirebaseUser user = mFirebaseAuth.getCurrentUser();
+                updateUIWithFBLogin(user);
+            } else {
+                Log.e("FacebookLogin", "Task Failed");
+            }
+        });
+    }
+
+
+    private Bundle getFacebookData(JSONObject object) {
+
+        try {
+            Bundle bundle = new Bundle();
+            String id = object.getString("id");
+
+            try {
+                URL profile_pic = new URL("https://graph.facebook.com/" + id + "/picture?width=200&height=150");
+                Log.i("profile_pic", profile_pic + "");
+                bundle.putString("profile_pic", profile_pic.toString());
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                return null;
+            }
+
+            bundle.putString("idFacebook", id);
+            if (object.has("first_name"))
+                bundle.putString("first_name", object.getString("first_name"));
+            if (object.has("last_name"))
+                bundle.putString("last_name", object.getString("last_name"));
+            if (object.has("email"))
+                bundle.putString("email", object.getString("email"));
+
+            return bundle;
+        } catch (JSONException e) {
+            Log.d("TAG", "Error parsing JSON");
+        }
+        return null;
     }
 
     private void openTypeSelectPopup() {
@@ -662,7 +739,7 @@ public class LoginSignupActivity extends AppCompatActivity {
                 callSocialLogin("google", account.getEmail());
             } else if (mBinding.nestedSignupChild.getVisibility() == View.VISIBLE) {
                 callSocialRegistration("google", account.getDisplayName(), account.getEmail(), account.getId());
-            }else {
+            } else {
                 callSocialLogin("google", account.getEmail());
             }
         } catch (ApiException e) {
@@ -689,7 +766,13 @@ public class LoginSignupActivity extends AppCompatActivity {
                 params.put("user_type", userType);
                 params.put("device_token", token);
                 params.put("login_type", loginType);
-                params.put("googleac", socialID);
+                if (loginType.equals("google")){
+                    params.put("googleac", socialID);
+                    params.put("facebookid", "");
+                }else {
+                    params.put("googleac", "");
+                    params.put("facebookid", socialID);
+                }
                 params.put("clubName", "");
                 params.put("clubAddress", "");
                 params.put("clubOpenTime", "");
@@ -803,26 +886,13 @@ public class LoginSignupActivity extends AppCompatActivity {
 
     }
 
-    private void handelFacebookLogin(AccessToken accessToken) {
-        Log.e("FacebookLogin : Handel Token ", "" + accessToken);
-
-        AuthCredential credential = FacebookAuthProvider.getCredential(accessToken.getToken());
-        mFirebaseAuth.signInWithCredential(credential).addOnCompleteListener(this, task -> {
-            if (task.isSuccessful()) {
-                Log.e("FacebookLogin", "Task Success");
-                FirebaseUser user = mFirebaseAuth.getCurrentUser();
-                updateUIWithFBLogin(user);
-            } else {
-                Log.e("FacebookLogin", "Task Failed");
-            }
-        });
-    }
 
     private void updateUIWithFBLogin(FirebaseUser user) {
         if (user != null) {
             Log.e("FacebookLogin : Account ", "Name : " + user.getDisplayName());
             Log.e("FacebookLogin : Account ", "Email : " + user.getEmail());
             Log.e("FacebookLogin : Account ", "ProfileImage : " + user.getPhotoUrl());
+            Log.e("FacebookLogin : Account ", "Id : " + user.getUid());
         }
     }
 

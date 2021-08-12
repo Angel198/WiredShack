@@ -3,8 +3,8 @@
     <!-- TODO: Remove or change this placeholder text -->
 
     <string name="google_place_key" translatable="false">AIzaSyBEB2zJn18Cv4Djrmn8sEgbGgLa_2EKKdE</string>
-    <string name="facebook_app_id">2652750718116486</string>
-    <string name="fb_login_protocol_scheme">fb2652750718116486</string>
+    <string name="facebook_app_id">1796233697214316</string>
+    <string name="fb_login_protocol_scheme">fb1796233697214316</string>
 
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
