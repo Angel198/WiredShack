@@ -69,7 +69,8 @@
                     android:text="@string/club"
                     android:textColor="@color/colorPink88"
                     android:textSize="@dimen/_12ssp"
-                    app:fontFamily="@font/roboto_medium" />
+                    app:fontFamily="@font/roboto_medium"
+                    android:layout_marginTop="@dimen/_10sdp"/>
 
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeFollowingTitle"

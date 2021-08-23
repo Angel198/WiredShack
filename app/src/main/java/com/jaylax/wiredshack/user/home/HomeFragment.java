@@ -359,7 +359,7 @@ public class HomeFragment extends Fragment implements HomeManagerListAdapter.Man
                 mBinding.recyclerHomeManager.setVisibility(View.VISIBLE);
 
                 mBinding.recyclerHomeManager.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-                mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, followingList, this, false));
+                mBinding.recyclerHomeManager.setAdapter(new HomeManagerListAdapter(context, followingList, this, false, "following"));
             }
 
             if (managerList.isEmpty()) {
@@ -370,7 +370,7 @@ public class HomeFragment extends Fragment implements HomeManagerListAdapter.Man
                 mBinding.recyclerHomeClub.setVisibility(View.VISIBLE);
 
                 mBinding.recyclerHomeClub.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-                mBinding.recyclerHomeClub.setAdapter(new HomeManagerListAdapter(context, managerList, this, true));
+                mBinding.recyclerHomeClub.setAdapter(new HomeManagerListAdapter(context, managerList, this, true,"other"));
             }
             if (djList.isEmpty()) {
                 mBinding.tvHomeDJTitle.setVisibility(View.GONE);
@@ -380,7 +380,7 @@ public class HomeFragment extends Fragment implements HomeManagerListAdapter.Man
                 mBinding.recyclerHomeDJ.setVisibility(View.VISIBLE);
 
                 mBinding.recyclerHomeDJ.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-                mBinding.recyclerHomeDJ.setAdapter(new HomeManagerListAdapter(context, djList, this, true));
+                mBinding.recyclerHomeDJ.setAdapter(new HomeManagerListAdapter(context, djList, this, true,"other"));
             }
         }
     }
