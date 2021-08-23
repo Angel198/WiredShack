@@ -26,6 +26,12 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_2sdp"
+                    android:background="@color/white"
+                    tools:ignore="MissingConstraints" />
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeUpcomingEventTitle"
                     android:layout_width="wrap_content"
@@ -120,14 +126,19 @@
                     app:ci_drawable_unselected="@drawable/ic_indicator_unselect" />
 
 
+<!--                <androidx.appcompat.widget.AppCompatImageView-->
+<!--                    android:layout_width="@dimen/_80sdp"-->
+<!--                    android:layout_height="@dimen/_80sdp"-->
+<!--                    android:background="@drawable/club_open"/>-->
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeClubTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:includeFontPadding="false"
-                    android:text="@string/club"
                     android:textColor="@color/white"
+                    android:background="@drawable/club_open"
                     android:textSize="@dimen/_28ssp"
                     android:layout_marginTop="@dimen/_14sdp"
                     app:fontFamily="@font/roboto_medium" />
@@ -143,14 +154,20 @@
                     android:paddingStart="@dimen/_18sdp"
                     android:paddingEnd="@dimen/_13sdp" />
 
+
+<!--                <androidx.appcompat.widget.AppCompatImageView-->
+<!--                    android:layout_width="@dimen/_80sdp"-->
+<!--                    android:layout_height="@dimen/_80sdp"-->
+<!--                    android:background="@drawable/dj_open"/>-->
+
                 <androidx.appcompat.widget.AppCompatTextView
                     android:id="@+id/tvHomeDJTitle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/_18sdp"
+                    android:layout_width="@dimen/_80sdp"
+                    android:layout_height="@dimen/_80sdp"
+                    android:layout_marginStart="@dimen/_14sdp"
                     android:includeFontPadding="false"
-                    android:text="@string/dj"
                     android:textColor="@color/white"
+                    android:background="@drawable/dj_open"
                     android:layout_marginTop="@dimen/_14sdp"
                     android:textSize="@dimen/_28ssp"
                     app:fontFamily="@font/roboto_medium" />

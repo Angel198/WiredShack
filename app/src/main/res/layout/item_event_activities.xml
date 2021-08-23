@@ -16,7 +16,7 @@
             android:id="@+id/imgActivity"
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_40sdp"
-            android:src="@drawable/place_holder" />
+            android:src="@drawable/wiredshack" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tvActivityUserName"

@@ -91,7 +91,7 @@ public class HomeFragment extends Fragment implements HomeManagerListAdapter.Man
 
         if (userDetailsModel == null) {
             mBinding.imgProfileLogout.setVisibility(View.INVISIBLE);
-            mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.toplogo));
+            mBinding.imgAccountProfile.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.wiredshack));
         } else {
             mBinding.imgProfileLogout.setVisibility(View.VISIBLE);
             RequestOptions options = new RequestOptions().centerCrop().placeholder(R.drawable.place_holder).transform(new CenterCrop()).error(R.drawable.place_holder).priority(Priority.HIGH);
